@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="h3 mb-3 font-weight-normal">Créer un compte</h1>
+
+    {% if form_errors(registrationForm) %}
+        <div class="alert alert-danger">
+            {{ form_errors(registrationForm) }}
+        </div>
+    {% endif %}
+
+    {{ form_start(registrationForm) }}
+
+    {{ form_row(registrationForm.name, {
+        attr: { class: 'form-control', id: 'inputName' }
+    }) }}
+
+    {{ form_row(registrationForm.email, {
+        attr: { class: 'form-control', id: 'inputmail', autofocus: true }
+    }) }}
+
+    {{ form_row(registrationForm.plainPassword, {
+        attr: { class: 'form-control', id: 'inputPassword' }
+    }) }}
+
+    <p class="pt-2">
+        Vous avez déjà un compte ?
+        <a href="{{ path('app_login') }}" class="text-spotify">Connectez-vous</a>
+    </p>
+
+    <button class="btn btn-lg" type="submit">
+        Créer un compte
+    </button>
+
+    {{ form_end(registrationForm) }}
+{% endblock %}
