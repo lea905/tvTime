@@ -1,0 +1,129 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Movie;
+use App\Entity\ProductionCompanie;
+use App\Repository\MovieRepository;
+use App\Repository\ProductionCompanieRepository;
+use App\Service\TmdbRequestService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+
+#[Route('/movies')]
+class MovieController extends AbstractController
+{
+
+    private string $token;
+
+    public function __construct(private readonly TmdbRequestService $tmdb,
+                                private readonly MovieRepository    $movieRepository)
+    {
+        $this->token = $_ENV['TMDB_TOKEN'];
+    }
+
+    /**
+     * Affiche tout les films présents dans la BDD
+     *
+     * @return Response
+     */
+    #[Route('', name: 'movies')]
+    public function index(): Response
+    {
+        $movies = $this->movieRepository->findAll();
+
+        return $this->render('movie/index.html.twig', [
+            'movies' => $movies,
+        ]);
+    }
+
+    /**
+     * Affiche un film identifié par son id
+     *
+     * @param int $id
+     * @return Response
+     */
+    #[Route('/show/{id}', name: 'app_movies_show')]
+    public function show(int $id): Response
+    {
+//        $changes = $this->tmdb->getMovie($this->token, $id);
+
+
+        $movie = $this->movieRepository->findOneById($id);
+        // if : vérifier si $movie a des ou un production_companies + si il a un status {
+            $changes = $this->tmdb->getMovie($this->token, $movie->getTmdbId());
+            $movie->setStatus($changes['status']);
+            // ajouter relation avec le/les production_companies, les créer si ils n'existent pas
+            foreach ($changes['production_companies'] as $key => $value) {
+                // actuellement :
+//                $value = array:4 [▼
+//                  "id" => 101082
+//                  "logo_path" => "/zjAYU6sUmYaeFeJ1yWeaqzsWAz8.png"
+//                  "name" => "Double Dare You"
+//                  "origin_country" => "US"
+//                ]
+            $productionCompanie = new ProductionCompanie();
+            $productionCompanie
+                ->setTmdbId($value['id'])
+                ;
+            }
+
+//        }
+
+        return $this->render('movie/show.html.twig', [
+            'movie' => $movie,
+        ]);
+    }
+
+    /**
+     * Affiche les films du genre souhaité
+     *
+     * @param string $genre
+     * @return Response
+     */
+    #[Route('/search/{genre}', name: 'app_movies_genre')]
+    public function genre(string $genre): Response
+    {
+        $movies = $this->movieRepository->findByGenre($genre);
+        if($movies === null) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->render('movie/genre.html.twig', [
+            'movies' => $movies,
+            'genre' => $genre,
+        ]);
+    }
+
+    /**
+     * Affiche les films actuellement au cinéma
+     *
+     * @return Response
+     */
+    #[Route('/now_playing', name: 'app_movies_now_playing')]
+    public function now_playing(): Response
+    {
+        $movies = $this->tmdb->getMoviesNowPlaying($this->token);
+
+        return $this->render('movie/now_playing.html.twig', [
+            'movies' => $movies,
+        ]);
+    }
+
+    /**
+     * Affiche les films pas encore sortis
+     *
+     * @return Response
+     */
+    #[Route('/upcoming', name: 'app_movies_upcoming')]
+    public function upcoming(): Response
+    {
+        $movies = $this->tmdb->getMoviesUpcoming($this->token);
+
+        return $this->render('movie/upcoming.html.twig', [
+            'movies' => $movies,
+        ]);
+    }
+}

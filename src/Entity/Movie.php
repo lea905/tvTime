@@ -16,17 +16,23 @@ class Movie
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column]
+    private ?int $tmdbId = null;
+
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     private ?string $picture = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $genre = null;
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $genres = [];
 
     #[ORM\Column(length: 255)]
     private ?string $resume = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $releaseDate = null;
@@ -104,15 +110,14 @@ class Movie
         return $this;
     }
 
-    public function getGenre(): ?string
+    public function getGenres(): array
     {
-        return $this->genre;
+        return $this->genres ?? [];
     }
 
-    public function setGenre(string $genre): static
+    public function setGenres(array $genres): self
     {
-        $this->genre = $genre;
-
+        $this->genres = $genres;
         return $this;
     }
 
@@ -214,6 +219,30 @@ class Movie
         if ($this->watchLists->removeElement($watchList)) {
             $watchList->removeMovie($this);
         }
+
+        return $this;
+    }
+
+    public function getTmdbId(): ?int
+    {
+        return $this->tmdbId;
+    }
+
+    public function setTmdbId(int $tmdbId): static
+    {
+        $this->tmdbId = $tmdbId;
+        return $this;
+    }
+
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

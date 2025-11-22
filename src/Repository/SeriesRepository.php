@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Series;
+use App\Utils\TmdbGenres;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,36 @@ class SeriesRepository extends ServiceEntityRepository
         parent::__construct($registry, Series::class);
     }
 
-//    /**
-//     * @return Series[] Returns an array of Series objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Trouve la série souhaitée
+     *
+     * @param int $id
+     * @return Series|null
+     */
+    public function findOneById(int $id): ?Series
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
-//    public function findOneBySomeField($value): ?Series
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Trouves les séries du genre donné
+     *
+     * @param string $genre
+     * @return array
+     */
+    public function findByGenre(string $genre): array | null
+    {
+        if(TmdbGenres::searchGenre($genre) !== null){
+            return $this->createQueryBuilder('m')
+                ->andWhere('m.genres LIKE :genre')
+                ->setParameter('genre', '%' . $genre . '%')
+                ->getQuery()
+                ->getResult();
+        };
+        return null;
+    }
 }

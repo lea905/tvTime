@@ -16,28 +16,37 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    //    /**
-    //     * @return Movie[] Returns an array of Movie objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('m.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Trouve le film souhaité
+     *
+     * @param int $id
+     * @return Movie|null
+     */
+    public function findOneById(int $id): ?Movie
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Movie
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Trouves les films du genre donné
+     *
+     * @param string $genre
+     * @return array
+     */
+    public function findByGenre(string $genre): array | null
+    {
+        if(TmdbGenres::searchGenre($genre) !== null){
+            return $this->createQueryBuilder('m')
+                ->andWhere('m.genres LIKE :genre')
+                ->setParameter('genre', '%' . $genre . '%')
+                ->getQuery()
+                ->getResult();
+        };
+        return null;
+    }
+
 }

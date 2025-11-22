@@ -37,8 +37,8 @@ class Series
     #[ORM\Column(length: 255)]
     private ?string $picture = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $genre = null;
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $genres = [];
 
     #[ORM\Column(length: 255)]
     private ?string $resume = null;
@@ -186,15 +186,14 @@ class Series
         return $this;
     }
 
-    public function getGenre(): ?string
+    public function getGenres(): array
     {
-        return $this->genre;
+        return $this->genres ?? [];
     }
 
-    public function setGenre(string $genre): static
+    public function setGenres(array $genres): self
     {
-        $this->genre = $genre;
-
+        $this->genres = $genres;
         return $this;
     }
 
