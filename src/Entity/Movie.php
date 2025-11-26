@@ -34,6 +34,9 @@ class Movie
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
+    #[ORM\Column]
+    private ?int $popularity = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $releaseDate = null;
 
@@ -243,6 +246,18 @@ class Movie
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getPopularity(): ?int
+    {
+        return $this->popularity;
+    }
+
+    public function setPopularity(int $popularity): static
+    {
+        $this->popularity = $popularity;
 
         return $this;
     }

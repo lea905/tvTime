@@ -33,7 +33,6 @@ class TmdbRequestService
             ],
         ]);
 
-//        dd($response->toArray());
         $data = $response->toArray();
 
         // Ici on renvoie une liste d’objets Movie
@@ -59,7 +58,7 @@ class TmdbRequestService
         return $this->movieFactory->createMultipleFromTmdbData($data);
     }
 
-    public function getMovie(string $token, string $id): array
+    public function getMovie(string $token, string $id): Movie
     {
         $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/movie/' . $id, [
             'headers' => [
@@ -69,9 +68,9 @@ class TmdbRequestService
         ]);
 
         $data = $response->toArray();
-        $res = ['production_companies' => $data["production_companies"], 'status' => $data["status"]];
+//        $res = ['production_companies' => $data["production_companies"], 'status' => $data["status"]];
 
-        return $res;
+        return $this->movieFactory->createFromOneTmdbData($data);
     }
 
     public function getSeriesPopular(string $token): array

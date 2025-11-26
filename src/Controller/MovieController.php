@@ -48,30 +48,7 @@ class MovieController extends AbstractController
     #[Route('/show/{id}', name: 'app_movies_show')]
     public function show(int $id): Response
     {
-//        $changes = $this->tmdb->getMovie($this->token, $id);
-
-
-        $movie = $this->movieRepository->findOneById($id);
-        // if : vérifier si $movie a des ou un production_companies + si il a un status {
-            $changes = $this->tmdb->getMovie($this->token, $movie->getTmdbId());
-            $movie->setStatus($changes['status']);
-            // ajouter relation avec le/les production_companies, les créer si ils n'existent pas
-            foreach ($changes['production_companies'] as $key => $value) {
-                // actuellement :
-//                $value = array:4 [▼
-//                  "id" => 101082
-//                  "logo_path" => "/zjAYU6sUmYaeFeJ1yWeaqzsWAz8.png"
-//                  "name" => "Double Dare You"
-//                  "origin_country" => "US"
-//                ]
-            $productionCompanie = new ProductionCompanie();
-            $productionCompanie
-                ->setTmdbId($value['id'])
-                ;
-            }
-
-//        }
-
+        $movie = $this->tmdb->getMovie($this->token, $id);
         return $this->render('movie/show.html.twig', [
             'movie' => $movie,
         ]);
@@ -87,7 +64,7 @@ class MovieController extends AbstractController
     public function genre(string $genre): Response
     {
         $movies = $this->movieRepository->findByGenre($genre);
-        if($movies === null) {
+        if ($movies === null) {
             throw new NotFoundHttpException();
         }
 
