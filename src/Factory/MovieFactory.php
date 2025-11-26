@@ -41,7 +41,6 @@ class MovieFactory
 
     public function createFromOneTmdbData(array $movie): Movie
     {
-//        dd($movie);
         $movieToReturn = new Movie();
 
         // Conversion des id genres en noms lisibles

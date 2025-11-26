@@ -14,7 +14,7 @@
                         <p> {{ genre }} </p>
                     {% endfor %}
                     <a href="{{ path('app_movies_show', {id: movie.tmdbId }) }}">
-                        <p> {{ movie.tmdbId }} </p>
+                        <p>Voir les details du film</p>
                     </a>
                     <p>{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>
                     <small>{{ movie.resume|length > 100 ? movie.resume|slice(0, 100) ~ '...' : movie.resume }}</small>

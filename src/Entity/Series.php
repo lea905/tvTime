@@ -40,6 +40,9 @@ class Series
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $genres = [];
 
+    #[ORM\Column]
+    private ?int $popularity = null;
+
     #[ORM\Column(length: 255)]
     private ?string $resume = null;
 
@@ -322,6 +325,18 @@ class Series
         if ($this->watchLists->removeElement($watchList)) {
             $watchList->removeSeries($this);
         }
+
+        return $this;
+    }
+
+    public function getPopularity(): ?int
+    {
+        return $this->popularity;
+    }
+
+    public function setPopularity(int $popularity): static
+    {
+        $this->popularity = $popularity;
 
         return $this;
     }

@@ -45,10 +45,8 @@ class SeriesController extends AbstractController
     #[Route('/show/{id}', name: 'app_series_show')]
     public function show(int $id): Response
     {
-        $series = $this->seriesRepository->findOneById($id);
-
         return $this->render('series/show.html.twig', [
-            'series' => $series,
+            'serie' => $this->tmdb->getSerie($this->token, $id),
         ]);
     }
 

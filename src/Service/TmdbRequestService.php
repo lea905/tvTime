@@ -92,7 +92,7 @@ class TmdbRequestService
         return $this->seriesFactory->createMultipleFromTmdbData($data);
     }
 
-    public function getSeries(string $token, string $id): Series
+    public function getSerie(mixed $token, int $id) :Series
     {
         $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/tv/' . $id, [
             'headers' => [
@@ -102,7 +102,6 @@ class TmdbRequestService
         ]);
 
         $data = $response->toArray();
-
-        return $this->movieFactory->createMultipleFromTmdbData($data);
+        return $this->seriesFactory->createFromOneTmdbData($data);
     }
 }
