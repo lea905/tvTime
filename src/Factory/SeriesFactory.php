@@ -3,10 +3,21 @@
 namespace App\Factory;
 
 use App\Entity\Series;
+use App\Factory\CreatorFactory;
+use App\Factory\ProductionCompanieFactory;
+use App\Factory\SeasonFactory;
 use App\Utils\TmdbGenres;
 
 class SeriesFactory
 {
+    public function __construct(
+        private CreatorFactory            $creatorFactory,
+        private ProductionCompanieFactory $productionCompanieFactory,
+        private SeasonFactory             $seasonFactory
+    )
+    {
+    }
+
     public function createMultipleFromTmdbData(array $data): array
     {
         $series = [];
@@ -47,58 +58,29 @@ class SeriesFactory
             $genreNames[] = $genre['name'];
         }
 
-        // TODO : series_creator
-        // $serie['created_by'] contient ce type d'infos :
-        // "created_by" => array:2 [▼
-        //    0 => array:6 [▼
-        //      "id" => 1179422
-        //      "credit_id" => "57599b039251410a99001cce"
-        //      "name" => "Ross Duffer"
-        //      "original_name" => "Ross Duffer"
-        //      "gender" => 2
-        //      "profile_path" => "/kN1HdFViQkcJOQlNcvvFJIx9Uju.jpg"
-        //    ]
-        //    1 => array:6 [▼
-        //      "id" => 1179419
-        //      "credit_id" => "57599b0e925141378a002c87"
-        //      "name" => "Matt Duffer"
-        //      "original_name" => "Matt Duffer"
-        //      "gender" => 2
-        //      "profile_path" => "/kXO5CnSxC0znMAICGxnPeuGP73U.jpg"
-        //    ]
-        //  ]
+        // Creator (ManyToMany)
+        if (!empty($serie['created_by'])) {
+            foreach ($serie['created_by'] as $creatorData) {
+                $creator = $this->creatorFactory->createFromTmdbData($creatorData);
+                $serieToReturn->addCreator($creator);
+            }
+        }
 
-        // TODO : Gerer les production_companies
-        // $serie['production_companies'] contient ce type d'infos :
-        // "production_companies" => array:3 [▼
-        //    0 => array:4 [▼
-        //      "id" => 2575
-        //      "logo_path" => "/9YJrHYlcfHtwtulkFMAies3aFEl.png"
-        //      "name" => "21 Laps Entertainment"
-        //      "origin_country" => "US"
-        //    ]
-        //    1 => array:4 [▶]
-        //    2 => array:4 [▶]
-        //  ]
+        // Production companies (ManyToMany)
+        if (!empty($serie['production_companies'])) {
+            foreach ($serie['production_companies'] as $pcData) {
+                $pc = $this->productionCompanieFactory->createFromTmdbData($pcData);
+                $serieToReturn->addProductionCompany($pc);
+            }
+        }
 
-        // TODO : Gerer les seasons
-        // $serie['seasons'] contient ce type d'infos :
-        //   "seasons" => array:5 [▼
-        //    0 => array:8 [▼
-        //      "air_date" => "2016-07-15"
-        //      "episode_count" => 8
-        //      "id" => 77680
-        //      "name" => "Season 1"
-        //      "overview" => "Strange things are afoot in Hawkins, Indiana, where a young boy's sudden disappearance unearths a young girl with otherworldly powers."
-        //      "poster_path" => "/rbnuP7hlynAMLdqcQRCpZW9qDkV.jpg"
-        //      "season_number" => 1
-        //      "vote_average" => 8.4
-        //    ]
-        //    1 => array:8 [▶]
-        //    2 => array:8 [▶]
-        //    3 => array:8 [▶]
-        //    4 => array:8 [▶]
-        //  ]
+        // Seasons (OneToMany)
+        if (!empty($serie['seasons'])) {
+            foreach ($serie['seasons'] as $seasonData) {
+                $season = $this->seasonFactory->createFromTmdbData($seasonData);
+                $serieToReturn->addSeason($season);
+            }
+        }
 
         return $serieToReturn
             ->setTitle($serie['name'] ?? '')

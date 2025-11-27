@@ -16,6 +16,9 @@ class Season
     private ?int $id = null;
 
     #[ORM\Column]
+    private ?int $tmdbId = null;
+
+    #[ORM\Column]
     private ?int $number = null;
 
     #[ORM\Column(length: 255)]
@@ -23,6 +26,9 @@ class Season
 
     #[ORM\Column(length: 255)]
     private ?string $picture = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $resume = null;
 
     /**
      * @var Collection<int, Episode>
@@ -47,18 +53,6 @@ class Season
     public function setId(int $id): static
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getSeriesId(): ?int
-    {
-        return $this->seriesId;
-    }
-
-    public function setSeriesId(int $seriesId): static
-    {
-        $this->seriesId = $seriesId;
 
         return $this;
     }
@@ -125,6 +119,30 @@ class Season
                 $episode->setSeasonId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTmdbId(): ?int
+    {
+        return $this->tmdbId;
+    }
+
+    public function setTmdbId(int $tmdbId): static
+    {
+        $this->tmdbId = $tmdbId;
+
+        return $this;
+    }
+
+    public function getResume(): ?string
+    {
+        return $this->resume;
+    }
+
+    public function setResume(string $resume): static
+    {
+        $this->resume = $resume;
 
         return $this;
     }

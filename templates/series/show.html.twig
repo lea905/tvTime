@@ -11,6 +11,24 @@
                     <p> {{ genre }} </p>
                 {% endfor %}
                 <p>Popularité : {{ serie.popularity }}</p>
+                <p> Créateurs : </p>
+                {% for creator in serie.creators %}
+                    <p> {{ creator.name }} </p>
+                {% endfor %}
+                <p> Companies de production : </p>
+                {% for productionCompanie in serie.productionCompanies %}
+                    <p> {{ productionCompanie.name }}, ({{ productionCompanie.originCountry }}) </p>
+                    <img src="https://image.tmdb.org/t/p/w500{{ productionCompanie.logo }}" alt="{{ productionCompanie.name }}"
+                         class="card-img-top">
+                {% endfor %}
+                <p>Nombre de saisons : {{ serie.numberSeasons }}</p>
+                {% for season in serie.seasons %}
+                    <p> {{ season.title }} </p>
+                    <img src="https://image.tmdb.org/t/p/w500{{ season.picture }}" alt="{{ season.title }}"
+                         class="card-img-top">
+                    <p> {{ season.resume }} </p>
+                {% endfor %}
+                <p>Nombre total d'épisodes : {{ serie.numberEpisodes }}</p>
                 <p>{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>
                 <small>{{ serie.resume|length > 100 ? serie.resume|slice(0, 100) ~ '...' : serie.resume }}</small>
             </div>

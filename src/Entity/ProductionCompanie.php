@@ -15,9 +15,6 @@ class ProductionCompanie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $tmdbId = null;
-
     #[ORM\Column(length: 255)]
     private ?string $logo = null;
 
@@ -66,17 +63,6 @@ class ProductionCompanie
     {
         $this->logo = $logo;
 
-        return $this;
-    }
-
-    public function getTmdbId(): ?int
-    {
-        return $this->tmdbId;
-    }
-
-    public function setTmdbId(int $tmdbId): static
-    {
-        $this->tmdbId = $tmdbId;
         return $this;
     }
 

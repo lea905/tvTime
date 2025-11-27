@@ -236,7 +236,6 @@ class Series
     {
         if (!$this->seasons->contains($season)) {
             $this->seasons->add($season);
-            $season->setSeriesId($this);
         }
 
         return $this;
