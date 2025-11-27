@@ -14,6 +14,16 @@
                 <p>{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>
 
                 <p>Popularité : {{ movie.popularity }}</p>
+
+
+                <p> Companies de production : </p>
+                {% for productionCompanie in movie.productionCompanies %}
+                    <p> {{ productionCompanie.name }}, ({{ productionCompanie.originCountry }}) </p>
+                    {% if(productionCompanie.logo) %}
+                    <img src="https://image.tmdb.org/t/p/w500{{ productionCompanie.logo }}" alt="{{ productionCompanie.name }}"
+                         class="card-img-top">
+                    {% endif %}
+                {% endfor %}
                 <small>{{ movie.resume|length > 100 ? movie.resume|slice(0, 100) ~ '...' : movie.resume }}</small>
             </div>
         </div>

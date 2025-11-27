@@ -8,6 +8,12 @@ use App\Utils\TmdbGenres;
 class MovieFactory
 {
 
+    public function __construct(
+        private ProductionCompanieFactory $productionCompanieFactory
+    )
+    {
+    }
+
     public function createMultipleFromTmdbData(array $data): array
     {
         $movies = [];
@@ -32,7 +38,7 @@ class MovieFactory
         return $movie
             ->setTitle($movieData['title'] ?? '')
             ->setResume($movieData['overview'] ?? '')
-            ->setPopularity($movie['popularity'] ?? 0)
+            ->setPopularity($movieData['popularity'] ?? 0)
             ->setPicture($movieData['poster_path'] ?? '')
             ->setReleaseDate(isset($movieData['release_date']) ? new \DateTime($movieData['release_date']) : null)
             ->setGenres($genreNames)
@@ -49,23 +55,13 @@ class MovieFactory
             $genreNames[] = $genre['name'];
         }
 
-        // TODO : Gerer les production_companies
-        // $movie['production_companies'] contient ce type d'infos :
-        // [
-        //    0 => array:4 [
-        //      "id" => 122699
-        //      "logo_path" => null
-        //      "name" => "iQIYI Pictures"
-        //      "origin_country" => "CN"
-        //    ]
-        //    1 => array:4 [
-        //      "id" => 197030
-        //      "logo_path" => "/z9xtT1e3HunOnZUm3uGYb59eL7v.png"
-        //      "name" => "Tao Piao Piao"
-        //      "origin_country" => "CN"
-        //    ]
-        //    2 => array:4 [...]
-        //    3 => array:4 [...]
+        // Production companies (ManyToMany)
+        if (!empty($movie['production_companies'])) {
+            foreach ($movie['production_companies'] as $pcData) {
+                $pc = $this->productionCompanieFactory->createFromTmdbData($pcData);
+                $movieToReturn->addProductionCompany($pc);
+            }
+        }
 
         return $movieToReturn
             ->setTitle($movie['title'] ?? '')

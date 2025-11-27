@@ -10,6 +10,6 @@ class CreatorFactory
     {
         $creator = new Creator();
         return $creator
-            ->setName($creatorData['name']);
+            ->setName($creatorData['name'] ?? '');
     }
 }

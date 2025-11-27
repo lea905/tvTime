@@ -10,10 +10,10 @@ class SeasonFactory
     {
         $season = new Season();
         return $season
-            ->setTmdbId($seasonData['id'])
-            ->setNumber($seasonData['season_number'])
-            ->setTitle($seasonData['name'])
-            ->setPicture($seasonData['poster_path'])
-            ->setResume($seasonData['overview']);
+            ->setTmdbId($seasonData['id'] ?? '')
+            ->setNumber($seasonData['season_number'] ?? 0)
+            ->setTitle($seasonData['name'] ?? '')
+            ->setPicture($seasonData['poster_path'] ?? '')
+            ->setResume($seasonData['overview'] ?? '');
     }
 }

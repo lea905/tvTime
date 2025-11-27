@@ -10,8 +10,8 @@ class ProductionCompanieFactory
     {
         $productionCompanie = new ProductionCompanie();
         return $productionCompanie
-            ->setLogo($pcData['logo_path'])
-            ->setName($pcData['name'])
-            ->setOriginCountry($pcData['origin_country']);
+            ->setLogo($pcData['logo_path'] ?? '')
+            ->setName($pcData['name'] ?? '')
+            ->setOriginCountry($pcData['origin_country'] ?? '');
     }
 }

@@ -18,8 +18,10 @@
                 <p> Companies de production : </p>
                 {% for productionCompanie in serie.productionCompanies %}
                     <p> {{ productionCompanie.name }}, ({{ productionCompanie.originCountry }}) </p>
+                    {% if(productionCompanie.logo) %}
                     <img src="https://image.tmdb.org/t/p/w500{{ productionCompanie.logo }}" alt="{{ productionCompanie.name }}"
                          class="card-img-top">
+                    {% endif %}
                 {% endfor %}
                 <p>Nombre de saisons : {{ serie.numberSeasons }}</p>
                 {% for season in serie.seasons %}
