@@ -29,13 +29,26 @@ class MovieController extends AbstractController
      *
      * @return Response
      */
-    #[Route('', name: 'movies')]
-    public function index(): Response
+//    #[Route('', name: 'movies')]
+//    public function index(): Response
+//    {
+//        $movies = $this->movieRepository->findAll();
+//
+//        return $this->render('movie/index.html.twig', [
+//            'movies' => $movies,
+//        ]);
+//    }
+    #[Route('/', name: 'app_index_movie')]
+    public function home(): Response
     {
-        $movies = $this->movieRepository->findAll();
+        $nowPlayingMovies = $this->tmdb->getMoviesNowPlaying($this->token);
+        $popularMovies    = $this->tmdb->getMoviesPopular($this->token);
+        $upcomingMovies   = $this->tmdb->getMoviesUpcoming($this->token);
 
         return $this->render('movie/index.html.twig', [
-            'movies' => $movies,
+            'now_playing_movies' => $nowPlayingMovies,
+            'popular_movies'     => $popularMovies,
+            'upcoming_movies'    => $upcomingMovies,
         ]);
     }
 

@@ -73,6 +73,25 @@ class TmdbRequestService
         return $this->movieFactory->createFromOneTmdbData($data);
     }
 
+    public function getMoviesPopular(string $token): array
+    {
+        $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/movie/popular', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'accept' => 'application/json',
+            ],
+            'query' => [
+                'language' => 'fr-FR',
+                'page' => 1,
+            ],
+        ]);
+
+        $data = $response->toArray();
+
+        return $this->movieFactory->createMultipleFromTmdbData($data);
+    }
+
+
     public function getSeriesPopular(string $token): array
     {
         $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/tv/popular', [
