@@ -1,6 +1,8 @@
+{% set current_route = app.request.attributes.get('_route') %}
+
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #000;">
     <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="#" style="color: #3269A8;">TV-TIME</a>
+        <a class="navbar-brand fw-bold" href="{{ path('app_home') }}" style="color: #3269A8;">TV-TIME</a>
 
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse"
@@ -13,20 +15,46 @@
 
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link active" href="#">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Explorer</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Films</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Séries</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Ma liste</a></li>
-            </ul>
-
-            {# zone droite : boutons + avatar #}
-            <ul class="navbar-nav mb-2 mb-lg-0">
-                <li class="nav-item d-flex align-items-center gap-2">
-                    <button class="btn btn-outline-light btn-sm me-2" type="button">🔍</button>
-                    <button class="btn btn-outline-light btn-sm me-2" type="button">🔔</button>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_route == 'app_home' %}active{% endif %}"
+                       href="{{ path('app_home') }}">
+                        Accueil
+                    </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link {% if current_route == 'app_explorer' %}active{% endif %}"
+                       href="{{ path('app_home') }}">
+                        Explorer
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if current_route == 'app_index_movie' %}active{% endif %}"
+                       href="{{ path('app_index_movie') }}">
+                        Films
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if current_route == 'app_series' %}active{% endif %}"
+                       href="{{ path('app_home') }}">
+                        Séries
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if current_route == 'app_list' %}active{% endif %}"
+                       href="{{ path('app_home') }}">
+                        Ma liste
+                    </a>
+                </li>
+            </ul>
+
+
+
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <button class="btn btn-outline-light btn-sm me-2" type="button">🔍</button>
                 <li class="nav-item dropdown">
                     {% set avatars = ['images/femme.png', 'images/homme.png'] %}
                     {% set avatar = random(avatars) %}
@@ -42,7 +70,9 @@
                         <li class="px-3 pt-2 pb-1 text-muted small">
                             Connecté en tant que <strong>{{ app.user.name }}</strong>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li>
                             <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
                                 Se déconnecter
