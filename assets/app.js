@@ -9,3 +9,25 @@
 import './styles/bootstrap.scss'
 import './styles/app.css';
 import 'bootstrap';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('searchToggle');
+    const searchForm = document.getElementById('searchForm');
+
+    if (toggleBtn && searchForm) {
+        toggleBtn.addEventListener('click', () => {
+            const isHidden = searchForm.style.display === 'none' || searchForm.style.display === '';
+
+            if (isHidden) {
+                searchForm.style.display = 'flex';
+                const input = searchForm.querySelector('input');
+                if (input) {
+                    input.focus();
+                }
+            } else {
+                searchForm.style.display = 'none';
+            }
+        });
+    }
+});
+

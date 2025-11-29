@@ -23,13 +23,6 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {% if current_route == 'app_explorer' %}active{% endif %}"
-                       href="{{ path('app_home') }}">
-                        Explorer
-                    </a>
-                </li>
-
-                <li class="nav-item">
                     <a class="nav-link {% if current_route == 'app_index_movie' %}active{% endif %}"
                        href="{{ path('app_index_movie') }}">
                         Films
@@ -46,7 +39,7 @@
                 <li class="nav-item">
                     <a class="nav-link {% if current_route == 'app_list' %}active{% endif %}"
                        href="{{ path('app_home') }}">
-                        Ma liste
+                        Mes listes
                     </a>
                 </li>
             </ul>
@@ -54,7 +47,26 @@
 
 
             <ul class="navbar-nav mb-2 mb-lg-0">
-                <button class="btn btn-outline-light btn-sm me-2" type="button">🔍</button>
+
+                    <li class="nav-item d-flex align-items-center gap-2">
+
+                        {# Formulaire de recherche caché au départ #}
+                        <form class="d-flex align-items-center me-2" id="searchForm" style="display: none !important;">
+                            <input class="form-control form-control-sm bg-dark text-light border-secondary"
+                                   type="search" placeholder="Rechercher..."
+                                   aria-label="Rechercher">
+                        </form>
+
+                        {# Bouton qui toggle la recherche #}
+                        <button class="btn btn-outline-light btn-sm me-2" type="button" id="searchToggle">
+                            🔍
+                        </button>
+
+                    </li>
+
+
+
+
                 <li class="nav-item dropdown">
                     {% set avatars = ['images/femme.png', 'images/homme.png'] %}
                     {% set avatar = random(avatars) %}
@@ -85,3 +97,4 @@
         </div>
     </div>
 </nav>
+
