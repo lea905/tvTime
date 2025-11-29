@@ -1,0 +1,57 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #000;">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#" style="color: #3269A8;">TV-TIME</a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link active" href="#">Accueil</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Explorer</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Films</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Séries</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Ma liste</a></li>
+            </ul>
+
+            {# zone droite : boutons + avatar #}
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <li class="nav-item d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-light btn-sm me-2" type="button">🔍</button>
+                    <button class="btn btn-outline-light btn-sm me-2" type="button">🔔</button>
+                </li>
+
+                <li class="nav-item dropdown">
+                    {% set avatars = ['images/femme.png', 'images/homme.png'] %}
+                    {% set avatar = random(avatars) %}
+
+                    <a class="nav-link p-0" href="#" id="profileDropdown"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ asset(avatar) }}" alt="Profil"
+                             style="width:32px;height:32px;border-color:#3269A8;">
+                    </a>
+
+
+                    <ul class="dropdown-menu dropdown-menu-end profile-dropdown" aria-labelledby="profileDropdown">
+                        <li class="px-3 pt-2 pb-1 text-muted small">
+                            Connecté en tant que <strong>{{ app.user.name }}</strong>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+                                Se déconnecter
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>

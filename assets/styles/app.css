@@ -18,7 +18,10 @@
     --bs-btn-disabled-bg: #3269A8;
     --bs-btn-disabled-border-color: #3269A8;
 }
-body {
-    background-color: #3269A8;
-}
 
+body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: system-ui, sans-serif;
+}
