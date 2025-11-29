@@ -32,11 +32,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container py-4">
+    <div class="container pt-3">
         <a href="{{ path('app_index_movie') }}" class="btn btn-link mb-3 text-decoration-none text-black">&larr; Retour aux films</a>
 
         <div class="row g-4">
-            {# Affiche #}
             <div class="col-12 col-md-4 col-lg-3">
                 <div class="card bg-dark text-light h-100">
                     <img
@@ -60,7 +59,7 @@
                 </div>
             </div>
 
-            {# Infos principales #}
+
             <div class="col-12 col-md-8 col-lg-9">
                 <h1 class="mb-2">{{ movie.title }}</h1>
 
@@ -73,7 +72,7 @@
                 {% endif %}
 
                 {% if movie.status is defined and movie.status %}
-                    <p class="text-muted mb-3">
+                    <p class=" mb-3">
                         Statut : <strong>{{ movie.status }}</strong>
                     </p>
                 {% endif %}
@@ -117,11 +116,9 @@
 
                 <div class="mt-4 d-flex flex-wrap gap-2">
                     <a href="#" class="btn btn-primary btn-sm">
-                        Ajouter aux favoris
+                        Ajouter à une liste
                     </a>
-                    <a href="#" class="btn btn-outline-secondary btn-sm">
-                        Ajouter à la liste à voir
-                    </a>
+
                 </div>
             </div>
         </div>

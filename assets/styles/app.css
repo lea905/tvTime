@@ -1,3 +1,12 @@
+:root,
+[data-bs-theme=light],
+[data-bs-theme=dark] {
+    --bs-secondary: #3269A8;
+    --bs-secondary-rgb: 50, 105, 168;
+    --bs-secondary-bg: #3269A8;
+    --bs-secondary-bg-rgb: 50, 105, 168;
+}
+
 .btn-primary {
     --bs-btn-color: #fff;
     --bs-btn-bg: #3269A8;
@@ -19,9 +28,13 @@
     --bs-btn-disabled-border-color: #3269A8;
 }
 
+.bg-secondary {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
+}
+
 body {
     margin: 0;
     background: #000;
     color: #fff;
-    padding-top: 5%;
 }
