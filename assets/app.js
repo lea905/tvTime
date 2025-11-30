@@ -10,6 +10,7 @@ import './styles/bootstrap.scss'
 import './styles/app.css';
 import 'bootstrap';
 
+// search bar
 document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('searchToggle');
     const searchForm = document.getElementById('searchForm');

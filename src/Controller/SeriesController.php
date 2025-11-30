@@ -26,15 +26,17 @@ class SeriesController extends AbstractController
      *
      * @return Response
      */
-    #[Route('', name: 'series')]
+    #[Route('', name: 'app_index_series')]
     public function index(): Response
     {
-        $series = $this->seriesRepository->findAll();
+
+        $popularSeries = $this->tmdb->getSeriesPopular($this->token);
 
         return $this->render('series/index.html.twig', [
-            'series' => $series,
+            'popular_series' => $popularSeries,
         ]);
     }
+
 
     /**
      * Affiche une série identifiée par son id
@@ -42,7 +44,7 @@ class SeriesController extends AbstractController
      * @param int $id
      * @return Response
      */
-    #[Route('/show/{id}', name: 'app_series_show')]
+    #[Route('/show/{id}', name: 'app_show_series')]
     public function show(int $id): Response
     {
         return $this->render('series/show.html.twig', [

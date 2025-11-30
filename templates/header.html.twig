@@ -30,8 +30,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {% if current_route == 'app_series' %}active{% endif %}"
-                       href="{{ path('app_home') }}">
+                    <a class="nav-link {% if current_route == 'app_index_series' %}active{% endif %}"
+                       href="{{ path('app_index_series') }}">
                         Séries
                     </a>
                 </li>
@@ -78,7 +78,7 @@
 
                     <ul class="dropdown-menu dropdown-menu-end profile-dropdown" aria-labelledby="profileDropdown">
                         <li class="px-3 pt-2 pb-1 text-muted small">
-                            Connecté en tant que <strong>{{ app.user.name }}</strong>
+                            Connecté en tant que <strong>{% if app.user.name is defined %}{{ app.user.name }}{% endif %}</strong>
                         </li>
                         <li>
                             <hr class="dropdown-divider">

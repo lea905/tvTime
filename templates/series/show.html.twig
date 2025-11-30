@@ -1,39 +1,189 @@
+{#{% extends 'base.html.twig' %}#}
+
+{#{% block body %}#}
+{#    <h1>Série</h1>#}
+{#    <div class="d-flex flex-wrap gap-3">#}
+{#        <div class="card" style="width: 200px;">#}
+{#            <img src="https://image.tmdb.org/t/p/w500{{ serie.picture }}" alt="{{ serie.title }}" class="card-img-top">#}
+{#            <div class="card-body">#}
+{#                <h5 class="card-title">{{ serie.title }}</h5>#}
+{#                {% for genre in serie.genres %}#}
+{#                    <p> {{ genre }} </p>#}
+{#                {% endfor %}#}
+{#                <p>Popularité : {{ serie.popularity }}</p>#}
+{#                <p> Créateurs : </p>#}
+{#                {% for creator in serie.creators %}#}
+{#                    <p> {{ creator.name }} </p>#}
+{#                {% endfor %}#}
+{#                <p> Companies de production : </p>#}
+{#                {% for productionCompanie in serie.productionCompanies %}#}
+{#                    <p> {{ productionCompanie.name }}, ({{ productionCompanie.originCountry }}) </p>#}
+{#                    {% if(productionCompanie.logo) %}#}
+{#                    <img src="https://image.tmdb.org/t/p/w500{{ productionCompanie.logo }}" alt="{{ productionCompanie.name }}"#}
+{#                         class="card-img-top">#}
+{#                    {% endif %}#}
+{#                {% endfor %}#}
+{#                <p>Nombre de saisons : {{ serie.numberSeasons }}</p>#}
+{#                {% for season in serie.seasons %}#}
+{#                    <p> {{ season.title }} </p>#}
+{#                    <img src="https://image.tmdb.org/t/p/w500{{ season.picture }}" alt="{{ season.title }}"#}
+{#                         class="card-img-top">#}
+{#                    <p> {{ season.resume }} </p>#}
+{#                {% endfor %}#}
+{#                <p>Nombre total d'épisodes : {{ serie.numberEpisodes }}</p>#}
+{#                <p>{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>#}
+{#                <small>{{ serie.resume|length > 100 ? serie.resume|slice(0, 100) ~ '...' : serie.resume }}</small>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Série</h1>
-    <div class="d-flex flex-wrap gap-3">
-        <div class="card" style="width: 200px;">
-            <img src="https://image.tmdb.org/t/p/w500{{ serie.picture }}" alt="{{ serie.title }}" class="card-img-top">
-            <div class="card-body">
-                <h5 class="card-title">{{ serie.title }}</h5>
-                {% for genre in serie.genres %}
-                    <p> {{ genre }} </p>
-                {% endfor %}
-                <p>Popularité : {{ serie.popularity }}</p>
-                <p> Créateurs : </p>
-                {% for creator in serie.creators %}
-                    <p> {{ creator.name }} </p>
-                {% endfor %}
-                <p> Companies de production : </p>
-                {% for productionCompanie in serie.productionCompanies %}
-                    <p> {{ productionCompanie.name }}, ({{ productionCompanie.originCountry }}) </p>
-                    {% if(productionCompanie.logo) %}
-                    <img src="https://image.tmdb.org/t/p/w500{{ productionCompanie.logo }}" alt="{{ productionCompanie.name }}"
-                         class="card-img-top">
-                    {% endif %}
-                {% endfor %}
-                <p>Nombre de saisons : {{ serie.numberSeasons }}</p>
-                {% for season in serie.seasons %}
-                    <p> {{ season.title }} </p>
-                    <img src="https://image.tmdb.org/t/p/w500{{ season.picture }}" alt="{{ season.title }}"
-                         class="card-img-top">
-                    <p> {{ season.resume }} </p>
-                {% endfor %}
-                <p>Nombre total d'épisodes : {{ serie.numberEpisodes }}</p>
-                <p>{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>
-                <small>{{ serie.resume|length > 100 ? serie.resume|slice(0, 100) ~ '...' : serie.resume }}</small>
+    <div class="container pt-3">
+
+        <a href="{{ path('app_index_series') }}" class="btn btn-link mb-3 text-decoration-none text-black">
+            &larr; Retour aux séries
+        </a>
+
+        <section class="mb-4">
+            <div class="card bg-dark text-light border-0">
+                <div class="row g-0">
+                    <div class="col-12 col-md-4 col-lg-3">
+                        <img
+                            src="https://image.tmdb.org/t/p/w500{{ serie.picture }}"
+                            alt="{{ serie.title }}"
+                            class="img-fluid h-100 w-100"
+                            style="object-fit: cover;"
+                        >
+                    </div>
+                    <div class="col-12 col-md-8 col-lg-9">
+                        <div class="card-body h-100 d-flex flex-column justify-content-center">
+                            <h1 class="card-title mb-2">{{ serie.title }}</h1>
+
+                            {% if serie.genres is defined and serie.genres|length > 0 %}
+                                <p class="mb-2">
+                                    {% for genre in serie.genres %}
+                                        <span class="badge bg-secondary me-1 mb-1">{{ genre }}</span>
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+
+                            <p class="mb-2 small text-muted">
+                                {{ serie.releaseDate ? serie.releaseDate|date('Y') : 'Date inconnue' }}
+                                {% if serie.numberSeasons %} • {{ serie.numberSeasons }} saison(s){% endif %}
+                                {% if serie.numberEpisodes %} • {{ serie.numberEpisodes }} épisode(s){% endif %}
+                            </p>
+
+                            {% if serie.creators is defined and serie.creators|length > 0 %}
+                                <p class="mb-2 small text-muted">
+                                    Créée par
+                                    {% for creator in serie.creators %}
+                                        {{ creator.name }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+
+                            <p class="mt-2 mb-3">
+                                {{ serie.resume ?: 'Aucun synopsis disponible pour cette série.' }}
+                            </p>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="#" class="btn btn-primary btn-sm">
+                                    Ajouter à une liste
+                                </a>
+                                <a href="#" class="btn btn-outline-light btn-sm">
+                                    Marquer comme vue
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
+
+        {% if serie.seasons is defined and serie.seasons|length > 0 %}
+            <section class="mb-4">
+                <h2 class="h5 mb-3">Saisons</h2>
+
+                <div class="list-group">
+                    {% for season in serie.seasons %}
+                        <div class="list-group-item bg-dark text-light border-secondary mb-2">
+                            <div class="d-flex">
+                                {% if season.picture %}
+                                    <div class="flex-shrink-0 me-3">
+                                        <img
+                                            src="https://image.tmdb.org/t/p/w200{{ season.picture }}"
+                                            alt="{{ season.title }}"
+                                            class="img-fluid"
+                                            style="width: 90px; height: 130px; object-fit: cover;"
+                                        >
+                                    </div>
+                                {% endif %}
+
+                                <div class="flex-grow-1 d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <h3 class="h6 mb-0">{{ season.title }}</h3>
+                                        {% if season.episodeCount is defined %}
+                                            <span class="badge bg-secondary">
+                                            {{ season.episodeCount }} épisode(s)
+                                        </span>
+                                        {% endif %}
+                                    </div>
+
+                                    <p class="mb-2 small text-muted">
+                                        {{ season.resume
+                                        ? (season.resume|length > 180
+                                        ? season.resume|slice(0, 180) ~ '...'
+                                        : season.resume)
+                                        : 'Aucun résumé pour cette saison.'
+                                        }}
+                                    </p>
+
+                                    <div class="mt-auto d-flex justify-content-end">
+                                        <a href="#" class="btn btn-outline-light btn-sm">
+                                            Voir les épisodes
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        {% if serie.productionCompanies is defined and serie.productionCompanies|length > 0 %}
+            <section class="mb-4">
+                <h2 class="h5 mt-4">Sociétés de production</h2>
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    {% for productionCompanie in serie.productionCompanies %}
+                        <div class="col">
+                            <div class="card h-100 border-0 bg-light">
+                                <div class="card-body d-flex align-items-center">
+                                    {% if productionCompanie.logo %}
+                                        <img
+                                            src="https://image.tmdb.org/t/p/w200{{ productionCompanie.logo }}"
+                                            alt="{{ productionCompanie.name }}"
+                                            class="me-3"
+                                            style="max-height: 60px; width: auto;"
+                                        >
+                                    {% endif %}
+                                    <div>
+                                        <h3 class="h6 mb-1">{{ productionCompanie.name }}</h3>
+                                        {% if productionCompanie.originCountry %}
+                                            <p class="mb-0 small text-muted">
+                                                Pays : {{ productionCompanie.originCountry }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
     </div>
 {% endblock %}
+

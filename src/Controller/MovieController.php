@@ -42,8 +42,8 @@ class MovieController extends AbstractController
     public function home(): Response
     {
         $nowPlayingMovies = $this->tmdb->getMoviesNowPlaying($this->token);
-        $popularMovies    = $this->tmdb->getMoviesPopular($this->token);
-        $upcomingMovies   = $this->tmdb->getMoviesUpcoming($this->token);
+        $popularMovies = $this->tmdb->getMoviesPopular($this->token);
+        $upcomingMovies = $this->tmdb->getMoviesUpcoming($this->token);
 
         return $this->render('movie/index.html.twig', [
             'now_playing_movies' => $nowPlayingMovies,
