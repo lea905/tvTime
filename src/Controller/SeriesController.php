@@ -31,10 +31,10 @@ class SeriesController extends AbstractController
     public function index(): Response
     {
 
-        $popularSeries = $this->tmdb->getSeriesPopular($this->token);
+        $series = $this->seriesRepository->findAll();
 
         return $this->render('series/index.html.twig', [
-            'popular_series' => $popularSeries,
+            'series' => $series,
         ]);
     }
 
@@ -54,8 +54,11 @@ class SeriesController extends AbstractController
             $watchLists = $watchListRepository->findBy(['userId' => $user->getId()]);
         }
 
+
+        $serie = $this->seriesRepository->find($id);
+
         return $this->render('series/show.html.twig', [
-            'serie' => $this->tmdb->getSerie($this->token, $id),
+            'serie' => $serie,
             'watch_lists' => $watchLists,
         ]);
     }
@@ -93,5 +96,12 @@ class SeriesController extends AbstractController
         return $this->render('series/popular.html.twig', [
             'series' => $series,
         ]);
+    }
+
+    #[Route('/synchronisationApi', name: 'app_series_synchronisation_api')]
+    public function fetchMovies(): Response
+    {
+        $this->tmdb->getData($this->token);
+        return $this->redirectToRoute('app_index_series');
     }
 }

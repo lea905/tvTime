@@ -49,4 +49,11 @@ class SeriesRepository extends ServiceEntityRepository
         };
         return null;
     }
+
+    public function add(Series $series): bool
+    {
+        $this->getEntityManager()->persist($series);
+        $this->getEntityManager()->flush();
+        return true;
+    }
 }

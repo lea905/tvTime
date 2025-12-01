@@ -40,7 +40,7 @@ class Series
     #[ORM\Column]
     private ?int $popularity = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $resume = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

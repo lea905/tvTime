@@ -181,6 +181,19 @@ class TmdbRequestService
                 ],]);
             $data = $response->toArray();
             $dataMovies [] = $this->movieFactory->createMultipleFromTmdbData($data);
+            //Series
+            $responseSeries = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/discover/tv', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'accept' => 'application/json',
+                ],
+                'query' => [
+                    'language' => 'fr-FR',
+                    'page' => $cpt,
+                ],
+            ]);
+            $dataSeries = $responseSeries->toArray();
+            $dataSeries [] = $this->seriesFactory->createMultipleFromTmdbData($dataSeries);
         }
 
         return $dataMovies;
