@@ -38,7 +38,6 @@ class SeriesController extends AbstractController
         ]);
     }
 
-
     /**
      * Affiche une série identifiée par son id
      *

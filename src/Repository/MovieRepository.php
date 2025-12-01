@@ -4,6 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\AbstractLazyCollection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Selectable;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -49,4 +52,10 @@ class MovieRepository extends ServiceEntityRepository
         return null;
     }
 
+    public function add(Movie $movie): bool
+    {
+        $this->getEntityManager()->persist($movie);
+        $this->getEntityManager()->flush();
+        return true;
+    }
 }

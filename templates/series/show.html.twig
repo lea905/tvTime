@@ -181,46 +181,47 @@
 
                 <div class="list-group">
                     {% for season in serie.seasons %}
-                        <div class="list-group-item bg-dark text-light border-secondary mb-2">
-                            <div class="d-flex">
-                                {% if season.picture %}
-                                    <div class="flex-shrink-0 me-3">
-                                        <img
-                                            src="https://image.tmdb.org/t/p/w200{{ season.picture }}"
-                                            alt="{{ season.title }}"
-                                            class="img-fluid"
-                                            style="width: 90px; height: 130px; object-fit: cover;"
-                                        >
-                                    </div>
-                                {% endif %}
+                        <a href="{{ path('app_season_show', {idSerie: serie.tmdbId, idSeason: season.number }) }}">
+                            <div class="list-group-item bg-dark text-light border-secondary mb-2">
+                                <div class="d-flex">
+                                    {% if season.picture %}
+                                        <div class="flex-shrink-0 me-3">
+                                            <img
+                                                src="https://image.tmdb.org/t/p/w200{{ season.picture }}"
+                                                alt="{{ season.title }}"
+                                                class="img-fluid"
+                                                style="width: 90px; height: 130px; object-fit: cover;"
+                                            >
+                                        </div>
+                                    {% endif %}
 
-                                <div class="flex-grow-1 d-flex flex-column">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <h3 class="h6 mb-0">{{ season.title }}</h3>
-                                        {% if season.episodeCount is defined %}
-                                            <span class="badge bg-secondary">
+                                    <div class="flex-grow-1 d-flex flex-column">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h3 class="h6 mb-0">{{ season.title }}</h3>
+                                            {% if season.episodeCount is defined %}
+                                                <span class="badge bg-secondary">
                                             {{ season.episodeCount }} épisode(s)
                                         </span>
-                                        {% endif %}
-                                    </div>
+                                            {% endif %}
+                                        </div>
 
-                                    <p class="mb-2 small text-muted">
-                                        {{ season.resume
-                                        ? (season.resume|length > 180
-                                        ? season.resume|slice(0, 180) ~ '...'
-                                        : season.resume)
-                                        : 'Aucun résumé pour cette saison.'
-                                        }}
-                                    </p>
+                                        <p class="mb-2 small text-muted">
+                                            {{ season.resume
+                                            ? (season.resume|length > 180
+                                            ? season.resume|slice(0, 180) ~ '...'
+                                            : season.resume)
+                                            : 'Aucun résumé pour cette saison.' }}
+                                        </p>
 
-                                    <div class="mt-auto d-flex justify-content-end">
-                                        <a href="#" class="btn btn-outline-light btn-sm">
-                                            Voir les épisodes
-                                        </a>
+                                        <div class="mt-auto d-flex justify-content-end">
+                                            <a href="#" class="btn btn-outline-light btn-sm">
+                                                Voir les épisodes
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     {% endfor %}
                 </div>
             </section>

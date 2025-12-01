@@ -17,6 +17,9 @@ class Episode
     private ?int $id = null;
 
     #[ORM\Column]
+    private ?int $tmdbId = null;
+
+    #[ORM\Column]
     private ?int $number = null;
 
     #[ORM\Column(length: 255)]
@@ -30,7 +33,7 @@ class Episode
 
     #[ORM\ManyToOne(inversedBy: 'episodes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Season $seasonId = null;
+    private ?Season $season = null;
 
     /**
      * @var Collection<int, View>
@@ -55,14 +58,14 @@ class Episode
         return $this;
     }
 
-    public function getSeasonId(): ?int
+    public function getSeason(): ?Season
     {
-        return $this->seasonId;
+        return $this->season;
     }
 
-    public function setSeasonId(int $seasonId): static
+    public function setSeason(Season $season): static
     {
-        $this->seasonId = $seasonId;
+        $this->season = $season;
 
         return $this;
     }
@@ -138,6 +141,18 @@ class Episode
         if ($this->views->removeElement($view)) {
             $view->removeElementId($this);
         }
+
+        return $this;
+    }
+
+    public function getTmdbId(): ?int
+    {
+        return $this->tmdbId;
+    }
+
+    public function setTmdbId(int $tmdbId): static
+    {
+        $this->tmdbId = $tmdbId;
 
         return $this;
     }
