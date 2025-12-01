@@ -25,18 +25,4 @@ class HomeController extends AbstractController
 
         ]);
     }
-
-    #[Route('/synchronisationApi/movies', name: 'app_synchronisation_api_movies')]
-    public function fetchMovies(): Response
-    {
-        $series = $this->tmdb->getData($this->token);
-
-//        foreach ($series as $serie) {
-//            $this->seriesRepository->save($serie, true);
-//        }
-
-        return $this->render('index.html.twig', [
-
-        ]);
-    }
 }

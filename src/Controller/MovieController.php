@@ -30,15 +30,16 @@ class MovieController extends AbstractController
      *
      * @return Response
      */
-//    #[Route('', name: 'movies')]
-//    public function index(): Response
-//    {
-//        $movies = $this->movieRepository->findAll();
-//
-//        return $this->render('movie/index.html.twig', [
-//            'movies' => $movies,
-//        ]);
-//    }
+    #[Route('', name: 'movies')]
+    public function index(): Response
+    {
+        $movies = $this->movieRepository->findAll();
+
+        return $this->render('movie/index.html.twig', [
+            'movies' => $movies,
+        ]);
+    }
+
     #[Route('/', name: 'app_movie_index')]
     public function home(): Response
     {
@@ -123,5 +124,12 @@ class MovieController extends AbstractController
         return $this->render('movie/upcoming.html.twig', [
             'movies' => $movies,
         ]);
+    }
+
+    #[Route('/synchronisationApi', name: 'app_movies_synchronisation_api')]
+    public function fetchMovies(): Response
+    {
+        $this->tmdb->getData($this->token);
+        return $this->redirectToRoute('movies');
     }
 }

@@ -58,4 +58,9 @@ class MovieRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
         return true;
     }
+
+    public function remove(Movie $movie): bool
+    {
+
+    }
 }

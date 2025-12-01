@@ -167,13 +167,22 @@ class TmdbRequestService
 
     public function getData(mixed $token)
     {
-        // Movies
-        $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/discover/movie', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'accept' => 'application/json',
-            ],]);
-        $data = $response->toArray();
-        return $this->movieFactory->createMultipleFromTmdbData($data);
+        $cpt = 1;
+        $dataMovies = [];
+        while ($cpt++ < 10) {
+            // Movies
+            $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/discover/movie', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'accept' => 'application/json',
+                ], 'query' => [
+                    'language' => 'fr-FR',
+                    'page' => $cpt,
+                ],]);
+            $data = $response->toArray();
+            $dataMovies [] = $this->movieFactory->createMultipleFromTmdbData($data);
+        }
+
+        return $dataMovies;
     }
 }
