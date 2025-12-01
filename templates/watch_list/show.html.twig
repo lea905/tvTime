@@ -63,12 +63,21 @@
                                 <div class="card-body p-2">
                                     <h3 class="h6 mb-0 text-truncate">{{ movie.title }}</h3>
                                     {% if movie.releaseDate is defined and movie.releaseDate %}
-                                        <small class="text-muted">
+                                        <small class="text-white">
                                             {{ movie.releaseDate|date('Y') }}
                                         </small>
                                     {% endif %}
                                 </div>
                             </a>
+                            <form method="post"
+                                  action="{{ path('watchlist_del_item', {id: watch_list.id}) }}"
+                                  onsubmit="return confirm('Retirer de la liste ?');">
+                                <input type="hidden" name="itemId" value="{{ movie.id }}">
+                                <input type="hidden" name="type" value="movie">
+                                <input type="hidden" name="token" value="{{ csrf_token('del-item-' ~ movie.id) }}">
+                                <button class="btn btn-danger w-100">Retirer</button>
+                            </form>
+
                         </div>
                     </div>
                 {% endfor %}
@@ -94,6 +103,14 @@
                                     {% endif %}
                                 </div>
                             </a>
+                            <form method="post"
+                                  action="{{ path('watchlist_del_item', {id: watch_list.id}) }}"
+                                  onsubmit="return confirm('Retirer de la liste ?');">
+                                <input type="hidden" name="itemId" value="{{ serie.id }}">
+                                <input type="hidden" name="type" value="series">
+                                <input type="hidden" name="token" value="{{ csrf_token('del-item-' ~ serie.id) }}">
+                                <button class="btn btn-danger w-100">Retirer</button>
+                            </form>
                         </div>
                     </div>
                 {% endfor %}

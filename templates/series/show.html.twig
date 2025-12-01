@@ -100,11 +100,27 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div aria-live="polite" aria-atomic="true" class="position-relative">
+                                    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+                                        <div id="watchlist-toast" class="toast text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                            <div class="d-flex">
+                                                <div class="toast-body">
+                                                    Série ajouté à la liste !
+                                                </div>
+                                                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                                                        data-bs-dismiss="toast" aria-label="Close"></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <script>
                                     document.addEventListener('DOMContentLoaded', () => {
                                         const btn    = document.getElementById('btn-add-to-watchlist');
                                         const select = document.getElementById('watchlist-select');
                                         const input  = document.getElementById('new-watchlist-name');
+                                        const modalEl = document.getElementById('watchlistModal');
+                                        const toastEl = document.getElementById('watchlist-toast');
 
                                         if (!btn) return;
 
@@ -138,9 +154,15 @@
                                             if (response.ok) {
                                                 const modal = bootstrap.Modal.getInstance(document.getElementById('watchlistModal'));
                                                 modal.hide();
+
+                                                const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+                                                toast.show();
+
                                                 if (data.createdListId) {
-                                                    location.reload();
+                                                    // location.reload();
                                                 }
+                                            }else {
+                                                alert('Erreur : ' + (data.error ?? 'inconnue'));
                                             }
                                         });
                                     });

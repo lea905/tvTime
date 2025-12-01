@@ -153,5 +153,47 @@ final class WatchListController extends AbstractController
             'createdListId' => $id === 0 ? $watchList->getId() : null,
         ]);
     }
+    #[Route('/watchlists/{id}/delete', name: 'watchlist_del_item', methods: ['POST'])]
+    public function delToList(int $id, Request $request, EntityManagerInterface $entityManager, WatchListRepository $watchListRepository): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $watchList = $watchListRepository->findOneBy([
+            'id'     => $id,
+            'userId' => $user,
+        ]);
+
+        if (!$watchList) {
+            throw $this->createNotFoundException('Liste introuvable');
+        }
+
+        $itemId = $request->request->get('itemId');
+        $type   = $request->request->get('type');
+
+        if (!$itemId || !in_array($type, ['movie', 'series'], true)) {
+            throw $this->createNotFoundException('Élément invalide');
+        }
+
+        if ($type === 'movie') {
+            $movie = $entityManager->getRepository(Movie::class)->find($itemId);
+            if ($movie) {
+                $watchList->removeMovie($movie);
+            }
+        }
+
+        if ($type === 'series') {
+            $series = $entityManager->getRepository(Series::class)->find($itemId);
+            if ($series) {
+                $watchList->removeSeries($series);
+            }
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_watch_list_show', ['id' => $watchList->getId()]);
+    }
 
 }
