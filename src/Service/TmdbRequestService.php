@@ -65,6 +65,10 @@ class TmdbRequestService
                 'Authorization' => 'Bearer ' . $token,
                 'accept' => 'application/json',
             ],
+            'query' => [
+                'language' => 'fr-FR',
+                'page' => 1,
+            ],
         ]);
 
         $data = $response->toArray();
@@ -117,6 +121,10 @@ class TmdbRequestService
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'accept' => 'application/json',
+            ],
+            'query' => [
+                'language' => 'fr-FR',
+                'page' => 1,
             ],
         ]);
 

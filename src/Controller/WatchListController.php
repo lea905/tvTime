@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Movie;
+use App\Entity\Series;
 use App\Entity\WatchList;
 use App\Form\WatchListType;
 use App\Repository\WatchListRepository;
@@ -89,13 +90,8 @@ final class WatchListController extends AbstractController
     }
 
     #[Route('/watchlists/{id}/add', name: 'watchlist_add_item', methods: ['POST'])]
-    public function addToList(
-        int $id,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        WatchListRepository $watchListRepository,
-        TmdbRequestService $tmdbRequestService,
-    ): JsonResponse {
+    public function addToList(int $id, Request $request, EntityManagerInterface $entityManager, WatchListRepository $watchListRepository, TmdbRequestService $tmdbRequestService,): JsonResponse
+    {
         $user = $this->getUser();
         if (!$user) {
             return new JsonResponse(['error' => 'Non connecté'], 401);
@@ -105,10 +101,6 @@ final class WatchListController extends AbstractController
         $tmdbId      = $data['tmdbId'] ?? null;
         $type        = $data['type'] ?? null;
         $newListName = $data['newListName'] ?? null;
-
-        if (!$tmdbId || $type !== 'movie') {
-            return new JsonResponse(['error' => 'Données invalides'], 400);
-        }
 
         $watchList = null;
         if ($id !== 0) {
@@ -131,18 +123,29 @@ final class WatchListController extends AbstractController
         }
 
         $movieRepo = $entityManager->getRepository(Movie::class);
+        $seriesRepo = $entityManager->getRepository(Series::class);
         $movie = $movieRepo->findOneBy(['tmdbId' => $tmdbId]);
+        $series = $seriesRepo->findOneBy(['tmdbId' => $tmdbId]);
+        $token = $_ENV['TMDB_TOKEN'];
 
-        if (!$movie) {
+        if ($type === 'movie') {
+            if (!$movie) {
+                $movie = $this->tmdbRequestService->getMovie($token, (string) $tmdbId);
+                $entityManager->persist($movie);
+            }
 
-            $token = $_ENV['TMDB_TOKEN'];
-            $movie = $this->tmdbRequestService->getMovie($token, (string) $tmdbId);
-            $entityManager->persist($movie);
+            $watchList->addMovie($movie);
         }
 
+        if ($type === 'series') {
+            if (!$series) {
+                $series = $this->tmdbRequestService->getSerie($token, (int) $tmdbId);
+                $entityManager->persist($series);
+            }
 
+            $watchList->addSeries($series);
+        }
 
-        $watchList->addMovie($movie);
         $entityManager->flush();
 
         return new JsonResponse([

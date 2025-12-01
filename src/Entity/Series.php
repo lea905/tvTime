@@ -17,9 +17,6 @@ class Series
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $createdBy = null;
-
-    #[ORM\Column]
     private ?int $numberEpisodes = null;
 
     #[ORM\Column]
@@ -52,19 +49,19 @@ class Series
     /**
      * @var Collection<int, Season>
      */
-    #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'seriesId', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'seriesId', orphanRemoval: true, cascade: ['persist'])]
     private Collection $seasons;
 
     /**
      * @var Collection<int, Creator>
      */
-    #[ORM\ManyToMany(targetEntity: Creator::class, inversedBy: 'series')]
+    #[ORM\ManyToMany(targetEntity: Creator::class, inversedBy: 'series', cascade: ['persist'])]
     private Collection $creators;
 
     /**
      * @var Collection<int, ProductionCompanie>
      */
-    #[ORM\ManyToMany(targetEntity: ProductionCompanie::class, inversedBy: 'series')]
+    #[ORM\ManyToMany(targetEntity: ProductionCompanie::class, inversedBy: 'series', cascade: ['persist'])]
     private Collection $productionCompanies;
 
     /**

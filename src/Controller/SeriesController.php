@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\SeriesRepository;
+use App\Repository\WatchListRepository;
 use App\Service\TmdbRequestService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,11 +45,19 @@ class SeriesController extends AbstractController
      * @param int $id
      * @return Response
      */
-    #[Route('/show/{id}', name: 'app_show_series')]
-    public function show(int $id): Response
+    #[Route('/show/{id}', name: 'app_series_show')]
+    public function show(int $id,  WatchListRepository $watchListRepository): Response
     {
+        $user = $this->getUser();
+
+        $watchLists = [];
+        if ($user) {
+            $watchLists = $watchListRepository->findBy(['userId' => $user->getId()]);
+        }
+
         return $this->render('series/show.html.twig', [
             'serie' => $this->tmdb->getSerie($this->token, $id),
+            'watch_lists' => $watchLists,
         ]);
     }
 

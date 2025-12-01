@@ -1,42 +1,3 @@
-{#{% extends 'base.html.twig' %}#}
-
-{#{% block body %}#}
-{#    <h1>Série</h1>#}
-{#    <div class="d-flex flex-wrap gap-3">#}
-{#        <div class="card" style="width: 200px;">#}
-{#            <img src="https://image.tmdb.org/t/p/w500{{ serie.picture }}" alt="{{ serie.title }}" class="card-img-top">#}
-{#            <div class="card-body">#}
-{#                <h5 class="card-title">{{ serie.title }}</h5>#}
-{#                {% for genre in serie.genres %}#}
-{#                    <p> {{ genre }} </p>#}
-{#                {% endfor %}#}
-{#                <p>Popularité : {{ serie.popularity }}</p>#}
-{#                <p> Créateurs : </p>#}
-{#                {% for creator in serie.creators %}#}
-{#                    <p> {{ creator.name }} </p>#}
-{#                {% endfor %}#}
-{#                <p> Companies de production : </p>#}
-{#                {% for productionCompanie in serie.productionCompanies %}#}
-{#                    <p> {{ productionCompanie.name }}, ({{ productionCompanie.originCountry }}) </p>#}
-{#                    {% if(productionCompanie.logo) %}#}
-{#                    <img src="https://image.tmdb.org/t/p/w500{{ productionCompanie.logo }}" alt="{{ productionCompanie.name }}"#}
-{#                         class="card-img-top">#}
-{#                    {% endif %}#}
-{#                {% endfor %}#}
-{#                <p>Nombre de saisons : {{ serie.numberSeasons }}</p>#}
-{#                {% for season in serie.seasons %}#}
-{#                    <p> {{ season.title }} </p>#}
-{#                    <img src="https://image.tmdb.org/t/p/w500{{ season.picture }}" alt="{{ season.title }}"#}
-{#                         class="card-img-top">#}
-{#                    <p> {{ season.resume }} </p>#}
-{#                {% endfor %}#}
-{#                <p>Nombre total d'épisodes : {{ serie.numberEpisodes }}</p>#}
-{#                <p>{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>#}
-{#                <small>{{ serie.resume|length > 100 ? serie.resume|slice(0, 100) ~ '...' : serie.resume }}</small>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#{% endblock %}#}
 {% extends 'base.html.twig' %}
 
 {% block body %}
@@ -88,14 +49,104 @@
                                 {{ serie.resume ?: 'Aucun synopsis disponible pour cette série.' }}
                             </p>
 
-                            <div class="d-flex flex-wrap gap-2">
-                                <a href="#" class="btn btn-primary btn-sm">
+                            <div class="mt-4 d-flex flex-wrap gap-2">
+                                <button
+                                    class="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#watchlistModal"
+                                >
                                     Ajouter à une liste
-                                </a>
-                                <a href="#" class="btn btn-outline-light btn-sm">
-                                    Marquer comme vue
-                                </a>
+                                </button>
+
+                                {#Modal#}
+                                <div class="modal fade" id="watchlistModal" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content bg-dark text-light">
+                                            <div class="modal-header border-0">
+                                                <h5 class="modal-title">Ajouter à une liste</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Choisir une liste existante</label>
+                                                    <select id="watchlist-select" class="form-select bg-dark text-light">
+                                                        <option value="">Aucune</option>
+                                                        {% for list in watch_lists %}
+                                                            <option value="{{ list.id }}">{{ list.title }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+
+                                                <div class="text-center text-muted mb-2">ou</div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Créer une nouvelle liste</label>
+                                                    <input type="text"
+                                                           id="new-watchlist-name"
+                                                           class="form-control bg-dark text-light"
+                                                           placeholder="Nom de la nouvelle liste">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-0">
+                                                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Annuler</button>
+                                                <button type="button"
+                                                        class="btn btn-danger"
+                                                        id="btn-add-to-watchlist"
+                                                        data-base-url="{{ path('watchlist_add_item', { id: 0 })|replace({'0':'__ID__'}) }}"
+                                                        data-tmdb-id="{{ serie.tmdbId }}">
+                                                    Ajouter
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        const btn    = document.getElementById('btn-add-to-watchlist');
+                                        const select = document.getElementById('watchlist-select');
+                                        const input  = document.getElementById('new-watchlist-name');
+
+                                        if (!btn) return;
+
+                                        btn.addEventListener('click', async (e) => {
+                                            e.preventDefault();
+
+                                            const tmdbId     = btn.dataset.tmdbId;
+                                            const existingId = select.value;
+                                            const newName    = input.value.trim();
+
+                                            if (!existingId && !newName) {
+                                                alert('Choisis une liste ou entre un nom.');
+                                                return;
+                                            }
+
+                                            let url    = btn.dataset.baseUrl;
+                                            const listId = existingId || 0;
+                                            url = url.replace('__ID__', listId);
+
+                                            const response = await fetch(url, {
+                                                method: 'POST',
+                                                headers: {'Content-Type': 'application/json'},
+                                                body: JSON.stringify({
+                                                    tmdbId: tmdbId,
+                                                    type: 'series',
+                                                    newListName: existingId ? null : newName
+                                                }),
+                                            });
+
+                                            const data = await response.json();
+                                            if (response.ok) {
+                                                const modal = bootstrap.Modal.getInstance(document.getElementById('watchlistModal'));
+                                                modal.hide();
+                                                if (data.createdListId) {
+                                                    location.reload();
+                                                }
+                                            }
+                                        });
+                                    });
+                                </script>
                             </div>
+
                         </div>
                     </div>
                 </div>

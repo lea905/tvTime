@@ -146,4 +146,15 @@ class Season
 
         return $this;
     }
+
+    public function getSeriesId(): ?Series
+    {
+        return $this->seriesId;
+    }
+
+    public function setSeriesId(?Series $series): static
+    {
+        $this->seriesId = $series;
+        return $this;
+    }
 }
