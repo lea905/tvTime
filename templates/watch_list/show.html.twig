@@ -52,7 +52,7 @@
                 {% for movie in watch_list.movies %}
                     <div class="col">
                         <div class="card bg-dark text-light h-100 border-0">
-                            <a href="{{ path('app_movie_show', {id: movie.id}) }}" class="text-decoration-none text-light">
+                            <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}" class="text-decoration-none text-light">
                                 {% if movie.picture %}
                                     <img
                                         src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
@@ -77,7 +77,7 @@
                 {% for serie in watch_list.series %}
                     <div class="col">
                         <div class="card bg-dark text-light h-100 border-0">
-                            <a href="{{ path('app_series_show', {id: serie.id}) }}" class="text-decoration-none text-light">
+                            <a href="{{ path('app_series_show', {id: serie.tmdbId}) }}" class="text-decoration-none text-light">
                                 {% if serie.picture %}
                                     <img
                                         src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"

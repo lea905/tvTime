@@ -78,6 +78,7 @@ class SeriesFactory
         if (!empty($serie['seasons'])) {
             foreach ($serie['seasons'] as $seasonData) {
                 $season = $this->seasonFactory->createFromTmdbData($seasonData);
+                $season->setSeriesId($serieToReturn);
                 $serieToReturn->addSeason($season);
             }
         }

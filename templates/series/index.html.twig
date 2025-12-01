@@ -51,7 +51,7 @@
                                 {{ serie.resume|length > 100 ? serie.resume|slice(0, 100) ~ '...' : serie.resume }}
                             </small>
 
-                            <a href="{{ path('app_show_series', {id: serie.tmdbId}) }}"
+                            <a href="{{ path('app_series_show', {id: serie.tmdbId}) }}"
                                class="btn btn-sm btn-primary w-100 mt-auto">
                                 Détails
                             </a>

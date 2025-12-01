@@ -47,7 +47,7 @@
                             {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
                         </p>
 
-                        <a href="{{ path('app_movies_show', {id: movie.tmdbId}) }}"
+                        <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}"
                            class="btn btn-sm btn-primary w-100">
                             Détails
                         </a>
@@ -83,7 +83,7 @@
                             {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
                         </p>
 
-                        <a href="{{ path('app_movies_show', {id: movie.tmdbId}) }}"
+                        <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}"
                            class="btn btn-sm btn-primary w-100">
                             Détails
                         </a>
@@ -119,7 +119,7 @@
                             Sortie le {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Bientôt' }}
                         </p>
 
-                        <a href="{{ path('app_movies_show', {id: movie.tmdbId}) }}"
+                        <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}"
                            class="btn btn-sm btn-primary w-100">
                             Détails
                         </a>

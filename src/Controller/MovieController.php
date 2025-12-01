@@ -6,6 +6,7 @@ use App\Entity\Movie;
 use App\Entity\ProductionCompanie;
 use App\Repository\MovieRepository;
 use App\Repository\ProductionCompanieRepository;
+use App\Repository\WatchListRepository;
 use App\Service\TmdbRequestService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +39,7 @@ class MovieController extends AbstractController
 //            'movies' => $movies,
 //        ]);
 //    }
-    #[Route('/', name: 'app_index_movie')]
+    #[Route('/', name: 'app_movie_index')]
     public function home(): Response
     {
         $nowPlayingMovies = $this->tmdb->getMoviesNowPlaying($this->token);
@@ -58,11 +59,19 @@ class MovieController extends AbstractController
      * @param int $id
      * @return Response
      */
-    #[Route('/show/{id}', name: 'app_movies_show')]
-    public function show(int $id): Response
+    #[Route('/show/{id}', name: 'app_movie_show')]
+    public function show(int $id, WatchListRepository $watchListRepository): Response
     {
+        $user = $this->getUser();
+
+        $watchLists = [];
+        if ($user) {
+            $watchLists = $watchListRepository->findBy(['userId' => $user->getId()]);
+        }
+
         return $this->render('movie/show.html.twig', [
             'movie' => $this->tmdb->getMovie($this->token, $id),
+            'watch_lists' => $watchLists,
         ]);
     }
 
