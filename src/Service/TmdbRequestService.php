@@ -2,9 +2,13 @@
 
 namespace App\Service;
 
+use App\Entity\Episode;
 use App\Entity\Movie;
+use App\Entity\Season;
 use App\Entity\Series;
+use App\Factory\EpisodeFactory;
 use App\Factory\MovieFactory;
+use App\Factory\SeasonFactory;
 use App\Factory\SeriesFactory;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -15,7 +19,9 @@ class TmdbRequestService
     public function __construct(
         private HttpClientInterface $httpClient,
         private MovieFactory        $movieFactory,
-        private SeriesFactory       $seriesFactory
+        private SeriesFactory       $seriesFactory,
+        private SeasonFactory        $seasonFactory,
+        private EpisodeFactory      $episodeFactory,
     )
     {
     }
@@ -122,5 +128,33 @@ class TmdbRequestService
 
         $data = $response->toArray();
         return $this->seriesFactory->createFromOneTmdbData($data);
+    }
+
+    public function getSeason (mixed $token, int $idSerie, int $idSeason) :Season
+    {
+        $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/tv/' . $idSerie .
+            '/season/' . $idSeason, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'accept' => 'application/json',
+            ],
+        ]);
+
+        $data = $response->toArray();
+        return $this->seasonFactory->createFromTmdbData($data);
+    }
+
+    public function getEpisode(mixed $token, int $idSerie, int $idSeason, int $idEpisode) :Episode
+    {
+        $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/tv/' . $idSerie .
+            '/season/' . $idSeason . '/episode/{episode_number}' . $idEpisode, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'accept' => 'application/json',
+            ],
+        ]);
+
+        $data = $response->toArray();
+        return $this->episodeFactory->createFromTmdbData($data);
     }
 }
