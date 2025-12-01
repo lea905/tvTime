@@ -28,7 +28,7 @@ class Movie
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $genres = [];
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $resume = null;
 
     #[ORM\Column(length: 255)]
@@ -49,7 +49,7 @@ class Movie
     /**
      * @var Collection<int, ProductionCompanie>
      */
-    #[ORM\ManyToMany(targetEntity: ProductionCompanie::class, inversedBy: 'movies')]
+    #[ORM\ManyToMany(targetEntity: ProductionCompanie::class, inversedBy: 'movies', cascade: ['persist'])]
     private Collection $productionCompanies;
 
     /**
