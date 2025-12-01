@@ -4,10 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\AbstractLazyCollection;
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Selectable;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Utils\TmdbGenres;
 
 /**
  * @extends ServiceEntityRepository<Movie>
@@ -40,17 +38,23 @@ class MovieRepository extends ServiceEntityRepository
      * @param string $genre
      * @return array
      */
-    public function findByGenre(string $genre): array | null
+    public function findByGenre(string $genre): array
     {
-        if(TmdbGenres::searchGenre($genre) !== null){
-            return $this->createQueryBuilder('m')
-                ->andWhere('m.genres LIKE :genre')
-                ->setParameter('genre', '%' . $genre . '%')
-                ->getQuery()
-                ->getResult();
-        };
-        return null;
+
+        $genre = trim($genre);
+        if (TmdbGenres::searchGenre($genre) === null) {
+            return [];
+        }
+
+        $t = $this->createQueryBuilder('m')
+            ->andWhere('m.genres LIKE :genre')
+            ->setParameter('genre', '%' . $genre . '%')
+            ->getQuery()
+            ->getResult();
+        dd($t);
+        return $t ?? [];
     }
+
 
     public function add(Movie $movie): bool
     {
@@ -59,8 +63,6 @@ class MovieRepository extends ServiceEntityRepository
         return true;
     }
 
-    public function remove(Movie $movie): bool
-    {
-
-    }
+    public function findNowPlaying(Movie $movie)
+    {}
 }

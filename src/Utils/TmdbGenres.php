@@ -38,9 +38,9 @@ class TmdbGenres
         return $genres;
     }
 
-    public static function searchGenre(string $genreSearch): int | null {
+    public static function searchGenre(string $genreSearch): string | null {
         foreach (self::MAP as $genre => $label) {
-            if ($genreSearch === $label) return $genre;
+            if ($genreSearch == $label) return $label;
         }
         return null;
     }

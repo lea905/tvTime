@@ -9,7 +9,7 @@
             </div>
 
             <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
-                {% for movie in movies %}
+                {% for movie in comedies %}
                     <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
                         <img
                             src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
@@ -26,7 +26,7 @@
                                 {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
                             </p>
 
-                            <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}"
+                            <a href="{{ path('app_movie_show', {id: movie.id}) }}"
                                class="btn btn-sm btn-primary w-100">
                                 Détails
                             </a>
@@ -35,8 +35,38 @@
                 {% else %}
                     <p>Oups ! Aucun film n'est visible, pour régler ce problème appuyez
                         <a href="{{ path('app_movies_synchronisation_api') }}">
-                            ici
-                        </a> pour recharger la page.</p>
+                            ici</a>.</p>
+                {% endfor %}
+            </div>
+
+            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                {% for movie in allMovies %}
+                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                        <img
+                            src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
+                            alt="{{ movie.title }}"
+                            class="card-img-top"
+                        >
+
+                        <div class="card-body p-2">
+                            <h3 class="card-title h6 text-truncate" title="{{ movie.title }}">
+                                {{ movie.title }}
+                            </h3>
+
+                            <p class="mb-2 small">
+                                {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
+                            </p>
+
+                            <a href="{{ path('app_movie_show', {id: movie.id}) }}"
+                               class="btn btn-sm btn-primary w-100">
+                                Détails
+                            </a>
+                        </div>
+                    </article>
+                {% else %}
+                    <p>Oups ! Aucun film n'est visible, pour régler ce problème appuyez
+                        <a href="{{ path('app_movies_synchronisation_api') }}">
+                            ici</a>.</p>
                 {% endfor %}
             </div>
         </section>

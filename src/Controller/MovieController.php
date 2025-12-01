@@ -33,10 +33,12 @@ class MovieController extends AbstractController
     #[Route('', name: 'movies')]
     public function index(): Response
     {
-        $movies = $this->movieRepository->findAll();
+        $allMovies = $this->movieRepository->findAll();
+        $nowPlayingMovies = $this->movieRepository->findNowPlaying();
 
         return $this->render('movie/index.html.twig', [
-            'movies' => $movies,
+            'allMovies' => $allMovies,
+            'comedies' => $this->movieRepository->findByGenre('Comédie')
         ]);
     }
 
@@ -49,8 +51,8 @@ class MovieController extends AbstractController
 
         return $this->render('movie/index.html.twig', [
             'now_playing_movies' => $nowPlayingMovies,
-            'popular_movies'     => $popularMovies,
-            'upcoming_movies'    => $upcomingMovies,
+            'popular_movies' => $popularMovies,
+            'upcoming_movies' => $upcomingMovies,
         ]);
     }
 
@@ -71,7 +73,7 @@ class MovieController extends AbstractController
         }
 
         return $this->render('movie/show.html.twig', [
-            'movie' => $this->tmdb->getMovie($this->token, $id),
+            'movie' => $this->movieRepository->findOneById($id),
             'watch_lists' => $watchLists,
         ]);
     }
