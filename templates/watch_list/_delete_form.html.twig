@@ -1,0 +1,9 @@
+<form method="post"
+      action="{{ path('app_watch_list_delete', {id: watch_list.id}) }}"
+      onsubmit="return confirm('Etes-vous sûr de vouloir supprimer cette liste ?');"
+      style="display:inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ watch_list.id) }}">
+    <button class="btn btn-outline-danger btn-sm">
+        Supprimer
+    </button>
+</form>

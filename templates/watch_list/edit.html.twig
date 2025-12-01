@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ watch_list.title }}{% endblock %}
+
+{% block body %}
+<div style="padding-top: 5%;">
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1 text-light">Modifier la liste</h1>
+                <p class="text-muted mb-0">
+                    Mets à jour le nom ou la description de ta liste.
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_watch_list_show', {id: watch_list.id}) }}" class="btn btn-outline-light btn-sm">
+                    ⟵ Retour à la liste
+                </a>
+                {{ include('watch_list/_delete_form.html.twig', {watch_list: watch_list}) }}
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card bg-dark text-light border-0 shadow-sm">
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_row(form.title) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.description) }}
+                        </div>
+
+                        <button class="btn btn-primary w-100">
+                            Mettre à jour
+                        </button>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
