@@ -8,7 +8,9 @@ use App\Repository\MovieRepository;
 use App\Repository\ProductionCompanieRepository;
 use App\Repository\WatchListRepository;
 use App\Service\TmdbRequestService;
+use App\Utils\TmdbGenres;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,29 +32,31 @@ class MovieController extends AbstractController
      *
      * @return Response
      */
-    #[Route('', name: 'movies')]
-    public function index(): Response
-    {
-        $allMovies = $this->movieRepository->findAll();
-        $nowPlayingMovies = $this->movieRepository->findNowPlaying();
-
-        return $this->render('movie/index.html.twig', [
-            'allMovies' => $allMovies,
-            'comedies' => $this->movieRepository->findByGenre('Comédie')
-        ]);
-    }
-
     #[Route('/', name: 'app_movie_index')]
-    public function home(): Response
+    public function home(Request $request): Response
     {
-        $nowPlayingMovies = $this->tmdb->getMoviesNowPlaying($this->token);
-        $popularMovies = $this->tmdb->getMoviesPopular($this->token);
-        $upcomingMovies = $this->tmdb->getMoviesUpcoming($this->token);
+        $selectedGenre = $request->query->get('genre');
+
+        if ($selectedGenre) {
+            $movieGenre = $this->movieRepository->findByGenre($selectedGenre);
+        } else {
+            $movieGenre = $this->movieRepository->findAll();
+        }
+
+        $allMovies = $this->movieRepository->findAll();
+        $popular    = $this->movieRepository->findMostPopular(20);
+        $year2025   = $this->movieRepository->findByYear(2025);
+        $upcoming   = $this->movieRepository->findUpcoming();
+        $allGenres  = TmdbGenres::getGenres();
 
         return $this->render('movie/index.html.twig', [
-            'now_playing_movies' => $nowPlayingMovies,
-            'popular_movies' => $popularMovies,
-            'upcoming_movies' => $upcomingMovies,
+            'allMovies'     => $allMovies,
+            'popular'       => $popular,
+            'year2025'      => $year2025,
+            'upcoming'      => $upcoming,
+            'allGenres'     => $allGenres,
+            'selectedGenre' => $selectedGenre,
+            'movieGenre'    => $movieGenre,
         ]);
     }
 

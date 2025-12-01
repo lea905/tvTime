@@ -66,19 +66,19 @@ class SeriesController extends AbstractController
      * @param string $genre
      * @return Response
      */
-    #[Route('/search/{genre}', name: 'app_series_genre')]
-    public function genre(string $genre): Response
-    {
-        $series = $this->seriesRepository->findByGenre($genre);
-        if($series === null) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->render('series/genre.html.twig', [
-            'series' => $series,
-            'genre' => $genre,
-        ]);
-    }
+//    #[Route('/search/{genre}', name: 'app_series_genre')]
+//    public function genre(string $genre): Response
+//    {
+//        $series = $this->seriesRepository->findByGenre($genre);
+//        if($series === null) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        return $this->render('series/genre.html.twig', [
+//            'series' => $series,
+//            'genre' => $genre,
+//        ]);
+//    }
 
     /**
      * Affiche les séries pas encore sorties

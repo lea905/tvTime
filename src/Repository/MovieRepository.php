@@ -6,7 +6,11 @@ use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Utils\TmdbGenres;
-
+//TODO
+//genre
+//popularite
+//par année
+//A venir
 /**
  * @extends ServiceEntityRepository<Movie>
  */
@@ -32,27 +36,49 @@ class MovieRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    /**
-     * Trouves les films du genre donné
-     *
-     * @param string $genre
-     * @return array
-     */
     public function findByGenre(string $genre): array
     {
-
-        $genre = trim($genre);
-        if (TmdbGenres::searchGenre($genre) === null) {
-            return [];
-        }
-
-        $t = $this->createQueryBuilder('m')
+        return $this->createQueryBuilder('m')
             ->andWhere('m.genres LIKE :genre')
-            ->setParameter('genre', '%' . $genre . '%')
+            ->setParameter('genre', '%"'.$genre.'"%')
             ->getQuery()
             ->getResult();
-        dd($t);
-        return $t ?? [];
+    }
+
+    public function findMostPopular(int $limit = 20): array
+    {
+        return $this->createQueryBuilder('m')
+            ->orderBy('m.popularity', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByYear(int $year): array
+    {
+        $start = new \DateTime("$year-01-01");
+        $end   = new \DateTime("$year-12-31");
+
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.releaseDate BETWEEN :start AND :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->orderBy('m.releaseDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    public function findUpcoming(): array
+    {
+        $today = new \DateTimeImmutable('today');
+
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.releaseDate > :today')
+            ->setParameter('today', $today)
+            ->orderBy('m.releaseDate', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
 

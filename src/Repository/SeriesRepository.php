@@ -38,15 +38,15 @@ class SeriesRepository extends ServiceEntityRepository
      * @param string $genre
      * @return array
      */
-    public function findByGenre(string $genre): array | null
-    {
-        if(TmdbGenres::searchGenre($genre) !== null){
-            return $this->createQueryBuilder('m')
-                ->andWhere('m.genres LIKE :genre')
-                ->setParameter('genre', '%' . $genre . '%')
-                ->getQuery()
-                ->getResult();
-        };
-        return null;
-    }
+//    public function findByGenre(string $genre): array | null
+//    {
+//        if(TmdbGenres::searchGenre($genre) !== null){
+//            return $this->createQueryBuilder('m')
+//                ->andWhere('m.genres LIKE :genre')
+//                ->setParameter('genre', '%' . $genre . '%')
+//                ->getQuery()
+//                ->getResult();
+//        };
+//        return null;
+//    }
 }
