@@ -6,11 +6,7 @@ use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Utils\TmdbGenres;
-//TODO
-//genre
-//popularite
-//par année
-//A venir
+
 /**
  * @extends ServiceEntityRepository<Movie>
  */
