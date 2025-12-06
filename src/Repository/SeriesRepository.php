@@ -38,7 +38,7 @@ class SeriesRepository extends ServiceEntityRepository
      * @param string $genre
      * @return array
      */
-//    public function findByGenre(string $genre): array | null
+    //    public function findByGenre(string $genre): array | null
 //    {
 //        if(TmdbGenres::searchGenre($genre) !== null){
 //            return $this->createQueryBuilder('m')
@@ -49,4 +49,14 @@ class SeriesRepository extends ServiceEntityRepository
 //        };
 //        return null;
 //    }
+
+    public function searchByTitle(string $query): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.title LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('s.popularity', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

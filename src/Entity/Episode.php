@@ -28,7 +28,7 @@ class Episode
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $releaseDate = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $resume = null;
 
     #[ORM\ManyToOne(inversedBy: 'episodes')]
@@ -38,7 +38,7 @@ class Episode
     /**
      * @var Collection<int, View>
      */
-    #[ORM\ManyToMany(targetEntity: View::class, mappedBy: 'elementId')]
+    #[ORM\ManyToMany(targetEntity: View::class, mappedBy: 'episodeId')]
     private Collection $views;
 
     public function __construct()

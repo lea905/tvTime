@@ -72,9 +72,11 @@
                                     </p>
 
                                     <div class="mt-auto d-flex justify-content-end">
-                                        <a href="#" class="btn btn-outline-light btn-sm">
-                                            Voir l'épisode
-                                        </a>
+                                        <form method="post" action="{{ path('app_episode_seen', {'id': episode.id}) }}">
+                                            <button type="submit" class="btn btn-outline-light btn-sm">
+                                                Marquer comme vu
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

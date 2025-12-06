@@ -4,11 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use App\Entity\ProductionCompanie;
+use App\Entity\View;
+use App\Form\EmotionType;
 use App\Repository\MovieRepository;
 use App\Repository\ProductionCompanieRepository;
 use App\Repository\WatchListRepository;
 use App\Service\TmdbRequestService;
 use App\Utils\TmdbGenres;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,18 +70,49 @@ class MovieController extends AbstractController
      * @return Response
      */
     #[Route('/show/{id}', name: 'app_movie_show')]
-    public function show(int $id, WatchListRepository $watchListRepository): Response
+    public function show(int $id,WatchListRepository $watchListRepository,EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
+
+        $movie = $this->movieRepository->findOneById($id);
+
+        $alreadySeen = false;
+        $currentEmotion = null;
+
+        if ($user && $movie) {
+            $qb = $entityManager->getRepository(View::class)->createQueryBuilder('v')
+                ->join('v.userId', 'u')
+                ->join('v.movieId', 'm')
+                ->where('u = :user')
+                ->andWhere('m = :movie')
+                ->andWhere('v.see = :see')
+                ->setParameter('user', $user)
+                ->setParameter('movie', $movie)
+                ->setParameter('see', true)
+                ->setMaxResults(1);
+
+            $view = $qb->getQuery()->getOneOrNullResult();
+
+            if ($view) {
+                $alreadySeen = $view->isSee();
+                $currentEmotion = $view->getEmotions();
+            }
+        }
 
         $watchLists = [];
         if ($user) {
             $watchLists = $watchListRepository->findBy(['userId' => $user->getId()]);
         }
 
+        $emotionForm = $this->createForm(EmotionType::class, [
+            'emotion' => $currentEmotion,
+        ]);
+
         return $this->render('movie/show.html.twig', [
-            'movie' => $this->movieRepository->findOneById($id),
-            'watch_lists' => $watchLists,
+            'movie'         => $movie,
+            'watch_lists'   => $watchLists,
+            'already_seen'  => $alreadySeen,
+            'emotion_form'  => $emotionForm,
         ]);
     }
 

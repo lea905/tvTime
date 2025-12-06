@@ -55,6 +55,35 @@
                 {% endfor %}
             </div>
         {% endif %}
+        {% if views is not empty %}
+            <h2 class="h4 mt-5 mb-3 text-light">Films vus</h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                {% for view in views %}
+                    {% for movie in view.movieId %}
+                        <div class="col">
+                            <div class="card bg-dark text-light h-100 border-0 shadow-sm">
+                                <a href="{{ path('app_movie_show', {id: movie.id}) }}">
+                                    <img
+                                        src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
+                                        alt="{{ movie.title }}"
+                                        class="card-img-top"
+                                        style="height: 300px; object-fit: cover;"
+                                    >
+                                </a>
+                                <div class="card-body">
+                                    <h3 class="h6 card-title text-truncate mb-0">
+                                        <a href="{{ path('app_movie_show', {id: movie.id}) }}" class="text-decoration-none text-light">
+                                            {{ movie.title }}
+                                        </a>
+                                    </h3>
+                                    <small class="text-white">Vu le {{ view.dateSee|date('d/m/Y') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 </div>
 

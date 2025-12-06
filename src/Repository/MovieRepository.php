@@ -36,7 +36,7 @@ class MovieRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('m')
             ->andWhere('m.genres LIKE :genre')
-            ->setParameter('genre', '%"'.$genre.'"%')
+            ->setParameter('genre', '%"' . $genre . '"%')
             ->getQuery()
             ->getResult();
     }
@@ -53,7 +53,7 @@ class MovieRepository extends ServiceEntityRepository
     public function findByYear(int $year): array
     {
         $start = new \DateTime("$year-01-01");
-        $end   = new \DateTime("$year-12-31");
+        $end = new \DateTime("$year-12-31");
 
         return $this->createQueryBuilder('m')
             ->andWhere('m.releaseDate BETWEEN :start AND :end')
@@ -86,5 +86,16 @@ class MovieRepository extends ServiceEntityRepository
     }
 
     public function findNowPlaying(Movie $movie)
-    {}
+    {
+    }
+
+    public function searchByTitle(string $query): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.title LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('m.popularity', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

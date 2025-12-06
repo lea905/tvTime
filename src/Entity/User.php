@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, View>
      */
-    #[ORM\ManyToMany(targetEntity: View::class, mappedBy: 'userId')]
+    #[ORM\OneToMany(targetEntity: View::class, mappedBy: 'userId')]
     private Collection $views;
 
     /**
@@ -107,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->views->contains($view)) {
             $this->views->add($view);
-            $view->addUserId($this);
+            $view->setUserId($this);
         }
 
         return $this;
@@ -116,7 +116,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeView(View $view): static
     {
         if ($this->views->removeElement($view)) {
-            $view->removeUserId($this);
+            // set the owning side to null (unless already changed)
+            if ($view->getUserId() === $this) {
+                $view->setUserId(null);
+            }
         }
 
         return $this;

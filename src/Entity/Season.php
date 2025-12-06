@@ -27,13 +27,13 @@ class Season
     #[ORM\Column(length: 255)]
     private ?string $picture = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $resume = null;
 
     /**
      * @var Collection<int, Episode>
      */
-    #[ORM\OneToMany(targetEntity: Episode::class, mappedBy: 'seasonId', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Episode::class, mappedBy: 'season', orphanRemoval: true)]
     private Collection $episodes;
 
     #[ORM\ManyToOne(inversedBy: 'seasons')]
