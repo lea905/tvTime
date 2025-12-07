@@ -50,19 +50,19 @@ class MovieController extends AbstractController
         if (count($allMovies) <= 0)
             $this->fetchMovies();
 
-        $popular    = $this->movieRepository->findMostPopular(20);
-        $year2025   = $this->movieRepository->findByYear(2025);
-        $upcoming   = $this->movieRepository->findUpcoming();
-        $allGenres  = TmdbGenres::getGenres();
+        $popular = $this->movieRepository->findMostPopular(20);
+        $year2025 = $this->movieRepository->findByYear(2025);
+        $upcoming = $this->movieRepository->findUpcoming();
+        $allGenres = TmdbGenres::getGenres();
 
         return $this->render('movie/index.html.twig', [
-            'allMovies'     => $allMovies,
-            'popular'       => $popular,
-            'year2025'      => $year2025,
-            'upcoming'      => $upcoming,
-            'allGenres'     => $allGenres,
+            'allMovies' => $allMovies,
+            'popular' => $popular,
+            'year2025' => $year2025,
+            'upcoming' => $upcoming,
+            'allGenres' => $allGenres,
             'selectedGenre' => $selectedGenre,
-            'movieGenre'    => $movieGenre,
+            'movieGenre' => $movieGenre,
         ]);
     }
 
@@ -73,7 +73,7 @@ class MovieController extends AbstractController
      * @return Response
      */
     #[Route('/show/{id}', name: 'app_movie_show')]
-    public function show(int $id,WatchListRepository $watchListRepository,EntityManagerInterface $entityManager): Response
+    public function show(int $id, WatchListRepository $watchListRepository, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
 
@@ -112,10 +112,10 @@ class MovieController extends AbstractController
         ]);
 
         return $this->render('movie/show.html.twig', [
-            'movie'         => $movie,
-            'watch_lists'   => $watchLists,
-            'already_seen'  => $alreadySeen,
-            'emotion_form'  => $emotionForm,
+            'movie' => $movie,
+            'watch_lists' => $watchLists,
+            'already_seen' => $alreadySeen,
+            'emotion_form' => $emotionForm,
         ]);
     }
 
@@ -139,35 +139,35 @@ class MovieController extends AbstractController
         ]);
     }
 
-    /**
-     * Affiche les films actuellement au cinéma
-     *
-     * @return Response
-     */
-    #[Route('/now_playing', name: 'app_movies_now_playing')]
-    public function now_playing(): Response
-    {
-        $movies = $this->tmdb->getMoviesNowPlaying($this->token);
+//    /**
+//     * Affiche les films actuellement au cinéma
+//     *
+//     * @return Response
+//     */
+//    #[Route('/now_playing', name: 'app_movies_now_playing')]
+//    public function now_playing(): Response
+//    {
+//        $movies = $this->tmdb->getMoviesNowPlaying($this->token);
+//
+//        return $this->render('movie/now_playing.html.twig', [
+//            'movies' => $movies,
+//        ]);
+//    }
 
-        return $this->render('movie/now_playing.html.twig', [
-            'movies' => $movies,
-        ]);
-    }
-
-    /**
-     * Affiche les films pas encore sortis
-     *
-     * @return Response
-     */
-    #[Route('/upcoming', name: 'app_movies_upcoming')]
-    public function upcoming(): Response
-    {
-        $movies = $this->tmdb->getMoviesUpcoming($this->token);
-
-        return $this->render('movie/upcoming.html.twig', [
-            'movies' => $movies,
-        ]);
-    }
+//    /**
+//     * Affiche les films pas encore sortis
+//     *
+//     * @return Response
+//     */
+//    #[Route('/upcoming', name: 'app_movies_upcoming')]
+//    public function upcoming(): Response
+//    {
+//        $movies = $this->tmdb->getMoviesUpcoming($this->token);
+//
+//        return $this->render('movie/upcoming.html.twig', [
+//            'movies' => $movies,
+//        ]);
+//    }
 
     #[Route('/synchronisationApi', name: 'app_movies_synchronisation_api')]
     public function fetchMovies(): Response

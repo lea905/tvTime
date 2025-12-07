@@ -47,6 +47,12 @@ class Series
     private ?\DateTime $releaseDate = null;
 
     /**
+     * @var Collection<int, View>
+     */
+    #[ORM\ManyToMany(targetEntity: View::class, mappedBy: 'seriesId')]
+    private Collection $views;
+
+    /**
      * @var Collection<int, Season>
      */
     #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'seriesId')]
@@ -76,6 +82,7 @@ class Series
         $this->creators = new ArrayCollection();
         $this->productionCompanies = new ArrayCollection();
         $this->watchLists = new ArrayCollection();
+        $this->views = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -340,6 +347,33 @@ class Series
     public function setPopularity(int $popularity): static
     {
         $this->popularity = $popularity;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, View>
+     */
+    public function getViews(): Collection
+    {
+        return $this->views;
+    }
+
+    public function addView(View $view): static
+    {
+        if (!$this->views->contains($view)) {
+            $this->views->add($view);
+            $view->addElementId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeView(View $view): static
+    {
+        if ($this->views->removeElement($view)) {
+            $view->removeElementId($this);
+        }
 
         return $this;
     }

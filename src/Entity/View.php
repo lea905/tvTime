@@ -30,10 +30,10 @@ class View
     private array $emotions = [];
 
     /**
-     * @var Collection<int, Episode>
+     * @var Collection<int, Series>
      */
-    #[ORM\ManyToMany(targetEntity: Episode::class, inversedBy: 'views')]
-    private Collection $episodeId;
+    #[ORM\ManyToMany(targetEntity: Series::class, inversedBy: 'views')]
+    private Collection $seriesId;
 
     /**
      * @var Collection<int, Movie>
@@ -46,7 +46,7 @@ class View
 
     public function __construct()
     {
-        $this->episodeId = new ArrayCollection();
+        $this->seriesId = new ArrayCollection();
         $this->movieId = new ArrayCollection();
     }
 
@@ -136,30 +136,30 @@ class View
     }
 
     /**
-     * @return Collection<int, Episode>
+     * @return Collection<int, Series>
      */
-    public function getEpisodeId(): Collection
+    public function getSeriesId(): Collection
     {
-        return $this->episodeId;
+        return $this->seriesId;
     }
 
-    public function addEpisode(Episode $episode): static
+    public function addSeriesId(Series $series): static
     {
-        if (!$this->episodeId->contains($episode)) {
-            $this->episodeId->add($episode);
+        if (!$this->seriesId->contains($series)) {
+            $this->seriesId->add($series);
         }
 
         return $this;
     }
 
-    public function addElementId(Episode $elementId): static
+    public function addElementId(Series $elementId): static
     {
-        return $this->addEpisode($elementId);
+        return $this->addSeriesId($elementId);
     }
 
-    public function removeElementId(Episode $elementId): static
+    public function removeElementId(Series $elementId): static
     {
-        $this->episodeId->removeElement($elementId);
+        $this->seriesId->removeElement($elementId);
 
         return $this;
     }

@@ -49,6 +49,11 @@
                                 {{ serie.resume ?: 'Aucun synopsis disponible pour cette série.' }}
                             </p>
 
+                            {{ form_start(emotion_form, {
+                                action: path('app_serie_seen', { id: serie.id }),
+                                method: 'POST'
+                            }) }}
+
                             <div class="mt-4 d-flex flex-wrap gap-2">
                                 <button
                                     class="btn btn-primary"
@@ -57,6 +62,29 @@
                                 >
                                     Ajouter à une liste
                                 </button>
+
+                                <button class="btn text-white btn-secondary">
+                                    {{ already_seen ? 'Déjà vu' : 'Marqué comme vu' }}
+                                </button>
+
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for child in emotion_form.emotion %}
+                                        {{ form_widget(child, {
+                                            attr: {
+                                                class: 'btn-check'
+                                            }
+                                        }) }}
+
+                                        <label class="btn btn-outline-light {{ child.vars.checked ? 'active' : '' }}"
+                                               for="{{ child.vars.id }}">
+                                            {{ child.vars.label }}
+                                        </label>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+
+                            {{ form_end(emotion_form) }}
 
                                 {# Modal #}
                                 <div class="modal fade" id="watchlistModal" tabindex="-1" aria-hidden="true">

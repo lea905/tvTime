@@ -160,7 +160,7 @@ class Season
         $this->seriesId = $series;
         return $this;
     }
-    
+
     public function getNumberEpisodes(): ?int
     {
         return $this->numberEpisodes;

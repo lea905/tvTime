@@ -35,17 +35,6 @@ class Episode
     #[ORM\JoinColumn(nullable: false)]
     private ?Season $season = null;
 
-    /**
-     * @var Collection<int, View>
-     */
-    #[ORM\ManyToMany(targetEntity: View::class, mappedBy: 'episodeId')]
-    private Collection $views;
-
-    public function __construct()
-    {
-        $this->views = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -114,33 +103,6 @@ class Episode
     public function setResume(string $resume): static
     {
         $this->resume = $resume;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, View>
-     */
-    public function getViews(): Collection
-    {
-        return $this->views;
-    }
-
-    public function addView(View $view): static
-    {
-        if (!$this->views->contains($view)) {
-            $this->views->add($view);
-            $view->addElementId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeView(View $view): static
-    {
-        if ($this->views->removeElement($view)) {
-            $view->removeElementId($this);
-        }
 
         return $this;
     }
