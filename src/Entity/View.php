@@ -26,8 +26,8 @@ class View
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateSee = null;
 
-    #[ORM\Column(enumType: emotion::class)]
-    private ?emotion $emotion = null;
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $emotions = [];
 
     /**
      * @var Collection<int, Episode>
@@ -41,18 +41,15 @@ class View
     #[ORM\ManyToMany(targetEntity: Movie::class, inversedBy: 'views')]
     private Collection $movieId;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'views')]
-    private Collection $userId;
+    #[ORM\ManyToOne(inversedBy: 'views')]
+    private ?User $userId = null;
 
     public function __construct()
     {
         $this->episodeId = new ArrayCollection();
         $this->movieId = new ArrayCollection();
-        $this->userId = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -62,30 +59,6 @@ class View
     public function setId(int $id): static
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getIdUser(): ?int
-    {
-        return $this->idUser;
-    }
-
-    public function setIdUser(int $idUser): static
-    {
-        $this->idUser = $idUser;
-
-        return $this;
-    }
-
-    public function getIdElement(): ?int
-    {
-        return $this->idElement;
-    }
-
-    public function setIdElement(int $idElement): static
-    {
-        $this->idElement = $idElement;
 
         return $this;
     }
@@ -125,14 +98,40 @@ class View
 
         return $this;
     }
-    public function getEmotion(): ?emotion
+
+    /**
+     * @return emotion[]
+     */
+    public function getEmotions(): array
     {
-        return $this->emotion;
+        // Convert stored strings back to Enum if needed, or just return array
+        // If storing as simple strings in JSON:
+        return array_map(fn($e) => $e instanceof emotion ? $e : emotion::tryFrom($e), $this->emotions);
     }
 
-    public function setEmotion(emotion $emotion): self
+    public function setEmotions(array $emotions): self
     {
-        $this->emotion = $emotion;
+        // Ensure we store consistent data (e.g. enum values or strings)
+        // Doctrine JSON type handles arrays nicely.
+        $this->emotions = $emotions;
+        return $this;
+    }
+
+    public function addEmotion(emotion $emotion): self
+    {
+        if (!in_array($emotion, $this->emotions)) {
+            $this->emotions[] = $emotion;
+        }
+        return $this;
+    }
+
+    public function removeEmotion(emotion $emotion): self
+    {
+        $key = array_search($emotion, $this->emotions);
+        if ($key !== false) {
+            unset($this->emotions[$key]);
+            $this->emotions = array_values($this->emotions);
+        }
         return $this;
     }
 
@@ -144,13 +143,18 @@ class View
         return $this->episodeId;
     }
 
-    public function addElementId(Episode $elementId): static
+    public function addEpisode(Episode $episode): static
     {
-        if (!$this->episodeId->contains($elementId)) {
-            $this->episodeId->add($elementId);
+        if (!$this->episodeId->contains($episode)) {
+            $this->episodeId->add($episode);
         }
 
         return $this;
+    }
+
+    public function addElementId(Episode $elementId): static
+    {
+        return $this->addEpisode($elementId);
     }
 
     public function removeElementId(Episode $elementId): static
@@ -184,26 +188,14 @@ class View
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUserId(): Collection
+    public function getUserId(): ?User
     {
         return $this->userId;
     }
 
-    public function addUserId(User $userId): static
+    public function setUserId(?User $userId): static
     {
-        if (!$this->userId->contains($userId)) {
-            $this->userId->add($userId);
-        }
-
-        return $this;
-    }
-
-    public function removeUserId(User $userId): static
-    {
-        $this->userId->removeElement($userId);
+        $this->userId = $userId;
 
         return $this;
     }

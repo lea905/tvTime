@@ -25,21 +25,8 @@ class SeriesRepository extends ServiceEntityRepository
      */
     public function findOneById(int $id): ?Series
     {
-        return $this->createQueryBuilder('s')
-            // saisons
-            ->leftJoin('s.seasons', 'seasons')
-            ->addSelect('seasons')
-
-            // companies de production
-            ->leftJoin('s.productionCompanies', 'companies')
-            ->addSelect('companies')
-
-            // créateurs
-            ->leftJoin('s.creators', 'creators')
-            ->addSelect('creators')
-
-            // filtre
-            ->andWhere('s.id = :id')
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
@@ -51,22 +38,25 @@ class SeriesRepository extends ServiceEntityRepository
      * @param string $genre
      * @return array
      */
-    public function findByGenre(string $genre): array|null
-    {
-        if (TmdbGenres::searchGenre($genre) !== null) {
-            return $this->createQueryBuilder('m')
-                ->andWhere('m.genres LIKE :genre')
-                ->setParameter('genre', '%' . $genre . '%')
-                ->getQuery()
-                ->getResult();
-        };
-        return null;
-    }
+    //    public function findByGenre(string $genre): array | null
+//    {
+//        if(TmdbGenres::searchGenre($genre) !== null){
+//            return $this->createQueryBuilder('m')
+//                ->andWhere('m.genres LIKE :genre')
+//                ->setParameter('genre', '%' . $genre . '%')
+//                ->getQuery()
+//                ->getResult();
+//        };
+//        return null;
+//    }
 
-    public function add(Series $series): bool
+    public function searchByTitle(string $query): array
     {
-        $this->getEntityManager()->persist($series);
-        $this->getEntityManager()->flush();
-        return true;
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.title LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('s.popularity', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 }

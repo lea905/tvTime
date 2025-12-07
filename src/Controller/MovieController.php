@@ -4,11 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use App\Entity\ProductionCompanie;
+use App\Entity\View;
+use App\Form\EmotionType;
 use App\Repository\MovieRepository;
 use App\Repository\ProductionCompanieRepository;
 use App\Repository\WatchListRepository;
 use App\Service\TmdbRequestService;
+use App\Utils\TmdbGenres;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,27 +35,31 @@ class MovieController extends AbstractController
      *
      * @return Response
      */
-    #[Route('', name: 'movies')]
-    public function index(): Response
-    {
-        $movies = $this->movieRepository->findAll();
-
-        return $this->render('movie/index.html.twig', [
-            'movies' => $movies,
-        ]);
-    }
-
     #[Route('/', name: 'app_movie_index')]
-    public function home(): Response
+    public function home(Request $request): Response
     {
-        $nowPlayingMovies = $this->tmdb->getMoviesNowPlaying($this->token);
-        $popularMovies = $this->tmdb->getMoviesPopular($this->token);
-        $upcomingMovies = $this->tmdb->getMoviesUpcoming($this->token);
+        $selectedGenre = $request->query->get('genre');
+
+        if ($selectedGenre) {
+            $movieGenre = $this->movieRepository->findByGenre($selectedGenre);
+        } else {
+            $movieGenre = $this->movieRepository->findAll();
+        }
+
+        $allMovies = $this->movieRepository->findAll();
+        $popular    = $this->movieRepository->findMostPopular(20);
+        $year2025   = $this->movieRepository->findByYear(2025);
+        $upcoming   = $this->movieRepository->findUpcoming();
+        $allGenres  = TmdbGenres::getGenres();
 
         return $this->render('movie/index.html.twig', [
-            'now_playing_movies' => $nowPlayingMovies,
-            'popular_movies' => $popularMovies,
-            'upcoming_movies' => $upcomingMovies,
+            'allMovies'     => $allMovies,
+            'popular'       => $popular,
+            'year2025'      => $year2025,
+            'upcoming'      => $upcoming,
+            'allGenres'     => $allGenres,
+            'selectedGenre' => $selectedGenre,
+            'movieGenre'    => $movieGenre,
         ]);
     }
 
@@ -61,18 +70,49 @@ class MovieController extends AbstractController
      * @return Response
      */
     #[Route('/show/{id}', name: 'app_movie_show')]
-    public function show(int $id, WatchListRepository $watchListRepository): Response
+    public function show(int $id,WatchListRepository $watchListRepository,EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
+
+        $movie = $this->movieRepository->findOneById($id);
+
+        $alreadySeen = false;
+        $currentEmotion = null;
+
+        if ($user && $movie) {
+            $qb = $entityManager->getRepository(View::class)->createQueryBuilder('v')
+                ->join('v.userId', 'u')
+                ->join('v.movieId', 'm')
+                ->where('u = :user')
+                ->andWhere('m = :movie')
+                ->andWhere('v.see = :see')
+                ->setParameter('user', $user)
+                ->setParameter('movie', $movie)
+                ->setParameter('see', true)
+                ->setMaxResults(1);
+
+            $view = $qb->getQuery()->getOneOrNullResult();
+
+            if ($view) {
+                $alreadySeen = $view->isSee();
+                $currentEmotion = $view->getEmotions();
+            }
+        }
 
         $watchLists = [];
         if ($user) {
             $watchLists = $watchListRepository->findBy(['userId' => $user->getId()]);
         }
 
+        $emotionForm = $this->createForm(EmotionType::class, [
+            'emotion' => $currentEmotion,
+        ]);
+
         return $this->render('movie/show.html.twig', [
-            'movie' => $this->tmdb->getMovie($this->token, $id),
-            'watch_lists' => $watchLists,
+            'movie'         => $movie,
+            'watch_lists'   => $watchLists,
+            'already_seen'  => $alreadySeen,
+            'emotion_form'  => $emotionForm,
         ]);
     }
 
@@ -129,7 +169,7 @@ class MovieController extends AbstractController
     #[Route('/synchronisationApi', name: 'app_movies_synchronisation_api')]
     public function fetchMovies(): Response
     {
-        $this->tmdb->getMoviesData($this->token);
+        $this->tmdb->getData($this->token);
         return $this->redirectToRoute('movies');
     }
 }

@@ -38,12 +38,12 @@ class Episode
     /**
      * @var Collection<int, View>
      */
-//    #[ORM\ManyToMany(targetEntity: View::class, mappedBy: 'elementId')]
-//    private Collection $views;
+    #[ORM\ManyToMany(targetEntity: View::class, mappedBy: 'episodeId')]
+    private Collection $views;
 
     public function __construct()
     {
-//        $this->views = new ArrayCollection();
+        $this->views = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,7 +99,7 @@ class Episode
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(?\DateTime $releaseDate): static
+    public function setReleaseDate(\DateTime $releaseDate): static
     {
         $this->releaseDate = $releaseDate;
 
@@ -121,29 +121,29 @@ class Episode
     /**
      * @return Collection<int, View>
      */
-//    public function getViews(): Collection
-//    {
-//        return $this->views;
-//    }
-//
-//    public function addView(View $view): static
-//    {
-//        if (!$this->views->contains($view)) {
-//            $this->views->add($view);
-//            $view->addElementId($this);
-//        }
-//
-//        return $this;
-//    }
-//
-//    public function removeView(View $view): static
-//    {
-//        if ($this->views->removeElement($view)) {
-//            $view->removeElementId($this);
-//        }
-//
-//        return $this;
-//    }
+    public function getViews(): Collection
+    {
+        return $this->views;
+    }
+
+    public function addView(View $view): static
+    {
+        if (!$this->views->contains($view)) {
+            $this->views->add($view);
+            $view->addElementId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeView(View $view): static
+    {
+        if ($this->views->removeElement($view)) {
+            $view->removeElementId($this);
+        }
+
+        return $this;
+    }
 
     public function getTmdbId(): ?int
     {

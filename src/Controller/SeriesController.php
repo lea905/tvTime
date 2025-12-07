@@ -31,13 +31,10 @@ class SeriesController extends AbstractController
     public function index(): Response
     {
 
-        $series = $this->seriesRepository->findAll();
-
-        if (count($series) <= 0)
-            $this->fetchSeries();
+        $popularSeries = $this->tmdb->getSeriesPopular($this->token);
 
         return $this->render('series/index.html.twig', [
-            'series' => $series,
+            'popular_series' => $popularSeries,
         ]);
     }
 
@@ -45,11 +42,10 @@ class SeriesController extends AbstractController
      * Affiche une série identifiée par son id
      *
      * @param int $id
-     * @param WatchListRepository $watchListRepository
      * @return Response
      */
     #[Route('/show/{id}', name: 'app_series_show')]
-    public function show(int $id, WatchListRepository $watchListRepository): Response
+    public function show(int $id,  WatchListRepository $watchListRepository): Response
     {
         $user = $this->getUser();
 
@@ -58,14 +54,8 @@ class SeriesController extends AbstractController
             $watchLists = $watchListRepository->findBy(['userId' => $user->getId()]);
         }
 
-        $serie = $this->seriesRepository->findOneById($id);
-        if (!$serie)
-            throw new NotFoundHttpException();
-        if ($serie->getStatus() == null)
-            $this->tmdb->getSerie($this->token, $serie->getTmdbId());
-
         return $this->render('series/show.html.twig', [
-            'serie' => $serie,
+            'serie' => $this->tmdb->getSerie($this->token, $id),
             'watch_lists' => $watchLists,
         ]);
     }
@@ -76,19 +66,19 @@ class SeriesController extends AbstractController
      * @param string $genre
      * @return Response
      */
-    #[Route('/search/{genre}', name: 'app_series_genre')]
-    public function genre(string $genre): Response
-    {
-        $series = $this->seriesRepository->findByGenre($genre);
-        if ($series === null) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->render('series/genre.html.twig', [
-            'series' => $series,
-            'genre' => $genre,
-        ]);
-    }
+//    #[Route('/search/{genre}', name: 'app_series_genre')]
+//    public function genre(string $genre): Response
+//    {
+//        $series = $this->seriesRepository->findByGenre($genre);
+//        if($series === null) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        return $this->render('series/genre.html.twig', [
+//            'series' => $series,
+//            'genre' => $genre,
+//        ]);
+//    }
 
     /**
      * Affiche les séries pas encore sorties
@@ -103,22 +93,5 @@ class SeriesController extends AbstractController
         return $this->render('series/popular.html.twig', [
             'series' => $series,
         ]);
-    }
-
-    /**
-     * Prend les informations des séries de l'API
-     *
-     * @return Response
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
-     */
-    #[Route('/synchronisationApi', name: 'app_series_synchronisation_api')]
-    public function fetchSeries(): Response
-    {
-        $this->tmdb->getSeriesData($this->token);
-        return $this->redirectToRoute('app_index_series');
     }
 }

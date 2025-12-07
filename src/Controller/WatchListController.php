@@ -7,6 +7,7 @@ use App\Entity\Series;
 use App\Entity\WatchList;
 use App\Form\WatchListType;
 use App\Repository\WatchListRepository;
+use App\Repository\ViewRepository;
 use App\Service\TmdbRequestService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,10 +25,19 @@ final class WatchListController extends AbstractController
     ) {}
 
     #[Route(name: 'app_watch_list_index', methods: ['GET'])]
-    public function index(WatchListRepository $watchListRepository): Response
+    public function index(WatchListRepository $watchListRepository, ViewRepository $viewRepository): Response
     {
+        $user = $this->getUser();
+        $watchLists = $watchListRepository->findBy([
+            'userId' => $user,
+        ]);
+
+        $views = $viewRepository->findBy(['userId' => $user]);
+
         return $this->render('watch_list/index.html.twig', [
-            'watch_lists' => $watchListRepository->findBy(['userId' => $this->getUser()]),
+            'watch_lists' => $watchLists,
+            'user' => $user,
+            'views' => $views,
         ]);
     }
 

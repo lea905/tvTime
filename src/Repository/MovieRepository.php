@@ -4,10 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\AbstractLazyCollection;
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Selectable;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Utils\TmdbGenres;
 
 /**
  * @extends ServiceEntityRepository<Movie>
@@ -34,23 +32,51 @@ class MovieRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    /**
-     * Trouves les films du genre donné
-     *
-     * @param string $genre
-     * @return array
-     */
-    public function findByGenre(string $genre): array | null
+    public function findByGenre(string $genre): array
     {
-        if(TmdbGenres::searchGenre($genre) !== null){
-            return $this->createQueryBuilder('m')
-                ->andWhere('m.genres LIKE :genre')
-                ->setParameter('genre', '%' . $genre . '%')
-                ->getQuery()
-                ->getResult();
-        };
-        return null;
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.genres LIKE :genre')
+            ->setParameter('genre', '%"' . $genre . '"%')
+            ->getQuery()
+            ->getResult();
     }
+
+    public function findMostPopular(int $limit = 20): array
+    {
+        return $this->createQueryBuilder('m')
+            ->orderBy('m.popularity', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByYear(int $year): array
+    {
+        $start = new \DateTime("$year-01-01");
+        $end = new \DateTime("$year-12-31");
+
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.releaseDate BETWEEN :start AND :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->orderBy('m.releaseDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    public function findUpcoming(): array
+    {
+        $today = new \DateTimeImmutable('today');
+
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.releaseDate > :today')
+            ->setParameter('today', $today)
+            ->orderBy('m.releaseDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
 
     public function add(Movie $movie): bool
     {
@@ -59,8 +85,17 @@ class MovieRepository extends ServiceEntityRepository
         return true;
     }
 
-    public function remove(Movie $movie): bool
+    public function findNowPlaying(Movie $movie)
     {
+    }
 
+    public function searchByTitle(string $query): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.title LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('m.popularity', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 }
