@@ -49,7 +49,7 @@ class MovieController extends AbstractController
         $allMovies = $this->movieRepository->findAll();
         if (count($allMovies) <= 0)
             $this->fetchMovies();
-        
+
         $popular    = $this->movieRepository->findMostPopular(20);
         $year2025   = $this->movieRepository->findByYear(2025);
         $upcoming   = $this->movieRepository->findUpcoming();
