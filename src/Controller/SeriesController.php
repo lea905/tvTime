@@ -7,8 +7,10 @@ use App\Form\EmotionType;
 use App\Repository\SeriesRepository;
 use App\Repository\WatchListRepository;
 use App\Service\TmdbRequestService;
+use App\Utils\TmdbGenres;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,11 +29,9 @@ class SeriesController extends AbstractController
 
     /**
      * Affiche toutes les séries présents dans la BDD
-     *
-     * @return Response
      */
     #[Route('', name: 'app_index_series')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
 
         $series = $this->seriesRepository->findAll();
@@ -39,17 +39,35 @@ class SeriesController extends AbstractController
         if (count($series) <= 0)
             $this->fetchSeries();
 
+        $selectedGenre = $request->query->get('genre');
+
+        if ($selectedGenre) {
+            $seriesGenre = $this->seriesRepository->findByGenre($selectedGenre);
+        } else {
+            $seriesGenre = $this->seriesRepository->findAll();
+        }
+
+        if ($series === null) {
+            throw new NotFoundHttpException();
+        }
+
+        $popular = $this->seriesRepository->findMostPopular(20);
+        $year2025 = $this->seriesRepository->findByYear(2025);
+        $upcoming = $this->seriesRepository->findUpcoming();
+
         return $this->render('series/index.html.twig', [
             'series' => $series,
+            'popular' => $popular,
+            'year2025' => $year2025,
+            'upcoming' => $upcoming,
+            'selectedGenre' => $selectedGenre,
+            'allGenres' => TmdbGenres::getGenres(),
+            'seriesGenre' => $seriesGenre,
         ]);
     }
 
     /**
      * Affiche une série identifiée par son id
-     *
-     * @param int $id
-     * @param WatchListRepository $watchListRepository
-     * @return Response
      */
     #[Route('/show/{id}', name: 'app_series_show')]
     public function show(int $id, WatchListRepository $watchListRepository, EntityManagerInterface $entityManager): Response
@@ -87,7 +105,6 @@ class SeriesController extends AbstractController
             $watchLists = $watchListRepository->findBy(['userId' => $user->getId()]);
         }
 
-
         $emotionForm = $this->createForm(EmotionType::class, [
             'emotion' => $currentEmotion,
         ]);
@@ -102,9 +119,6 @@ class SeriesController extends AbstractController
 
     /**
      * Affiche les séries du genre souhaité
-     *
-     * @param string $genre
-     * @return Response
      */
     #[Route('/search/{genre}', name: 'app_series_genre')]
     public function genre(string $genre): Response
@@ -121,29 +135,7 @@ class SeriesController extends AbstractController
     }
 
     /**
-     * Affiche les séries pas encore sorties
-     *
-     * @return Response
-     */
-    #[Route('/popular', name: 'app_series_popular')]
-    public function popular(): Response
-    {
-        $series = $this->tmdb->getSeriesPopular($this->token);
-
-        return $this->render('series/popular.html.twig', [
-            'series' => $series,
-        ]);
-    }
-
-    /**
      * Prend les informations des séries de l'API
-     *
-     * @return Response
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     #[Route('/synchronisationApi', name: 'app_series_synchronisation_api')]
     public function fetchSeries(): Response

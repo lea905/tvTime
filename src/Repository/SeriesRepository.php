@@ -19,9 +19,6 @@ class SeriesRepository extends ServiceEntityRepository
 
     /**
      * Trouve la série souhaitée
-     *
-     * @param int $id
-     * @return Series|null
      */
     public function findOneById(int $id): ?Series
     {
@@ -47,20 +44,50 @@ class SeriesRepository extends ServiceEntityRepository
 
     /**
      * Trouves les séries du genre donné
-     *
-     * @param string $genre
-     * @return array
      */
-    public function findByGenre(string $genre): array|null
+    public function findByGenre(string $genre): array
     {
-        if (TmdbGenres::searchGenre($genre) !== null) {
-            return $this->createQueryBuilder('m')
-                ->andWhere('m.genres LIKE :genre')
-                ->setParameter('genre', '%' . $genre . '%')
-                ->getQuery()
-                ->getResult();
-        };
-        return null;
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.genres LIKE :genre')
+            ->setParameter('genre', '%"' . $genre . '"%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findMostPopular(int $limit = 20): array
+    {
+        return $this->createQueryBuilder('m')
+            ->orderBy('m.popularity', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByYear(int $year): array
+    {
+        $start = new \DateTime("$year-01-01");
+        $end = new \DateTime("$year-12-31");
+
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.releaseDate BETWEEN :start AND :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->orderBy('m.releaseDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    public function findUpcoming(): array
+    {
+        $today = new \DateTimeImmutable('today');
+
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.releaseDate > :today')
+            ->setParameter('today', $today)
+            ->orderBy('m.releaseDate', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function add(Series $series): bool

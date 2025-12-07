@@ -7,7 +7,7 @@
                 <h2 class="h4 m-0">Toutes les séries</h2>
             </div>
 
-            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+            <div class="series-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
                 {% for serie in series %}
                     <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
                         <img
@@ -22,7 +22,7 @@
                             </h3>
 
                             <p class="mb-2 small">
-                                {{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
+                                Réalisé le <span class="badge bg-secondary me-1 mb-1">{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
                             </p>
 
                             <a href="{{ path('app_series_show', {id: serie.id}) }}"
@@ -36,6 +36,161 @@
                         <a href="{{ path('app_series_synchronisation_api') }}">
                             ici</a>.</p> Ou rafraîchissez la page.</l>
                 {% endfor %}
+            </div>
+        </section>
+        <section class="mb-5">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h4 m-0">Les series les plus populaires</h2>
+            </div>
+
+            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                {% for serie in popular %}
+                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                        <img
+                            src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                            alt="{{ serie.title }}"
+                            class="card-img-top"
+                        >
+
+                        <div class="card-body p-2">
+                            <h3 class="card-title h6 text-truncate" title="{{ serie.title }}">
+                                {{ serie.title }}
+                            </h3>
+
+                            <p class="mb-2 small">
+                                Réalisé le <span class="badge bg-secondary me-1 mb-1">{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
+                            </p>
+
+                            <a href="{{ path('app_series_show', {id: serie.id}) }}"
+                               class="btn btn-sm btn-primary w-100">
+                                Détails
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="mb-5">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h4 m-0">Les series sortie en 2025</h2>
+            </div>
+
+            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                {% for serie in year2025 %}
+                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                        <img
+                            src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                            alt="{{ serie.title }}"
+                            class="card-img-top"
+                        >
+
+                        <div class="card-body p-2">
+                            <h3 class="card-title h6 text-truncate" title="{{ serie.title }}">
+                                {{ serie.title }}
+                            </h3>
+
+                            <p class="mb-2 small">
+                                Réalisé le <span class="badge bg-secondary me-1 mb-1">{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
+                            </p>
+
+                            <a href="{{ path('app_series_show', {id: serie.id}) }}"
+                               class="btn btn-sm btn-primary w-100">
+                                Détails
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="mb-5">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h4 m-0">Les series qui arrivent</h2>
+            </div>
+
+            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                {% for serie in upcoming %}
+                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                        <img
+                            src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                            alt="{{ serie.title }}"
+                            class="card-img-top"
+                        >
+
+                        <div class="card-body p-2">
+                            <h3 class="card-title h6 text-truncate" title="{{ serie.title }}">
+                                {{ serie.title }}
+                            </h3>
+
+                            <p class="mb-2 small">
+                                Réalisé le <span class="badge bg-secondary me-1 mb-1">{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
+                            </p>
+
+                            <a href="{{ path('app_series_show', {id: serie.id}) }}"
+                               class="btn btn-sm btn-primary w-100">
+                                Détails
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="mb-5">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h4 m-0">Les series</h2>
+            </div>
+
+
+            <div class="mb-3">
+                <strong>Genres :</strong>
+                <ul class="list-inline mb-0">
+                    {% for genre in allGenres %}
+                        <li class="list-inline-item mb-2">
+                            <a href="{{ path('app_index_series', { genre: genre }) }}"
+                               class="btn btn-sm {{ genre == selectedGenre ? 'btn-primary' : 'btn-outline-primary' }}">
+                                {{ genre }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+
+            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                {% if seriesGenre is empty %}
+
+                    Oups ! Aucun serie avec ce genre n'est disponible
+                {% else %}
+
+                    {% for serie in seriesGenre %}
+                        <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                            <img
+                                src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                                alt="{{ serie.title }}"
+                                class="card-img-top"
+                            >
+
+                            <div class="card-body p-2">
+                                <h3 class="card-title h6 text-truncate" title="{{ serie.title }}">
+                                    {{ serie.title }}
+                                </h3>
+
+                                <p class="mb-2 small">
+                                    Réalisé le <span class="badge bg-secondary me-1 mb-1">{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
+                                </p>
+
+                                <a href="{{ path('app_series_show', {id: serie.id}) }}"
+                                   class="btn btn-sm btn-primary w-100">
+                                    Détails
+                                </a>
+                            </div>
+                        </article>
+
+                    {% endfor %}
+                {% endif %}
             </div>
         </section>
     </div>

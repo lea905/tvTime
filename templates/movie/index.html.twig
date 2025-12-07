@@ -22,7 +22,8 @@
                             </h3>
 
                             <p class="mb-2 small">
-                                {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
+                                Réalisé le <span
+                                    class="badge bg-secondary me-1 mb-1">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
                             </p>
 
                             <a href="{{ path('app_movie_show', {id: movie.id}) }}"
@@ -59,7 +60,8 @@
                             </h3>
 
                             <p class="mb-2 small">
-                                {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
+                                Réalisé le <span
+                                    class="badge bg-secondary me-1 mb-1">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
                             </p>
 
                             <a href="{{ path('app_movie_show', {id: movie.id}) }}"
@@ -92,7 +94,8 @@
                             </h3>
 
                             <p class="mb-2 small">
-                                {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
+                                Réalisé le <span
+                                    class="badge bg-secondary me-1 mb-1">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
                             </p>
 
                             <a href="{{ path('app_movie_show', {id: movie.id}) }}"
@@ -125,7 +128,8 @@
                             </h3>
 
                             <p class="mb-2 small">
-                                {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
+                                Réalisé le <span
+                                    class="badge bg-secondary me-1 mb-1">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
                             </p>
 
                             <a href="{{ path('app_movie_show', {id: movie.id}) }}"
@@ -165,7 +169,7 @@
                     Oups ! Aucun film avec ce genre n'est disponible
                 {% else %}
 
-                {% for movie in movieGenre %}
+                    {% for movie in movieGenre %}
                         <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
                             <img
                                 src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
@@ -179,7 +183,8 @@
                                 </h3>
 
                                 <p class="mb-2 small">
-                                    {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
+                                    Réalisé le <span
+                                        class="badge bg-secondary me-1 mb-1">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
                                 </p>
 
                                 <a href="{{ path('app_movie_show', {id: movie.id}) }}"
@@ -189,11 +194,9 @@
                             </div>
                         </article>
 
-                {% endfor %}
+                    {% endfor %}
                 {% endif %}
             </div>
-
-
         </section>
     </div>
 {% endblock %}

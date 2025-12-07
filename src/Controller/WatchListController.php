@@ -34,6 +34,7 @@ final class WatchListController extends AbstractController
 
         $views = $viewRepository->findBy(['userId' => $user]);
 
+//        dd($views);
         return $this->render('watch_list/index.html.twig', [
             'watch_lists' => $watchLists,
             'user' => $user,
