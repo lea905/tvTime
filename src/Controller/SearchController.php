@@ -11,16 +11,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SearchController extends AbstractController
 {
-    #[Route('/search', name: 'app_search', methods: ['GET'])]
+    #[Route('/search', name: 'app_search')]
     public function index(Request $request, MovieRepository $movieRepository, SeriesRepository $seriesRepository): Response
     {
         $query = $request->query->get('q');
-        $movies = [];
-        $series = [];
 
         if ($query) {
             $movies = $movieRepository->searchByTitle($query);
             $series = $seriesRepository->searchByTitle($query);
+        } else {
+            $movies = [];
+            $series = [];
         }
 
         return $this->render('search/index.html.twig', [

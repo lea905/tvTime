@@ -1,79 +1,67 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Résultats pour "{{ query }}"{% endblock %}
+{% block title %}Résultats de recherche{% endblock %}
 
 {% block body %}
-    <div class="container py-5 mt-5">
-        <h1 class="mb-4 text-light">Résultats pour "{{ query }}"</h1>
+    <div class="container mt-5 pt-5 text-light">
+        <h1 class="mb-4">Résultats de recherche pour "{{ query }}"</h1>
 
         {% if movies is empty and series is empty %}
-            <div class="alert alert-info bg-dark text-light border-secondary">
-                Aucun résultat trouvé pour "{{ query }}".
-            </div>
+            <div class="alert alert-info">Aucun résultat trouvé pour votre recherche.</div>
         {% else %}
 
-            {# Résultats Films #}
             {% if movies is not empty %}
-                <section class="mb-5">
-                    <h2 class="h4 text-light mb-3">Films</h2>
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                        {% for movie in movies %}
-                            <div class="col">
-                                <div class="card bg-dark text-light h-100 border-0 shadow-sm">
-                                    <a href="{{ path('app_movie_show', {id: movie.id}) }}">
-                                        {% if movie.picture %}
-                                            <img src="https://image.tmdb.org/t/p/w300{{ movie.picture }}" class="card-img-top" alt="{{ movie.title }}" style="height: 300px; object-fit: cover;">
-                                        {% else %}
-                                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 300px;">
-                                                <span class="text-white">Pas d'image</span>
-                                            </div>
-                                        {% endif %}
-                                    </a>
+                <h2 class="mt-4 mb-3" style="color: #3269A8;">Films</h2>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                    {% for movie in movies %}
+                        <div class="col">
+                            <div class="card h-100 bg-dark text-light border-0 shadow-lg" style="transition: transform 0.2s;">
+                                <a href="{{ path('app_movie_show', {'id': movie.id}) }}" class="text-decoration-none text-light">
+                                    {% if movie.picture %}
+                                        <img src="https://image.tmdb.org/t/p/w500{{ movie.picture }}" class="card-img-top" alt="{{ movie.title }}">
+                                    {% else %}
+                                        <div class="d-flex align-items-center justify-content-center bg-secondary" style="height: 400px;">
+                                            Pas d'image
+                                        </div>
+                                    {% endif %}
                                     <div class="card-body">
-                                        <h5 class="card-title text-truncate">
-                                            <a href="{{ path('app_movie_show', {id: movie.id}) }}" class="text-decoration-none text-light">{{ movie.title }}</a>
-                                        </h5>
-                                        <p class="card-text small text-muted">
-                                            {{ movie.releaseDate ? movie.releaseDate|date('Y') : '' }}
+                                        <h5 class="card-title text-truncate">{{ movie.title }}</h5>
+                                        <p class="card-text text-muted small">
+                                            {{ movie.releaseDate|date('Y') }}
                                         </p>
                                     </div>
-                                </div>
+                                </a>
                             </div>
-                        {% endfor %}
-                    </div>
-                </section>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
 
-            {# Résultats Séries #}
             {% if series is not empty %}
-                <section>
-                    <h2 class="h4 text-light mb-3">Séries</h2>
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                        {% for serie in series %}
-                            <div class="col">
-                                <div class="card bg-dark text-light h-100 border-0 shadow-sm">
-                                    <a href="{{ path('app_series_show', {id: serie.tmdbId}) }}">
-                                        {% if serie.picture %}
-                                            <img src="https://image.tmdb.org/t/p/w300{{ serie.picture }}" class="card-img-top" alt="{{ serie.title }}" style="height: 300px; object-fit: cover;">
-                                        {% else %}
-                                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 300px;">
-                                                <span class="text-white">Pas d'image</span>
-                                            </div>
-                                        {% endif %}
-                                    </a>
+                <h2 class="mt-5 mb-3" style="color: #3269A8;">Séries</h2>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                    {% for show in series %}
+                        <div class="col">
+                            <div class="card h-100 bg-dark text-light border-0 shadow-lg" style="transition: transform 0.2s;">
+                                <a href="{{ path('app_series_show', {'id': show.id}) }}" class="text-decoration-none text-light">
+                                    {% if show.picture %}
+                                        <img src="https://image.tmdb.org/t/p/w500{{ show.picture }}" class="card-img-top" alt="{{ show.title }}">
+                                    {% else %}
+                                        <div class="d-flex align-items-center justify-content-center bg-secondary" style="height: 400px;">
+                                            Pas d'image
+                                        </div>
+                                    {% endif %}
                                     <div class="card-body">
-                                        <h5 class="card-title text-truncate">
-                                            <a href="{{ path('app_series_show', {id: serie.tmdbId}) }}" class="text-decoration-none text-light">{{ serie.title }}</a>
-                                        </h5>
-                                        <p class="card-text small text-muted">
-                                            {{ serie.status ?? '' }}
+                                        <h5 class="card-title text-truncate">{{ show.title }}</h5>
+                                        <p class="card-text text-muted small">
+                                            {{ show.releaseDate|date('Y') }}
                                         </p>
                                     </div>
-                                </div>
+                                </a>
                             </div>
-                        {% endfor %}
-                    </div>
-                </section>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
 
         {% endif %}
