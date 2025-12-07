@@ -8,18 +8,22 @@ use App\Entity\Season;
 use App\Entity\Series;
 use App\Factory\EpisodeFactory;
 use App\Factory\MovieFactory;
-use App\Factory\SeasonFactory;
 use App\Factory\SeriesFactory;
+use App\Repository\EpisodeRepository;
+use App\Repository\SeriesRepository;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class TmdbRequestService
 {
+    private $cpt = 1; // number of datas *20 come from API
+
     public function __construct(
         private HttpClientInterface $httpClient,
         private MovieFactory        $movieFactory,
         private SeriesFactory       $seriesFactory,
-        private SeasonFactory       $seasonFactory,
         private EpisodeFactory      $episodeFactory,
+        private SeriesRepository    $seriesRepository,
+        private EpisodeRepository   $episodeRepository
     )
     {
     }
@@ -119,6 +123,95 @@ class TmdbRequestService
         return $this->seriesFactory->createMultipleFromTmdbData($data);
     }
 
+    public function getEpisode(mixed $token, int $idSerie, Season $season, int $idEpisode): Episode
+    {
+        $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/tv/' . $idSerie .
+            '/season/' . $season->getNumber() . '/episode/' . $idEpisode, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'accept' => 'application/json',
+            ],
+        ]);
+
+        $data = $response->toArray();
+        return $this->episodeFactory->createDataFromTmdbData($data, $season);
+    }
+
+    /**
+     * Fill the database with cpt * 20 movies of the API
+     *
+     * @param mixed $token
+     * @return array
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function getMoviesData(mixed $token)
+    {
+        $datas = [];
+        while ($this->cpt++ < 2) {
+            // Movies
+            $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/discover/movie', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'accept' => 'application/json',
+                ], 'query' => [
+                    'language' => 'fr-FR',
+                    'page' => $this->cpt,
+                ],]);
+            $data = $response->toArray();
+            $datas = array_merge($datas, $this->movieFactory->createMultipleFromTmdbData($data));
+        }
+        return $datas;
+    }
+
+    /**
+     * Fill the database with cpt * 20 series of the API
+     *
+     * @param mixed $token
+     * @return array
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function getSeriesData(mixed $token)
+    {
+        $datas = [];
+        while ($this->cpt++ < 2) {
+            //Series
+            $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/discover/tv', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'accept' => 'application/json',
+                ],
+                'query' => [
+                    'language' => 'fr-FR',
+                    'page' => $this->cpt,
+                ],
+            ]);
+            $data = $response->toArray();
+            $series = $this->seriesFactory->createMultipleFromTmdbData($data);
+            $datas = array_merge($datas, $series);
+        }
+        return $datas;
+    }
+
+    /**
+     * Update series' datas and its seasons
+     *
+     * @param mixed $token
+     * @param int $id
+     * @return Series
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
     public function getSerie(mixed $token, int $id): Series
     {
         $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/tv/' . $id, [
@@ -128,61 +221,10 @@ class TmdbRequestService
             ],
             'query' => [
                 'language' => 'fr-FR',
-                'page' => 1,
             ],
         ]);
 
         $data = $response->toArray();
-        return $this->seriesFactory->createFromOneTmdbData($data);
-    }
-
-    public function getSeason(mixed $token, int $idSerie, int $idSeason): Season
-    {
-        $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/tv/' . $idSerie .
-            '/season/' . $idSeason, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'accept' => 'application/json',
-            ],
-        ]);
-
-        $data = $response->toArray();
-        return $this->seasonFactory->createFromTmdbData($data);
-    }
-
-    public function getEpisode(mixed $token, int $idSerie, int $idSeason, int $idEpisode): Episode
-    {
-        $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/tv/' . $idSerie .
-            '/season/' . $idSeason . '/episode/{episode_number}' . $idEpisode, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'accept' => 'application/json',
-            ],
-        ]);
-
-        $data = $response->toArray();
-        return $this->episodeFactory->createFromTmdbData($data);
-    }
-
-
-    public function getData(mixed $token)
-    {
-        $cpt = 1;
-        $dataMovies = [];
-        while ($cpt++ < 10) {
-            // Movies
-            $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/discover/movie', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                    'accept' => 'application/json',
-                ], 'query' => [
-                    'language' => 'fr-FR',
-                    'page' => $cpt,
-                ],]);
-            $data = $response->toArray();
-            $dataMovies [] = $this->movieFactory->createMultipleFromTmdbData($data);
-        }
-
-        return $dataMovies;
+        return $this->seriesFactory->setOrCreate($data);
     }
 }

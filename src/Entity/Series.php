@@ -49,7 +49,7 @@ class Series
     /**
      * @var Collection<int, Season>
      */
-    #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'seriesId', orphanRemoval: true, cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'seriesId')]
     private Collection $seasons;
 
     /**
@@ -313,6 +313,13 @@ class Series
             $watchList->addSeries($this);
         }
 
+        return $this;
+    }
+
+    public function addGenre(string $genreName): static
+    {
+        if (!in_array($genreName, $this->genres))
+            array_push($this->genres, $genreName);
         return $this;
     }
 

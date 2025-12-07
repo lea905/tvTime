@@ -25,7 +25,7 @@ class Episode
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $releaseDate = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -99,7 +99,7 @@ class Episode
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(\DateTime $releaseDate): static
+    public function setReleaseDate(?\DateTime $releaseDate): static
     {
         $this->releaseDate = $releaseDate;
 

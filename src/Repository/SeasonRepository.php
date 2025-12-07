@@ -16,6 +16,13 @@ class SeasonRepository extends ServiceEntityRepository
         parent::__construct($registry, Season::class);
     }
 
+    public function add(Season $season): bool
+    {
+        $this->getEntityManager()->persist($season);
+        $this->getEntityManager()->flush();
+        return true;
+    }
+
     //    /**
     //     * @return Season[] Returns an array of Season objects
     //     */

@@ -30,6 +30,9 @@ class Season
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $resume = null;
 
+    #[ORM\Column]
+    private ?int $numberEpisodes = null;
+
     /**
      * @var Collection<int, Episode>
      */
@@ -155,6 +158,18 @@ class Season
     public function setSeriesId(?Series $series): static
     {
         $this->seriesId = $series;
+        return $this;
+    }
+
+    public function getNumberEpisodes(): ?int
+    {
+        return $this->numberEpisodes;
+    }
+
+    public function setNumberEpisodes(int $numberEpisodes): static
+    {
+        $this->numberEpisodes = $numberEpisodes;
+
         return $this;
     }
 }

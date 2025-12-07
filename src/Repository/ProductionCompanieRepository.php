@@ -15,6 +15,12 @@ class ProductionCompanieRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ProductionCompanie::class);
     }
+    public function add(ProductionCompanie $productionCompanie): bool
+    {
+        $this->getEntityManager()->persist($productionCompanie);
+        $this->getEntityManager()->flush();
+        return true;
+    }
 
     //    /**
     //     * @return ProductionCompanie[] Returns an array of ProductionCompanie objects

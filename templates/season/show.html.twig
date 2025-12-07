@@ -3,22 +3,26 @@
 {% block body %}
     <div class="container pt-3">
 
+        <a href="{{ path('app_series_show', {id: idSerie}) }}" class="btn btn-link mb-3 text-decoration-none text-black">
+            &larr; Retour à la serie
+        </a>
+
         <section class="mb-4">
             <div class="card bg-dark text-light border-0">
                 <div class="row g-0">
                     <div class="col-12 col-md-4 col-lg-3">
                         <img
-                            src="https://image.tmdb.org/t/p/w500{{ season.picture }}"
-                            alt="{{ season.title }}"
-                            class="img-fluid h-100 w-100"
-                            style="object-fit: cover;"
+                                src="https://image.tmdb.org/t/p/w500{{ season.picture }}"
+                                alt="{{ season.title }}"
+                                class="img-fluid h-100 w-100"
+                                style="object-fit: cover;"
                         >
                     </div>
                     <div class="col-12 col-md-8 col-lg-9">
                         <div class="card-body h-100 d-flex flex-column justify-content-center">
                             <h1 class="card-title mb-2">{{ season.title }}</h1>
 
-                            <p class="mb-2 small text-muted">
+                            <p class="mb-2 small ">
                                 {% if season.episodes|length %} • {{ season.episodes|length }} épisode(s){% endif %}
                             </p>
 
@@ -27,7 +31,7 @@
                             </p>
 
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="{{ path('app_show_series', {id: idSerie}) }}" class="btn btn-primary btn-sm">
+                                <a href="{{ path('app_series_show', {id: idSerie}) }}" class="btn btn-primary btn-sm">
                                     Revenir sur la série
                                 </a>
                                 <a href="#" class="btn btn-primary btn-sm">
@@ -59,25 +63,17 @@
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <h3 class="h6 mb-0">{{ episode.title }}</h3>
                                         <span
-                                            class="badge bg-secondary">{{ episode.releaseDate ? episode.releaseDate|date('Y') : 'Date inconnue' }}
+                                                class="badge bg-secondary">{{ episode.releaseDate ? episode.releaseDate|date('Y') : 'Date inconnue' }}
                                         </span>
                                     </div>
 
-                                    <p class="mb-2 small text-muted">
+                                    <p class="mb-2 small ">
                                         {{ episode.resume
                                         ? (episode.resume|length > 180
                                         ? episode.resume|slice(0, 180) ~ '...'
                                         : episode.resume)
-                                        : 'Aucun résumé pour cette saison.' }}
+                                        : '' }}
                                     </p>
-
-                                    <div class="mt-auto d-flex justify-content-end">
-                                        <form method="post" action="{{ path('app_episode_seen', {'id': episode.id}) }}">
-                                            <button type="submit" class="btn btn-outline-light btn-sm">
-                                                Marquer comme vu
-                                            </button>
-                                        </form>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -96,16 +92,16 @@
                                 <div class="card-body d-flex align-items-center">
                                     {% if productionCompanie.logo %}
                                         <img
-                                            src="https://image.tmdb.org/t/p/w200{{ productionCompanie.logo }}"
-                                            alt="{{ productionCompanie.name }}"
-                                            class="me-3"
-                                            style="max-height: 60px; width: auto;"
+                                                src="https://image.tmdb.org/t/p/w200{{ productionCompanie.logo }}"
+                                                alt="{{ productionCompanie.name }}"
+                                                class="me-3"
+                                                style="max-height: 60px; width: auto;"
                                         >
                                     {% endif %}
                                     <div>
                                         <h3 class="h6 mb-1">{{ productionCompanie.name }}</h3>
                                         {% if productionCompanie.originCountry %}
-                                            <p class="mb-0 small text-muted">
+                                            <p class="mb-0 small ">
                                                 Pays : {{ productionCompanie.originCountry }}
                                             </p>
                                         {% endif %}

@@ -2,22 +2,21 @@
 
 {% block body %}
     <div style="padding-top: 5%;">
-
         <section class="mb-5">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <h2 class="h4 m-0">Séries populaires</h2>
+                <h2 class="h4 m-0">Toutes les séries</h2>
             </div>
 
-            <div class="series-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
-                {% for serie in popular_series %}
-                    <article class="series-card card bg-dark text-light" style="min-width: 180px;">
+            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                {% for serie in series %}
+                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
                         <img
                             src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
                             alt="{{ serie.title }}"
                             class="card-img-top"
                         >
 
-                        <div class="card-body p-2 d-flex flex-column">
+                        <div class="card-body p-2">
                             <h3 class="card-title h6 text-truncate" title="{{ serie.title }}">
                                 {{ serie.title }}
                             </h3>
@@ -26,21 +25,18 @@
                                 {{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
                             </p>
 
-                            <small class="d-block mb-2">
-                                {{ serie.resume|length > 100 ? serie.resume|slice(0, 100) ~ '...' : serie.resume }}
-                            </small>
-
-                            <a href="{{ path('app_series_show', {id: serie.tmdbId}) }}"
-                               class="btn btn-sm btn-primary w-100 mt-auto">
+                            <a href="{{ path('app_series_show', {id: serie.id}) }}"
+                               class="btn btn-sm btn-primary w-100">
                                 Détails
                             </a>
                         </div>
                     </article>
                 {% else %}
-                    <p class="text-muted">Aucune série populaire trouvée.</p>
+                    <p>Oups ! Aucune série n'est visible, pour régler ce problème appuyez
+                        <a href="{{ path('app_series_synchronisation_api') }}">
+                            ici</a>.</p> Ou rafraîchissez la page.</l>
                 {% endfor %}
             </div>
         </section>
     </div>
 {% endblock %}
-

@@ -16,6 +16,13 @@ class CreatorRepository extends ServiceEntityRepository
         parent::__construct($registry, Creator::class);
     }
 
+    public function add(Creator $creator): bool
+    {
+        $this->getEntityManager()->persist($creator);
+        $this->getEntityManager()->flush();
+        return true;
+    }
+
     //    /**
     //     * @return Creator[] Returns an array of Creator objects
     //     */
