@@ -148,7 +148,7 @@ class TmdbRequestService
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function getMoviesData(mixed $token)
+    public function getMoviesData(mixed $token) :Array
     {
         $datas = [];
         while ($this->cpt++ < 2) {

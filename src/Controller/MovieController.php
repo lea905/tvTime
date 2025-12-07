@@ -47,6 +47,9 @@ class MovieController extends AbstractController
         }
 
         $allMovies = $this->movieRepository->findAll();
+        if (count($allMovies) <= 0)
+            $this->fetchMovies();
+        
         $popular    = $this->movieRepository->findMostPopular(20);
         $year2025   = $this->movieRepository->findByYear(2025);
         $upcoming   = $this->movieRepository->findUpcoming();
@@ -169,7 +172,7 @@ class MovieController extends AbstractController
     #[Route('/synchronisationApi', name: 'app_movies_synchronisation_api')]
     public function fetchMovies(): Response
     {
-        $this->tmdb->getData($this->token);
-        return $this->redirectToRoute('movies');
+        $this->tmdb->getMoviesData($this->token);
+        return $this->redirectToRoute('app_movie_index');
     }
 }

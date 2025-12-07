@@ -2,7 +2,8 @@
 
 {% block body %}
     <div class="container pt-3">
-        <a href="{{ path('app_movie_index') }}" class="btn btn-link mb-3 text-decoration-none text-black">&larr; Retour aux films</a>
+        <a href="{{ path('app_movie_index') }}" class="btn btn-link mb-3 text-decoration-none text-black">&larr; Retour
+            aux films</a>
 
         <div class="row g-4">
             <div class="col-12 col-md-4 col-lg-3">
@@ -83,101 +84,105 @@
                 {% endif %}
 
 
-                    {{ form_start(emotion_form, {
-                        action: path('app_movie_seen', { id: movie.id }),
-                        method: 'POST'
-                    }) }}
+                {{ form_start(emotion_form, {
+                    action: path('app_movie_seen', { id: movie.id }),
+                    method: 'POST'
+                }) }}
 
-                    <div class="d-flex flex-column gap-2">
+                <div class="mt-4 d-flex flex-wrap gap-2">
 
-                        <button
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#watchlistModal"
-                        >
-                            Ajouter à une liste
-                        </button>
 
-                        <button class="btn text-white btn-secondary">
-                            {{ already_seen ? 'Déjà vu' : 'Vu' }}
-                        </button>
+                    <button
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#watchlistModal"
+                    >
+                        Ajouter à une liste
+                    </button>
 
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for child in emotion_form.emotion %}
-                                {{ form_widget(child, {
-                                    attr: {
-                                        class: 'btn-check'
-                                    }
-                                }) }}
+                    <button class="btn text-white btn-secondary">
+                        {{ already_seen ? 'Déjà vu' : 'Marqué comme vu' }}
+                    </button>
 
-                                <label class="btn btn-outline-light {{ child.vars.checked ? 'active' : '' }}"
-                                       for="{{ child.vars.id }}">
-                                    {{ child.vars.label }}
-                                </label>
-                            {% endfor %}
-                        </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for child in emotion_form.emotion %}
+                            {{ form_widget(child, {
+                                attr: {
+                                    class: 'btn-check'
+                                }
+                            }) }}
 
+                            <label class="btn btn-outline-light {{ child.vars.checked ? 'active' : '' }}"
+                                   for="{{ child.vars.id }}">
+                                {{ child.vars.label }}
+                            </label>
+                        {% endfor %}
                     </div>
 
-                    {{ form_end(emotion_form) }}
+                </div>
+
+                {{ form_end(emotion_form) }}
 
 
-                    {#Modal#}
-                    <div class="modal fade" id="watchlistModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content bg-dark text-light">
-                                <div class="modal-header border-0">
-                                    <h5 class="modal-title">Ajouter à une liste</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                {# Modal #}
+                <div class="modal fade" id="watchlistModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content bg-dark text-light">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title">Ajouter à une liste</h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Choisir une liste existante</label>
+                                    <select id="watchlist-select" class="form-select bg-dark text-light">
+                                        <option value="">Aucune</option>
+                                        {% for list in watch_lists %}
+                                            <option value="{{ list.id }}">{{ list.title }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Choisir une liste existante</label>
-                                        <select id="watchlist-select" class="form-select bg-dark text-light">
-                                            <option value="">Aucune</option>
-                                            {% for list in watch_lists %}
-                                                <option value="{{ list.id }}">{{ list.title }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
 
-                                    <div class="text-center mb-2">ou</div>
+                                <div class="text-center mb-2">ou</div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">Créer une nouvelle liste</label>
-                                        <input type="text"
-                                               id="new-watchlist-name"
-                                               class="form-control bg-dark text-light"
-                                               placeholder="Nom de la nouvelle liste">
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Créer une nouvelle liste</label>
+                                    <input type="text"
+                                           id="new-watchlist-name"
+                                           class="form-control bg-dark text-light"
+                                           placeholder="Nom de la nouvelle liste">
                                 </div>
-                                <div class="modal-footer border-0">
-                                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Annuler</button>
-                                    <button type="button"
-                                            class="btn btn-primary"
-                                            id="btn-add-to-watchlist"
-                                            data-base-url="{{ path('watchlist_add_item', { id: 0 })|replace({'0':'__ID__'}) }}"
-                                            data-tmdb-id="{{ movie.tmdbId }}">
-                                        Ajouter
-                                    </button>
-                                </div>
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Annuler
+                                </button>
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        id="btn-add-to-watchlist"
+                                        data-base-url="{{ path('watchlist_add_item', { id: 0 })|replace({'0':'__ID__'}) }}"
+                                        data-tmdb-id="{{ movie.tmdbId }}">
+                                    Ajouter
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div aria-live="polite" aria-atomic="true" class="position-relative">
-                        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
-                            <div id="watchlist-toast" class="toast text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                                <div class="d-flex">
-                                    <div class="toast-body">
-                                        Film ajouté à la liste !
-                                    </div>
-                                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                                            data-bs-dismiss="toast" aria-label="Close"></button>
+                <div aria-live="polite" aria-atomic="true" class="position-relative">
+                    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+                        <div id="watchlist-toast" class="toast text-bg-success border-0" role="alert"
+                             aria-live="assertive" aria-atomic="true">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    Film ajouté à la liste !
                                 </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                                        data-bs-dismiss="toast" aria-label="Close"></button>
                             </div>
                         </div>
                     </div>
+                </div>
 
             </div>
         </div>
