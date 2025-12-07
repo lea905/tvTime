@@ -3,19 +3,18 @@
 namespace App\Factory;
 
 use App\Entity\Series;
-use App\Factory\CreatorFactory;
-use App\Factory\ProductionCompanieFactory;
-use App\Factory\SeasonFactory;
+use App\Repository\SeasonRepository;
 use App\Repository\SeriesRepository;
 use App\Utils\TmdbGenres;
 
 class SeriesFactory
 {
     public function __construct(
-        private CreatorFactory            $creatorFactory,
-        private ProductionCompanieFactory $productionCompanieFactory,
+        private SeriesRepository          $seriesRepository,
         private SeasonFactory             $seasonFactory,
-        private SeriesRepository $seriesRepository
+        private SeasonRepository          $seasonRepository,
+        private ProductionCompanieFactory $productionCompanieFactory,
+        private CreatorFactory            $creatorFactory,
     )
     {
     }
@@ -25,84 +24,52 @@ class SeriesFactory
         $series = [];
 
         foreach ($data['results'] as $serieData) {
-
-            // on cherche si le film existe déjà en BDD
-            $existingSeries = $this->seriesRepository->findOneBy(['tmdbId' => $serieData['id']]);
-
-            if ($existingSeries) {
-                // mise à jour de l'entité existante
-                $serie = $this->setDataFromTmdbData($serieData, $existingSeries);
-            } else {
-                // création d'une nouvelle entité Movie
-                $serie = $this->setDataFromTmdbData($serieData);
-            }
-
-            // on persiste/met à jour
-            $this->seriesRepository->add($serie);
-
-            $series[] = $serie;
+            $series[] = $this->setOrCreate($serieData);
         }
 
         return $series;
     }
 
-    public function createFromOneTmdbData(array $serie): Series
+    public function setOrCreate(array $serieData): Series
     {
-        $serieToReturn = new Series();
+        // on cherche si le film existe déjà en BDD
+        $existingSeries = $this->seriesRepository->findOneBy(['tmdbId' => $serieData['id']]);
 
-        // Conversion des id genres en noms lisibles
-        $genreNames = [];
-        foreach ($serie['genres'] as $genre) {
-            $genreNames[] = $genre['name'];
+        if ($existingSeries) {
+            // mise à jour de l'entité existante
+            $serie = $this->setDataFromTmdbData($serieData, $existingSeries);
+        } else {
+            // création d'une nouvelle entité Movie
+            $serie = $this->createDataFromTmdbData($serieData);
         }
 
-        // Creator (ManyToMany)
-        if (!empty($serie['created_by'])) {
-            foreach ($serie['created_by'] as $creatorData) {
-                $creator = $this->creatorFactory->createFromTmdbData($creatorData);
-                $serieToReturn->addCreator($creator);
-            }
-        }
-
-        // Production companies (ManyToMany)
-        if (!empty($serie['production_companies'])) {
-            foreach ($serie['production_companies'] as $pcData) {
-                $pc = $this->productionCompanieFactory->createFromTmdbData($pcData);
-                $serieToReturn->addProductionCompany($pc);
-            }
-        }
-
-        // Seasons (OneToMany)
-        if (!empty($serie['seasons'])) {
-            foreach ($serie['seasons'] as $seasonData) {
-                $season = $this->seasonFactory->createFromTmdbData($seasonData);
-                $season->setSeriesId($serieToReturn);
-                $serieToReturn->addSeason($season);
-            }
-        }
-
-        return $serieToReturn
-            ->setTitle($serie['name'] ?? '')
-            ->setStatus($serie['status'] ?? '')
-            ->setTmdbId($serie['id'] ?? '')
-            ->setPopularity($serie['popularity'] ?? '')
-            ->setNumberEpisodes($serie['number_of_episodes'] ?? 0)
-            ->setNumberSeasons($serie['number_of_seasons'] ?? 0)
-            ->setPicture($serie['poster_path'] ?? '')
-            ->setResume($serie['overview'] ?? '')
-            ->setReleaseDate(isset($serie['first_air_date']) ? new \DateTime($serie['first_air_date']) : null);
+        // on persiste/met à jour
+        $this->seriesRepository->add($serie);
+        return $serie;
     }
 
-    private function setDataFromTmdbData(array $serieData, Series $serie = null): Series
+    public function createDataFromTmdbData(array $serieData): Series
     {
-        if ($serie == null) {
-            $serie = new Series();
-        }
+        $serie = new Series();
+
         $genreNames = [];
-        foreach ($serieData['genre_ids'] as $id) {
-            $genreNames[] = TmdbGenres::getName($id);
+        if (isset($serieData['genre_ids'])) {
+            foreach ($serieData['genre_ids'] as $number => $id) {
+                $genreNames[] = TmdbGenres::getName($id);
+            }
+        };
+
+        $serie->setGenres($genreNames);
+
+        // Creators
+        if (!empty($serieData['created_by'])) {
+            foreach ($serieData['created_by'] as $creatorData) {
+                $creator = $this->creatorFactory->createFromTmdbData($creatorData);
+                $serie->addCreator($creator);
+            }
         }
 
+        // Production Companies
         if (!empty($serieData['production_companies'])) {
             foreach ($serieData['production_companies'] as $pcData) {
                 $pc = $this->productionCompanieFactory->createFromTmdbData($pcData);
@@ -110,15 +77,84 @@ class SeriesFactory
             }
         }
 
-        return $serie ->setTitle($serieData['name'] ?? '')
+        return $serie
+            ->setTitle($serieData['name'] ?? '')
             ->setStatus($serieData['status'] ?? '')
-            ->setTmdbId($serieData['id'] ?? '')
-            ->setPopularity($serieData['popularity'] ?? '')
+            ->setTmdbId($serieData['id'] ?? 0)
+            ->setPopularity($serieData['popularity'] ?? 0)
             ->setNumberEpisodes($serieData['number_of_episodes'] ?? 0)
             ->setNumberSeasons($serieData['number_of_seasons'] ?? 0)
             ->setPicture($serieData['poster_path'] ?? '')
-            ->setResume($serieData['overview'] ?? '')
-            ->setReleaseDate(isset($serieData['first_air_date']) ? new \DateTime($serieData['first_air_date']) : null);
+            ->setResume(substr($serieData['overview'] ?? '', 0, 255))
+            ->setReleaseDate(
+                !empty($serieData['first_air_date'])
+                    ? new \DateTime($serieData['first_air_date'])
+                    : null
+            );
+    }
 
+    public function setDataFromTmdbData(array $serieData, Series $serie): Series
+    {
+        if (isset($serieData['genres'])) {
+            foreach ($serieData['genres'] as $genre) {
+                $serie->addGenre($genre['name']);
+            }
+        }
+
+        $serie->getCreators()->clear();
+        if (!empty($serieData['created_by'])) {
+            foreach ($serieData['created_by'] as $creatorData) {
+                $creator = $this->creatorFactory->createFromTmdbData($creatorData);
+                $serie->addCreator($creator);
+            }
+        }
+
+        $serie->getProductionCompanies()->clear();
+        if (!empty($serieData['production_companies'])) {
+            foreach ($serieData['production_companies'] as $pcData) {
+                $pc = $this->productionCompanieFactory->createFromTmdbData($pcData);
+                $serie->addProductionCompany($pc);
+            }
+        }
+
+        foreach ($serie->getSeasons() as $oldSeason) {
+            $serie->removeSeason($oldSeason);
+        }
+
+        if (!empty($serieData['seasons'])) {
+            foreach ($serieData['seasons'] as $seasonData) {
+                $season = $this->seasonFactory->createDataFromTmdbData($seasonData);
+                $season->setSeriesId($serie);
+                $serie->addSeason($season);
+                $this->seasonRepository->add($season);
+            }
+        }
+
+        if (isset($serieData['name'])) {
+            $serie->setTitle($serieData['name']);
+        }
+        if (isset($serieData['status'])) {
+            $serie->setStatus($serieData['status']);
+        }
+        if (isset($serieData['popularity'])) {
+            $serie->setPopularity($serieData['popularity']);
+        }
+        if (isset($serieData['poster_path'])) {
+            $serie->setPicture($serieData['poster_path']);
+        }
+        if (isset($serieData['overview'])) {
+            $serie->setResume(substr($serieData['overview'] ?? '', 0, 255));
+        }
+        if (isset($serieData['id'])) {
+            $serie->setTmdbId($serieData['id']);
+        }
+        if (!empty($serieData['first_air_date'])) {
+            $serie->setReleaseDate(new \DateTime($serieData['first_air_date']));
+        }
+
+        $serie
+            ->setNumberEpisodes($serieData['number_of_episodes'] ?? 0)
+            ->setNumberSeasons($serieData['number_of_seasons'] ?? 0);
+        return $serie;
     }
 }

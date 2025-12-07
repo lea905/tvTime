@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\EpisodeRepository;
 use App\Repository\SeasonRepository;
+use App\Repository\SeriesRepository;
 use App\Service\TmdbRequestService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +16,9 @@ class SeasonController extends AbstractController
     private string $token;
 
     public function __construct(private readonly TmdbRequestService $tmdb,
-                                private readonly SeasonRepository   $seasonRepository)
+                                private readonly SeasonRepository   $seasonRepository,
+                                private readonly SeriesRepository   $seriesRepository,
+                                private readonly EpisodeRepository  $episodeRepository,)
     {
         $this->token = $_ENV['TMDB_TOKEN'];
     }
@@ -29,8 +33,44 @@ class SeasonController extends AbstractController
     #[Route('/show/{idSerie}/{idSeason}', name: 'app_season_show')]
     public function show(int $idSerie, int $idSeason): Response
     {
+
+        $series = $this->seriesRepository->find($idSerie);
+
+        if (!$series) {
+            throw $this->createNotFoundException("Série introuvable");
+        }
+
+        $season = $this->seasonRepository->findOneBy([
+            'number' => $idSeason,
+            'seriesId' => $series,
+        ]);
+        $tmdbSerieId = $this->seriesRepository->findOneById($idSerie)->getTmdbId();
+
+        if (!$season) {
+            throw $this->createNotFoundException("Saison introuvable pour cette série");
+        }
+        if (!$tmdbSerieId) {
+            throw $this->createNotFoundException("Identifiant Tmdb de la serie numéro " . $idSerie . " introuvable");
+        }
+
+        // get its episodes
+        $cptEpisode = $season->getNumberEpisodes();
+        if ($cptEpisode > 0) {
+            for ($j = 1; $j <= $cptEpisode; $j++) {
+                $existing = $this->episodeRepository->findOneBy(['number' => $j, 'season' => $season]);
+
+                // if the episode wasn't in the database before, we search it in the API's datas
+                if (!$existing) {
+                    $episode = $this->tmdb->getEpisode($this->token, $tmdbSerieId, $season, $j);
+                    $episode->setSeason($season);
+                    $season->addEpisode($episode);
+                    $this->episodeRepository->add($episode);
+                }
+            }
+        }
+
         return $this->render('season/show.html.twig', [
-            'season' => $this->tmdb->getSeason($this->token, $idSerie, $idSeason),
+            'season' => $season,
             'idSerie' => $idSerie,
         ]);
     }

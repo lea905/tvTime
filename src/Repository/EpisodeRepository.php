@@ -16,6 +16,13 @@ class EpisodeRepository extends ServiceEntityRepository
         parent::__construct($registry, Episode::class);
     }
 
+    public function add(Episode $episode): bool
+    {
+        $this->getEntityManager()->persist($episode);
+        $this->getEntityManager()->flush();
+        return true;
+    }
+
     //    /**
     //     * @return Episode[] Returns an array of Episode objects
     //     */

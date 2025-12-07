@@ -30,14 +30,14 @@
                                 </p>
                             {% endif %}
 
-                            <p class="mb-2 small text-muted">
+                            <p class="mb-2 small">
                                 {{ serie.releaseDate ? serie.releaseDate|date('Y') : 'Date inconnue' }}
                                 {% if serie.numberSeasons %} • {{ serie.numberSeasons }} saison(s){% endif %}
                                 {% if serie.numberEpisodes %} • {{ serie.numberEpisodes }} épisode(s){% endif %}
                             </p>
 
                             {% if serie.creators is defined and serie.creators|length > 0 %}
-                                <p class="mb-2 small text-muted">
+                                <p class="mb-2 small">
                                     Créée par
                                     {% for creator in serie.creators %}
                                         {{ creator.name }}{% if not loop.last %}, {% endif %}
@@ -58,18 +58,20 @@
                                     Ajouter à une liste
                                 </button>
 
-                                {#Modal#}
+                                {# Modal #}
                                 <div class="modal fade" id="watchlistModal" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content bg-dark text-light">
                                             <div class="modal-header border-0">
                                                 <h5 class="modal-title">Ajouter à une liste</h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="mb-3">
                                                     <label class="form-label">Choisir une liste existante</label>
-                                                    <select id="watchlist-select" class="form-select bg-dark text-light">
+                                                    <select id="watchlist-select"
+                                                            class="form-select bg-dark text-light">
                                                         <option value="">Aucune</option>
                                                         {% for list in watch_lists %}
                                                             <option value="{{ list.id }}">{{ list.title }}</option>
@@ -77,7 +79,7 @@
                                                     </select>
                                                 </div>
 
-                                                <div class="text-center text-muted mb-2">ou</div>
+                                                <div class="text-center mb-2">ou</div>
 
                                                 <div class="mb-3">
                                                     <label class="form-label">Créer une nouvelle liste</label>
@@ -88,7 +90,9 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer border-0">
-                                                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Annuler</button>
+                                                <button type="button" class="btn btn-outline-light"
+                                                        data-bs-dismiss="modal">Annuler
+                                                </button>
                                                 <button type="button"
                                                         class="btn btn-danger"
                                                         id="btn-add-to-watchlist"
@@ -103,7 +107,8 @@
 
                                 <div aria-live="polite" aria-atomic="true" class="position-relative">
                                     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
-                                        <div id="watchlist-toast" class="toast text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                        <div id="watchlist-toast" class="toast text-bg-success border-0" role="alert"
+                                             aria-live="assertive" aria-atomic="true">
                                             <div class="d-flex">
                                                 <div class="toast-body">
                                                     Série ajouté à la liste !
@@ -116,9 +121,9 @@
                                 </div>
                                 <script>
                                     document.addEventListener('DOMContentLoaded', () => {
-                                        const btn    = document.getElementById('btn-add-to-watchlist');
+                                        const btn = document.getElementById('btn-add-to-watchlist');
                                         const select = document.getElementById('watchlist-select');
-                                        const input  = document.getElementById('new-watchlist-name');
+                                        const input = document.getElementById('new-watchlist-name');
                                         const modalEl = document.getElementById('watchlistModal');
                                         const toastEl = document.getElementById('watchlist-toast');
 
@@ -127,16 +132,16 @@
                                         btn.addEventListener('click', async (e) => {
                                             e.preventDefault();
 
-                                            const tmdbId     = btn.dataset.tmdbId;
+                                            const tmdbId = btn.dataset.tmdbId;
                                             const existingId = select.value;
-                                            const newName    = input.value.trim();
+                                            const newName = input.value.trim();
 
                                             if (!existingId && !newName) {
                                                 alert('Choisis une liste ou entre un nom.');
                                                 return;
                                             }
 
-                                            let url    = btn.dataset.baseUrl;
+                                            let url = btn.dataset.baseUrl;
                                             const listId = existingId || 0;
                                             url = url.replace('__ID__', listId);
 
@@ -155,13 +160,13 @@
                                                 const modal = bootstrap.Modal.getInstance(document.getElementById('watchlistModal'));
                                                 modal.hide();
 
-                                                const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+                                                const toast = new bootstrap.Toast(toastEl, {delay: 3000});
                                                 toast.show();
 
                                                 if (data.createdListId) {
                                                     // location.reload();
                                                 }
-                                            }else {
+                                            } else {
                                                 alert('Erreur : ' + (data.error ?? 'inconnue'));
                                             }
                                         });
@@ -181,7 +186,7 @@
 
                 <div class="list-group">
                     {% for season in serie.seasons %}
-                        <a href="{{ path('app_season_show', {idSerie: serie.tmdbId, idSeason: season.number }) }}">
+{#                        <a href="{{ path('app_season_show', {idSerie: serie.id, idSeason: season.number }) }}">#}
                             <div class="list-group-item bg-dark text-light border-secondary mb-2">
                                 <div class="d-flex">
                                     {% if season.picture %}
@@ -205,23 +210,23 @@
                                             {% endif %}
                                         </div>
 
-                                        <p class="mb-2 small text-muted">
+                                        <p class="mb-2 small">
                                             {{ season.resume
                                             ? (season.resume|length > 180
                                             ? season.resume|slice(0, 180) ~ '...'
                                             : season.resume)
-                                            : 'Aucun résumé pour cette saison.' }}
+                                            : '' }}
                                         </p>
 
                                         <div class="mt-auto d-flex justify-content-end">
-                                            <a href="#" class="btn btn-outline-light btn-sm">
+                                            <a href="{{ path('app_season_show', {idSerie: serie.id, idSeason: season.number }) }}" class="btn btn-outline-light btn-sm">
                                                 Voir les épisodes
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </a>
+{#                        </a>#}
                     {% endfor %}
                 </div>
             </section>
@@ -246,7 +251,7 @@
                                     <div>
                                         <h3 class="h6 mb-1">{{ productionCompanie.name }}</h3>
                                         {% if productionCompanie.originCountry %}
-                                            <p class="mb-0 small text-muted">
+                                            <p class="mb-0 small">
                                                 Pays : {{ productionCompanie.originCountry }}
                                             </p>
                                         {% endif %}

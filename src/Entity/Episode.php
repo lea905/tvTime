@@ -25,10 +25,10 @@ class Episode
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $releaseDate = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $resume = null;
 
     #[ORM\ManyToOne(inversedBy: 'episodes')]
@@ -38,12 +38,12 @@ class Episode
     /**
      * @var Collection<int, View>
      */
-    #[ORM\ManyToMany(targetEntity: View::class, mappedBy: 'elementId')]
-    private Collection $views;
+//    #[ORM\ManyToMany(targetEntity: View::class, mappedBy: 'elementId')]
+//    private Collection $views;
 
     public function __construct()
     {
-        $this->views = new ArrayCollection();
+//        $this->views = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,7 +99,7 @@ class Episode
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(\DateTime $releaseDate): static
+    public function setReleaseDate(?\DateTime $releaseDate): static
     {
         $this->releaseDate = $releaseDate;
 
@@ -121,29 +121,29 @@ class Episode
     /**
      * @return Collection<int, View>
      */
-    public function getViews(): Collection
-    {
-        return $this->views;
-    }
-
-    public function addView(View $view): static
-    {
-        if (!$this->views->contains($view)) {
-            $this->views->add($view);
-            $view->addElementId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeView(View $view): static
-    {
-        if ($this->views->removeElement($view)) {
-            $view->removeElementId($this);
-        }
-
-        return $this;
-    }
+//    public function getViews(): Collection
+//    {
+//        return $this->views;
+//    }
+//
+//    public function addView(View $view): static
+//    {
+//        if (!$this->views->contains($view)) {
+//            $this->views->add($view);
+//            $view->addElementId($this);
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removeView(View $view): static
+//    {
+//        if ($this->views->removeElement($view)) {
+//            $view->removeElementId($this);
+//        }
+//
+//        return $this;
+//    }
 
     public function getTmdbId(): ?int
     {

@@ -139,7 +139,7 @@ final class WatchListController extends AbstractController
 
         if ($type === 'series') {
             if (!$series) {
-                $series = $this->tmdbRequestService->getSerie($token, (int) $tmdbId);
+                $series = $seriesRepo->findOneBy(['tmdbId' => $tmdbId]);
                 $entityManager->persist($series);
             }
 

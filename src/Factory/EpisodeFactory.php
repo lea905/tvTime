@@ -6,7 +6,8 @@ use App\Entity\Season;
 
 class EpisodeFactory
 {
-    public function createFromTmdbData(array $episodeData, Season $season): Episode
+
+    public function createDataFromTmdbData(array $episodeData, Season $season): Episode
     {
         $episode = new Episode();
         return $episode

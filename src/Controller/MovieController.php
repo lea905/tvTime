@@ -49,8 +49,8 @@ class MovieController extends AbstractController
 
         return $this->render('movie/index.html.twig', [
             'now_playing_movies' => $nowPlayingMovies,
-            'popular_movies'     => $popularMovies,
-            'upcoming_movies'    => $upcomingMovies,
+            'popular_movies' => $popularMovies,
+            'upcoming_movies' => $upcomingMovies,
         ]);
     }
 
@@ -129,7 +129,7 @@ class MovieController extends AbstractController
     #[Route('/synchronisationApi', name: 'app_movies_synchronisation_api')]
     public function fetchMovies(): Response
     {
-        $this->tmdb->getData($this->token);
+        $this->tmdb->getMoviesData($this->token);
         return $this->redirectToRoute('movies');
     }
 }

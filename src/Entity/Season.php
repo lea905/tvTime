@@ -27,13 +27,16 @@ class Season
     #[ORM\Column(length: 255)]
     private ?string $picture = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $resume = null;
+
+    #[ORM\Column]
+    private ?int $numberEpisodes = null;
 
     /**
      * @var Collection<int, Episode>
      */
-    #[ORM\OneToMany(targetEntity: Episode::class, mappedBy: 'seasonId', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Episode::class, mappedBy: 'season')]
     private Collection $episodes;
 
     #[ORM\ManyToOne(inversedBy: 'seasons')]
@@ -155,6 +158,18 @@ class Season
     public function setSeriesId(?Series $series): static
     {
         $this->seriesId = $series;
+        return $this;
+    }
+
+    public function getNumberEpisodes(): ?int
+    {
+        return $this->numberEpisodes;
+    }
+
+    public function setNumberEpisodes(int $numberEpisodes): static
+    {
+        $this->numberEpisodes = $numberEpisodes;
+
         return $this;
     }
 }

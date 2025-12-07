@@ -20,7 +20,7 @@
                                 </span>
                             </p>
                         {% endif %}
-                        <p class="mb-0 small text-muted">
+                        <p class="mb-0 small">
                             Sortie :
                             {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
                         </p>
@@ -70,7 +70,7 @@
                                         <div>
                                             <h3 class="h6 mb-1">{{ productionCompanie.name }}</h3>
                                             {% if productionCompanie.originCountry %}
-                                                <p class="mb-0 small text-muted">
+                                                <p class="mb-0 small">
                                                     Pays : {{ productionCompanie.originCountry }}
                                                 </p>
                                             {% endif %}
@@ -111,7 +111,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="text-center text-muted mb-2">ou</div>
+                                    <div class="text-center mb-2">ou</div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Créer une nouvelle liste</label>
