@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats pour "{{ query }}"{% endblock %}
+
+{% block body %}
+    <div class="container py-5 mt-5">
+        <h1 class="mb-4 text-light">Résultats pour "{{ query }}"</h1>
+
+        {% if movies is empty and series is empty %}
+            <div class="alert alert-info bg-dark text-light border-secondary">
+                Aucun résultat trouvé pour "{{ query }}".
+            </div>
+        {% else %}
+
+            {# Résultats Films #}
+            {% if movies is not empty %}
+                <section class="mb-5">
+                    <h2 class="h4 text-light mb-3">Films</h2>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                        {% for movie in movies %}
+                            <div class="col">
+                                <div class="card bg-dark text-light h-100 border-0 shadow-sm">
+                                    <a href="{{ path('app_movie_show', {id: movie.id}) }}">
+                                        {% if movie.picture %}
+                                            <img src="https://image.tmdb.org/t/p/w300{{ movie.picture }}" class="card-img-top" alt="{{ movie.title }}" style="height: 300px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 300px;">
+                                                <span class="text-white">Pas d'image</span>
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                    <div class="card-body">
+                                        <h5 class="card-title text-truncate">
+                                            <a href="{{ path('app_movie_show', {id: movie.id}) }}" class="text-decoration-none text-light">{{ movie.title }}</a>
+                                        </h5>
+                                        <p class="card-text small text-muted">
+                                            {{ movie.releaseDate ? movie.releaseDate|date('Y') : '' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            {# Résultats Séries #}
+            {% if series is not empty %}
+                <section>
+                    <h2 class="h4 text-light mb-3">Séries</h2>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                        {% for serie in series %}
+                            <div class="col">
+                                <div class="card bg-dark text-light h-100 border-0 shadow-sm">
+                                    <a href="{{ path('app_series_show', {id: serie.tmdbId}) }}">
+                                        {% if serie.picture %}
+                                            <img src="https://image.tmdb.org/t/p/w300{{ serie.picture }}" class="card-img-top" alt="{{ serie.title }}" style="height: 300px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 300px;">
+                                                <span class="text-white">Pas d'image</span>
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                    <div class="card-body">
+                                        <h5 class="card-title text-truncate">
+                                            <a href="{{ path('app_series_show', {id: serie.tmdbId}) }}" class="text-decoration-none text-light">{{ serie.title }}</a>
+                                        </h5>
+                                        <p class="card-text small text-muted">
+                                            {{ serie.status ?? '' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+        {% endif %}
+    </div>
+{% endblock %}
