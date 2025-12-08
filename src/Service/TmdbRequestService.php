@@ -33,7 +33,9 @@ class TmdbRequestService
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'accept' => 'application/json',
-            ],
+            ], 'query' => [
+                'language' => 'fr-FR',
+            ]
         ]);
 
         $data = $response->toArray();
