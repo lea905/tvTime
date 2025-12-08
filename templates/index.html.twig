@@ -1,194 +1,86 @@
-{% extends 'base.html.twig' %}
+    {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+    {% block title %}Accueil{% endblock %}
 
-{% block body %}
-{#    <div style="padding-top: 5%;">#}
-{#        {% if watch_lists is not empty %}#}
-{#            <div class="d-flex justify-content-between align-items-center mb-2">#}
-{#                <h2 class="h4 m-0">Mes listes</h2>#}
-{#            </div>#}
-{#        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 pb-4">#}
+    {% block body %}
+    <div style="padding-top: 5%;">
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h4 m-0">Tous les films</h2>
+            </div>
 
-{#            {% for watch_list in watch_lists %}#}
-{#                <div class="col">#}
-{#                    <div class="card bg-dark text-light h-100 border-0 shadow-sm">#}
-{#                        <div class="card-body d-flex flex-column">#}
-{#                            <h2 class="h5 mb-2 text-truncate">#}
-{#                                {{ watch_list.title }}#}
-{#                            </h2>#}
-{#                            <p class="text-white small mb-3" style="min-height: 3em;">#}
-{#                                {{ watch_list.description is empty ? 'Aucune description.' : watch_list.description }}#}
-{#                            </p>#}
+            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                {% for movie in allMovies %}
+                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                        <img
+                            src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
+                            alt="{{ movie.title }}"
+                            class="card-img-top"
+                        >
+
+                        <div class="card-body p-2">
+                            <h3 class="card-title h6 text-truncate" title="{{ movie.title }}">
+                                {{ movie.title }}
+                            </h3>
+
+                            <p class="mb-2 small">
+                                Réalisé le <span
+                                    class="badge bg-secondary me-1 mb-1">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
+                            </p>
+
+                            <a href="{{ path('app_movie_show', {id: movie.id}) }}"
+                               class="btn btn-sm btn-primary w-100">
+                                Détails
+                            </a>
+                        </div>
+                    </article>
+                {% else %}
+                    <p>Oups ! Aucun film n'est visible, pour régler ce problème appuyez
+                        <a href="{{ path('app_movies_synchronisation_api') }}">
+                            ici</a>.</p>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="mb-5">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h4 m-0">Toutes les séries</h2>
+            </div>
+
+            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                {% for serie in allSeries %}
+                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                        <img
+                            src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                            alt="{{ serie.title }}"
+                            class="card-img-top"
+                        >
+
+                        <div class="card-body p-2">
+                            <h3 class="card-title h6 text-truncate" title="{{ serie.title }}">
+                                {{ serie.title }}
+                            </h3>
+
+                            <p class="mb-2 small">
+                                Réalisé le <span
+                                    class="badge bg-secondary me-1 mb-1">{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
+                            </p>
+
+                            <a href="{{ path('app_movie_show', {id: serie.id}) }}"
+                               class="btn btn-sm btn-primary w-100">
+                                Détails
+                            </a>
+                        </div>
+                    </article>
+                {% else %}
+                    <p>Oups ! Aucune série n'est visible, pour régler ce problème appuyez
+                        <a href="{{ path('app_series_synchronisation_api') }}">
+                            ici</a>.</p>
+                {% endfor %}
+            </div>
+
+        </section>
+    </div>
 
 
-
-{#                            <div class="mt-auto d-flex justify-content-between align-items-center">#}
-{#                                <a href="{{ path('app_watch_list_show', {id: watch_list.id}) }}"#}
-{#                                   class="btn btn-primary btn-sm">#}
-{#                                    Ouvrir#}
-{#                                </a>#}
-{#                                <a href="{{ path('app_watch_list_edit', {id: watch_list.id}) }}"#}
-{#                                   class="btn btn-secondary btn-sm">#}
-{#                                    Modifier#}
-{#                                </a>#}
-{#                                {{ include('watch_list/_delete_form.html.twig', {watch_list: watch_list}) }}#}
-
-{#                            </div>#}
-
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#            {% endfor %}#}
-{#        </div>#}
-{#        {% endif %}#}
-
-{#        <section class="mb-5">#}
-{#            <div class="d-flex justify-content-between align-items-center mb-2">#}
-{#                <h2 class="h4 m-0">Séries populaires</h2>#}
-{#            </div>#}
-
-{#            <div class="series-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">#}
-{#                {% for serie in popular_series %}#}
-{#                    <article class="series-card card bg-dark text-light" style="min-width: 180px;">#}
-{#                        <img#}
-{#                            src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"#}
-{#                            alt="{{ serie.title }}"#}
-{#                            class="card-img-top"#}
-{#                        >#}
-
-{#                        <div class="card-body p-2 d-flex flex-column">#}
-{#                            <h3 class="card-title h6 text-truncate" title="{{ serie.title }}">#}
-{#                                {{ serie.title }}#}
-{#                            </h3>#}
-
-{#                            <p class="mb-2 small">#}
-{#                                {{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}#}
-{#                            </p>#}
-
-{#                            <small class="d-block mb-2">#}
-{#                                {{ serie.resume|length > 100 ? serie.resume|slice(0, 100) ~ '...' : serie.resume }}#}
-{#                            </small>#}
-
-{#                            <a href="{{ path('app_series_show', {id: serie.tmdbId}) }}"#}
-{#                               class="btn btn-sm btn-primary w-100 mt-auto">#}
-{#                                Détails#}
-{#                            </a>#}
-{#                        </div>#}
-{#                    </article>#}
-{#                {% else %}#}
-{#                    <p class="text-muted">Aucune série populaire trouvée.</p>#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        </section>#}
-
-{#        #}{# NOW PLAYING #}
-{#        <section class="mb-5">#}
-{#            <div class="d-flex justify-content-between align-items-center mb-2">#}
-{#                <h2 class="h4 m-0">En ce moment au cinéma</h2>#}
-{#            </div>#}
-
-{#            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">#}
-{#                {% for movie in now_playing_movies %}#}
-{#                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">#}
-{#                        <img#}
-{#                            src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"#}
-{#                            alt="{{ movie.title }}"#}
-{#                            class="card-img-top"#}
-{#                        >#}
-
-{#                        <div class="card-body p-2">#}
-{#                            <h3 class="card-title h6 text-truncate" title="{{ movie.title }}">#}
-{#                                {{ movie.title }}#}
-{#                            </h3>#}
-
-{#                            <p class="mb-2 small">#}
-{#                                {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}#}
-{#                            </p>#}
-
-{#                            <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}"#}
-{#                               class="btn btn-sm btn-primary w-100">#}
-{#                                Détails#}
-{#                            </a>#}
-{#                        </div>#}
-{#                    </article>#}
-{#                {% else %}#}
-{#                    <p class="text-muted">Aucun film en ce moment.</p>#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        </section>#}
-
-{#        #}{# POPULAIRES #}
-{#        <section class="mb-5">#}
-{#            <div class="d-flex justify-content-between align-items-center mb-2">#}
-{#                <h2 class="h4 m-0">Populaires</h2>#}
-{#            </div>#}
-
-{#            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">#}
-{#                {% for movie in popular_movies %}#}
-{#                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">#}
-{#                        <img#}
-{#                            src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"#}
-{#                            alt="{{ movie.title }}"#}
-{#                            class="card-img-top"#}
-{#                        >#}
-
-{#                        <div class="card-body p-2">#}
-{#                            <h3 class="card-title h6 text-truncate" title="{{ movie.title }}">#}
-{#                                {{ movie.title }}#}
-{#                            </h3>#}
-
-{#                            <p class="mb-2 small">#}
-{#                                {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}#}
-{#                            </p>#}
-
-{#                            <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}"#}
-{#                               class="btn btn-sm btn-primary w-100">#}
-{#                                Détails#}
-{#                            </a>#}
-{#                        </div>#}
-{#                    </article>#}
-{#                {% else %}#}
-{#                    <p class="text-muted">Aucun film populaire trouvé.</p>#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        </section>#}
-
-{#        #}{# À VENIR #}
-{#        <section class="mb-5">#}
-{#            <div class="d-flex justify-content-between align-items-center mb-2">#}
-{#                <h2 class="h4 m-0">À venir</h2>#}
-{#            </div>#}
-
-{#            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">#}
-{#                {% for movie in upcoming_movies %}#}
-{#                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">#}
-{#                        <img#}
-{#                            src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"#}
-{#                            alt="{{ movie.title }}"#}
-{#                            class="card-img-top"#}
-{#                        >#}
-
-{#                        <div class="card-body p-2">#}
-{#                            <h3 class="card-title h6 text-truncate" title="{{ movie.title }}">#}
-{#                                {{ movie.title }}#}
-{#                            </h3>#}
-
-{#                            <p class="mb-2 small">#}
-{#                                Sortie le {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Bientôt' }}#}
-{#                            </p>#}
-
-{#                            <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}"#}
-{#                               class="btn btn-sm btn-primary w-100">#}
-{#                                Détails#}
-{#                            </a>#}
-{#                        </div>#}
-{#                    </article>#}
-{#                {% else %}#}
-{#                    <p class="text-muted">Aucun film à venir.</p>#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        </section>#}
-
-{#    </div>#}
-{% endblock %}
+            {% endblock %}
