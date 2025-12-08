@@ -33,7 +33,6 @@ class SeriesController extends AbstractController
     #[Route('', name: 'app_index_series')]
     public function index(Request $request): Response
     {
-
         $series = $this->seriesRepository->findAll();
 
         if (count($series) <= 0)
