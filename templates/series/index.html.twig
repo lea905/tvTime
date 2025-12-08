@@ -45,7 +45,7 @@
             {% if popular is not empty %}
                 <section class="mb-5">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h2 class="h4 m-0">Les series les plus populaires</h2>
+                        <h2 class="h4 m-0">Le public a aimé</h2>
                     </div>
 
                     <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
@@ -81,7 +81,7 @@
             {% if year2025 is not empty %}
                 <section class="mb-5">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h2 class="h4 m-0">Les series sortie en 2025</h2>
+                        <h2 class="h4 m-0">Sorties cette année</h2>
                     </div>
 
                     <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
@@ -117,7 +117,7 @@
             {% if upcoming is not empty %}
                 <section class="mb-5">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h2 class="h4 m-0">Les series qui arrivent prochainnement</h2>
+                        <h2 class="h4 m-0">Bientot disponible</h2>
                     </div>
 
                     <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
@@ -166,8 +166,6 @@
                         {% endfor %}
                     </ul>
                 </div>
-
-
                 <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
                     {% if seriesGenre is empty %}
 
