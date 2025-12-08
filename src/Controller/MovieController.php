@@ -2,12 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Movie;
-use App\Entity\ProductionCompanie;
 use App\Entity\View;
 use App\Form\EmotionType;
 use App\Repository\MovieRepository;
-use App\Repository\ProductionCompanieRepository;
 use App\Repository\WatchListRepository;
 use App\Service\TmdbRequestService;
 use App\Utils\TmdbGenres;
@@ -21,7 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/movies')]
 class MovieController extends AbstractController
 {
-
     private string $token;
 
     public function __construct(private readonly TmdbRequestService $tmdb,
@@ -32,8 +28,6 @@ class MovieController extends AbstractController
 
     /**
      * Affiche tout les films présents dans la BDD
-     *
-     * @return Response
      */
     #[Route('/', name: 'app_movie_index')]
     public function home(Request $request): Response
@@ -68,9 +62,6 @@ class MovieController extends AbstractController
 
     /**
      * Affiche un film identifié par son id
-     *
-     * @param int $id
-     * @return Response
      */
     #[Route('/show/{id}', name: 'app_movie_show')]
     public function show(int $id, WatchListRepository $watchListRepository, EntityManagerInterface $entityManager): Response
@@ -121,9 +112,6 @@ class MovieController extends AbstractController
 
     /**
      * Affiche les films du genre souhaité
-     *
-     * @param string $genre
-     * @return Response
      */
     #[Route('/search/{genre}', name: 'app_movies_genre')]
     public function genre(string $genre): Response
@@ -139,36 +127,9 @@ class MovieController extends AbstractController
         ]);
     }
 
-//    /**
-//     * Affiche les films actuellement au cinéma
-//     *
-//     * @return Response
-//     */
-//    #[Route('/now_playing', name: 'app_movies_now_playing')]
-//    public function now_playing(): Response
-//    {
-//        $movies = $this->tmdb->getMoviesNowPlaying($this->token);
-//
-//        return $this->render('movie/now_playing.html.twig', [
-//            'movies' => $movies,
-//        ]);
-//    }
-
-//    /**
-//     * Affiche les films pas encore sortis
-//     *
-//     * @return Response
-//     */
-//    #[Route('/upcoming', name: 'app_movies_upcoming')]
-//    public function upcoming(): Response
-//    {
-//        $movies = $this->tmdb->getMoviesUpcoming($this->token);
-//
-//        return $this->render('movie/upcoming.html.twig', [
-//            'movies' => $movies,
-//        ]);
-//    }
-
+    /**
+     * Prend les informations des films de l'API
+     */
     #[Route('/synchronisationApi', name: 'app_movies_synchronisation_api')]
     public function fetchMovies(): Response
     {

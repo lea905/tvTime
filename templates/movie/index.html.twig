@@ -2,9 +2,9 @@
 
 {% block body %}
     <div style="padding-top: 5%;">
-        {% if series is empty %}
+        {% if allMovies is empty %}
             <p>Oups ! Aucune série n'est visible, pour régler ce problème appuyez
-                <a href="{{ path('app_series_synchronisation_api') }}">
+                <a href="{{ path('app_movies_synchronisation_api') }}">
                     ici</a>. Ou rafraîchissez la page.</p>
         {% else %}
 
@@ -155,7 +155,6 @@
                     <h2 class="h4 m-0">Les films par type</h2>
                 </div>
                 <div class="mb-3">
-                    <strong>Genres :</strong>
                     <ul class="list-inline mb-0">
                         {% for genre in allGenres %}
                             <li class="list-inline-item mb-2">

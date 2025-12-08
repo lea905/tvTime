@@ -22,8 +22,9 @@
                             </p>
                         {% endif %}
                         <p class="mb-0 small">
-                            Sortie :
-                            {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}
+                            Date de sortie : <span
+                                class="badge bg-secondary me-1 mb-1">
+                                {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
                         </p>
                     </div>
                 </div>
@@ -32,7 +33,6 @@
 
             <div class="col-12 col-md-8 col-lg-9">
                 <h1 class="mb-2">{{ movie.title }}</h1>
-
                 {% if movie.genres is defined and movie.genres|length > 0 %}
                     <p class="mb-2">
                         {% for genre in movie.genres %}
@@ -47,7 +47,7 @@
                     </p>
                 {% endif %}
 
-                <h2 class="h5 mt-3">Synopsis</h2>
+                <h2 class="h5 mt-3"><strong>Synopsis</strong></h2>
                 <p class="lead">
                     {{ movie.resume ?: 'Aucun synopsis disponible pour ce film.' }}
                 </p>
