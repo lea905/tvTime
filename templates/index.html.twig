@@ -1,53 +1,53 @@
-    {#{% extends 'base.html.twig' %}#}
+    {% extends 'base.html.twig' %}
 
-    {#{% block title %}Accueil{% endblock %}#}
+    {% block title %}Accueil{% endblock %}
 
-    {#{% block body %}#}
-    {#<div style="padding-top: 5%;">#}
-    {#    <section class="mb-5">#}
-    {#        <div class="d-flex justify-content-between align-items-center mb-2">#}
-    {#            <h2 class="h4 m-0">Tout les films</h2>#}
-    {#        </div>#}
+    {% block body %}
+    <div style="padding-top: 5%;">
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h4 m-0">Tous les films</h2>
+            </div>
 
-    {#        <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">#}
-    {#            {% for movie in allMovies %}#}
-    {#                <article class="movie-card card bg-dark text-light" style="min-width: 180px;">#}
-    {#                    <img#}
-    {#                        src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"#}
-    {#                        alt="{{ movie.title }}"#}
-    {#                        class="card-img-top"#}
-    {#                    >#}
+            <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                {% for movie in allMovies %}
+                    <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                        <img
+                            src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
+                            alt="{{ movie.title }}"
+                            class="card-img-top"
+                        >
 
-    {#                    <div class="card-body p-2">#}
-    {#                        <h3 class="card-title h6 text-truncate" title="{{ movie.title }}">#}
-    {#                            {{ movie.title }}#}
-    {#                        </h3>#}
+                        <div class="card-body p-2">
+                            <h3 class="card-title h6 text-truncate" title="{{ movie.title }}">
+                                {{ movie.title }}
+                            </h3>
 
-    {#                        <p class="mb-2 small">#}
-    {#                            Réalisé le <span#}
-    {#                                class="badge bg-secondary me-1 mb-1">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>#}
-    {#                        </p>#}
+                            <p class="mb-2 small">
+                                Réalisé le <span
+                                    class="badge bg-secondary me-1 mb-1">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
+                            </p>
 
-    {#                        <a href="{{ path('app_movie_show', {id: movie.id}) }}"#}
-    {#                           class="btn btn-sm btn-primary w-100">#}
-    {#                            Détails#}
-    {#                        </a>#}
-    {#                    </div>#}
-    {#                </article>#}
-    {#            {% else %}#}
-    {#                <p>Oups ! Aucun film n'est visible, pour régler ce problème appuyez#}
-    {#                    <a href="{{ path('app_movies_synchronisation_api') }}">#}
-    {#                        ici</a>.</p>#}
-    {#            {% endfor %}#}
-    {#        </div>#}
-    {#    </section>#}
-    {#    <section class="mb-5">#}
+                            <a href="{{ path('app_movie_show', {id: movie.id}) }}"
+                               class="btn btn-sm btn-primary w-100">
+                                Détails
+                            </a>
+                        </div>
+                    </article>
+                {% else %}
+                    <p>Oups ! Aucun film n'est visible, pour régler ce problème appuyez
+                        <a href="{{ path('app_movies_synchronisation_api') }}">
+                            ici</a>.</p>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="mb-5">
 
-    {#        <div class="d-flex justify-content-between align-items-center mb-2">#}
-    {#            <h2 class="h4 m-0">Les films les plus populaires</h2>#}
-    {#        </div>#}
-    {#    </section>#}
-    {#</div>#}
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h4 m-0">T films les plus populaires</h2>
+            </div>
+        </section>
+    </div>
 
 
-    {#        {% endblock %}#}
+            {% endblock %}
