@@ -36,6 +36,7 @@ Les utilisateurs peuvent créer leurs propres **listes personnalisées** (avec u
 - Sauvegarde des films, séries et listes créées par l’utilisateur.
 - Gestion des relations entre **utilisateur ↔ liste ↔ œuvre** avec Doctrine.
 
+
 ### 3. Interface utilisateur
 - Utilisation de **Bootstrap** pour le design et la responsivité.
 - Intégration via **Webpack Encore** pour la compilation des assets (CSS/JS).
@@ -51,7 +52,20 @@ composer require symfony/http-client
 ```
 composer require --dev symfony/maker-bundle
 ```
-### 2. Lancer le projet
+
+### 2. Crée votre base de données
+Copier le .env en .env.local
+
+Modifier cette ligne en mettant vos informations
+```
+DATABASE_URL="mysql://p2303185:12303185@iutbg-lamp.univ-lyon1.fr:3306/p2303185?serverVersion=8.0.37"
+```
+Puis lancer cette commande
+```
+ php bin/console d:s:u -f
+```
+
+### 3. Lancer le projet
 ```
 symfony serve
 ```
