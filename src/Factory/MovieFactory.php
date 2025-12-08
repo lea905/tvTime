@@ -52,7 +52,10 @@ class MovieFactory
         // Conversion des id genres en noms lisibles
         $genreNames = [];
         foreach ($movieData['genre_ids'] as $id) {
-            $genreNames[] = TmdbGenres::getName($id);
+            $tempGenre = TmdbGenres::getName($id);
+            if($tempGenre != null) {
+                $genreNames[] = $tempGenre;
+            }
         }
 
         // Production companies (ManyToMany)

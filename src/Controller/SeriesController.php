@@ -35,10 +35,13 @@ class SeriesController extends AbstractController
     {
         $series = $this->seriesRepository->findAll();
 
-        if (count($series) <= 0)
+        if (count($series) <= 0) {
             $this->fetchSeries();
+            $this->tmdb->genres($this->token);
+        }
 
         $selectedGenre = $request->query->get('genre');
+        if (!$selectedGenre) $selectedGenre = TmdbGenres::getGenres()[0];
 
         if ($selectedGenre) {
             $seriesGenre = $this->seriesRepository->findByGenre($selectedGenre);

@@ -8,6 +8,7 @@ use App\Entity\Series;
 use App\Factory\EpisodeFactory;
 use App\Factory\MovieFactory;
 use App\Factory\SeriesFactory;
+use App\Utils\TmdbGenres;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class TmdbRequestService
@@ -89,6 +90,36 @@ class TmdbRequestService
         return $datas;
     }
 
+    public function genres(mixed $token)
+    {
+        // Movies
+        $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/genre/movie/list', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'accept' => 'application/json',
+            ],
+            'query' => [
+                'language' => 'fr-FR',
+            ],
+        ]);
+
+        $data = $response->toArray();
+        TmdbGenres::fillDatas($data);
+
+        // Series
+        $response = $this->httpClient->request('GET', 'https://api.themoviedb.org/3/genre/tv/list', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'accept' => 'application/json',
+            ],
+            'query' => [
+                'language' => 'fr-FR',
+            ],
+        ]);
+
+        $data = $response->toArray();
+        TmdbGenres::fillDatas($data);
+    }
     /**
      * Update series' datas and its seasons
      */

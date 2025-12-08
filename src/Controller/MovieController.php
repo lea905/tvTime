@@ -33,7 +33,7 @@ class MovieController extends AbstractController
     public function home(Request $request): Response
     {
         $selectedGenre = $request->query->get('genre');
-
+        if (!$selectedGenre) $selectedGenre = TmdbGenres::getGenres()[0];
         if ($selectedGenre) {
             $movieGenre = $this->movieRepository->findByGenre($selectedGenre);
         } else {
@@ -41,9 +41,10 @@ class MovieController extends AbstractController
         }
 
         $allMovies = $this->movieRepository->findAll();
-        if (count($allMovies) <= 0)
+        if (count($allMovies) <= 0) {
             $this->fetchMovies();
-
+            $this->tmdb->genres($this->token);
+        }
         $popular = $this->movieRepository->findMostPopular(20);
         $year2025 = $this->movieRepository->findByYear(2025);
         $upcoming = $this->movieRepository->findUpcoming();

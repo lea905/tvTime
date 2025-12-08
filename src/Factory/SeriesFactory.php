@@ -55,7 +55,10 @@ class SeriesFactory
         $genreNames = [];
         if (isset($serieData['genre_ids'])) {
             foreach ($serieData['genre_ids'] as $number => $id) {
-                $genreNames[] = TmdbGenres::getName($id);
+                $tempGenre = TmdbGenres::getName($id);
+                if($tempGenre != null) {
+                    $genreNames[] = $tempGenre;
+                }
             }
         };
 
