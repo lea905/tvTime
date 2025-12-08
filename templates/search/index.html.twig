@@ -11,57 +11,77 @@
         {% else %}
 
             {% if movies is not empty %}
-                <h2 class="mt-4 mb-3" style="color: #3269A8;">Films</h2>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                    {% for movie in movies %}
-                        <div class="col">
-                            <div class="card h-100 bg-dark text-light border-0 shadow-lg" style="transition: transform 0.2s;">
-                                <a href="{{ path('app_movie_show', {'id': movie.id}) }}" class="text-decoration-none text-light">
-                                    {% if movie.picture %}
-                                        <img src="https://image.tmdb.org/t/p/w500{{ movie.picture }}" class="card-img-top" alt="{{ movie.title }}">
-                                    {% else %}
-                                        <div class="d-flex align-items-center justify-content-center bg-secondary" style="height: 400px;">
-                                            Pas d'image
-                                        </div>
-                                    {% endif %}
-                                    <div class="card-body">
-                                        <h5 class="card-title text-truncate">{{ movie.title }}</h5>
-                                        <p class="card-text text-muted small">
-                                            {{ movie.releaseDate|date('Y') }}
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                <section class="mb-5">
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h2 class="h4 m-0">Films</h2>
+                    </div>
+
+                    <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                        {% for movie in movies %}
+                            <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                                <img
+                                    src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
+                                    alt="{{ movie.title }}"
+                                    class="card-img-top"
+                                >
+
+                                <div class="card-body p-2">
+                                    <h3 class="card-title h6 text-truncate" title="{{ movie.title }}">
+                                        {{ movie.title }}
+                                    </h3>
+
+                                    <p class="mb-2 small">
+                                        Réalisé le <span
+                                            class="badge bg-secondary me-1 mb-1">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
+                                    </p>
+
+                                    <a href="{{ path('app_movie_show', {id: movie.id}) }}"
+                                       class="btn btn-sm btn-primary w-100">
+                                        Détails
+                                    </a>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
             {% endif %}
 
             {% if series is not empty %}
-                <h2 class="mt-5 mb-3" style="color: #3269A8;">Séries</h2>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                    {% for show in series %}
-                        <div class="col">
-                            <div class="card h-100 bg-dark text-light border-0 shadow-lg" style="transition: transform 0.2s;">
-                                <a href="{{ path('app_series_show', {'id': show.id}) }}" class="text-decoration-none text-light">
-                                    {% if show.picture %}
-                                        <img src="https://image.tmdb.org/t/p/w500{{ show.picture }}" class="card-img-top" alt="{{ show.title }}">
-                                    {% else %}
-                                        <div class="d-flex align-items-center justify-content-center bg-secondary" style="height: 400px;">
-                                            Pas d'image
-                                        </div>
-                                    {% endif %}
-                                    <div class="card-body">
-                                        <h5 class="card-title text-truncate">{{ show.title }}</h5>
-                                        <p class="card-text text-muted small">
-                                            {{ show.releaseDate|date('Y') }}
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                <section class="mb-5">
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h2 class="h4 m-0">Séries</h2>
+                    </div>
+
+                    <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
+                        {% for serie in series %}
+                            <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
+                                <img
+                                    src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                                    alt="{{ serie.title }}"
+                                    class="card-img-top"
+                                >
+
+                                <div class="card-body p-2">
+                                    <h3 class="card-title h6 text-truncate" title="{{ serie.title }}">
+                                        {{ serie.title }}
+                                    </h3>
+
+                                    <p class="mb-2 small">
+                                        Réalisé le <span
+                                            class="badge bg-secondary me-1 mb-1">{{ serie.releaseDate ? serie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
+                                    </p>
+
+                                    <a href="{{ path('app_series_show', {id: serie.id}) }}"
+                                       class="btn btn-sm btn-primary w-100">
+                                        Détails
+                                    </a>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
             {% endif %}
 
         {% endif %}
