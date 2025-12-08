@@ -3,7 +3,8 @@
 {% block body %}
     <div class="container pt-3">
 
-        <a href="{{ path('app_series_show', {id: idSerie}) }}" class="btn btn-link mb-3 text-decoration-none text-black">
+        <a href="{{ path('app_series_show', {id: idSerie}) }}"
+           class="btn btn-link mb-3 text-decoration-none text-black">
             &larr; Retour à la serie
         </a>
 
@@ -56,9 +57,11 @@
                                 <div class="flex-grow-1 d-flex flex-column">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <h3 class="h6 mb-0">{{ episode.title }}</h3>
-                                        <span
-                                                class="badge bg-secondary">{{ episode.releaseDate ? episode.releaseDate|date('Y') : 'Date inconnue' }}
+                                        {% if(episode.releaseDate) %}
+                                            <span
+                                                    class="badge bg-secondary">{{ episode.releaseDate|date('Y') }}
                                         </span>
+                                        {% endif %}
                                     </div>
 
                                     <p class="mb-2 small ">

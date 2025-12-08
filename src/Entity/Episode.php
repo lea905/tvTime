@@ -88,7 +88,7 @@ class Episode
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(\DateTime $releaseDate): static
+    public function setReleaseDate(?\DateTime $releaseDate): static
     {
         $this->releaseDate = $releaseDate;
 
