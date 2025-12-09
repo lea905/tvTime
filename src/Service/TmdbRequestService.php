@@ -13,7 +13,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class TmdbRequestService
 {
-    private $cpt = 3; // number of datas *20 come from API
+    private $cpt = 30; // number of datas *20 come from API
 
     public function __construct(
         private HttpClientInterface $httpClient,
