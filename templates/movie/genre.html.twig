@@ -16,7 +16,7 @@
                         {% for genre in movie.genres %}
                             <p> {{ genre }} </p>
                         {% endfor %}
-                        <p>{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>
+                        <p itemprop="datePublished">{{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>
                         <small>{{ movie.resume|length > 100 ? movie.resume|slice(0, 100) ~ '...' : movie.resume }}</small>
                     </div>
                 </div>

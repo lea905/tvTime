@@ -16,7 +16,7 @@
                         {% for genre in series.genres %}
                             <p> {{ genre }} </p>
                         {% endfor %}
-                        <p>{{ series.releaseDate ? series.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>
+                        <p itemprop="datePublished">{{ series.releaseDate ? series.releaseDate|date('d/m/Y') : 'Date inconnue' }}</p>
                         <small>{{ series.resume|length > 100 ? series.resume|slice(0, 100) ~ '...' : series.resume }}</small>
                     </div>
                 </div>

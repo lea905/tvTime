@@ -22,7 +22,7 @@
                             </p>
                         {% endif %}
                         <p class="mb-0 small">
-                            Date de sortie : <span
+                            Date de sortie : <span itemprop="datePublished"
                                 class="badge bg-secondary me-1 mb-1">
                                 {{ movie.releaseDate ? movie.releaseDate|date('d/m/Y') : 'Date inconnue' }}</span>
                         </p>
@@ -69,7 +69,7 @@
                                             >
                                         {% endif %}
                                         <div>
-                                            <h3 class="h6 mb-1">{{ productionCompanie.name }}</h3>
+                                            <h3 itemprop="name" class="h6 mb-1">{{ productionCompanie.name }}</h3>
                                             {% if productionCompanie.originCountry %}
                                                 <p class="mb-0 small">
                                                     Pays : {{ productionCompanie.originCountry }}

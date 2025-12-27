@@ -62,9 +62,9 @@
                                         >
                                     {% endif %}
                                     <div class="card-body p-2">
-                                        <h3 class="h6 mb-0 text-truncate">{{ movie.title }}</h3>
+                                        <h3 itemprop="name" class="h6 mb-0 text-truncate">{{ movie.title }}</h3>
                                         {% if movie.releaseDate is defined and movie.releaseDate %}
-                                            <small class="text-white">
+                                            <small itemprop="datePublished" class="text-white">
                                                 {{ movie.releaseDate|date('Y') }}
                                             </small>
                                         {% endif %}
@@ -97,9 +97,9 @@
                                         >
                                     {% endif %}
                                     <div class="card-body p-2">
-                                        <h3 class="h6 mb-0 text-truncate">{{ serie.title }}</h3>
+                                        <h3 itemprop="name" class="h6 mb-0 text-truncate">{{ serie.title }}</h3>
                                         {% if serie.releaseDate is defined and serie.releaseDate %}
-                                            <small class="text-muted">
+                                            <small itemprop="datePublished" class="text-muted">
                                                 {{ serie.releaseDate|date('Y') }}
                                             </small>
                                         {% endif %}

@@ -30,7 +30,7 @@
                                 </p>
                             {% endif %}
 
-                            <p class="mb-2 small">
+                            <p itemprop="datePublished" class="mb-2 small">
                                 {{ serie.releaseDate ? serie.releaseDate|date('Y') : 'Date inconnue' }}
                                 {% if serie.numberSeasons %} • {{ serie.numberSeasons }} saison(s){% endif %}
                                 {% if serie.numberEpisodes %} • {{ serie.numberEpisodes }} épisode(s){% endif %}
@@ -229,7 +229,7 @@
 
                                 <div class="flex-grow-1 d-flex flex-column">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <h3 class="h6 mb-0">{{ season.title }}</h3>
+                                        <h3 itemprop="name" class="h6 mb-0">{{ season.title }}</h3>
                                         {% if season.episodeCount is defined %}
                                             <span class="badge bg-secondary">
                                             {{ season.episodeCount }} épisode(s)
@@ -277,7 +277,7 @@
                                         >
                                     {% endif %}
                                     <div>
-                                        <h3 class="h6 mb-1">{{ productionCompanie.name }}</h3>
+                                        <h3 itemprop="name" class="h6 mb-1">{{ productionCompanie.name }}</h3>
                                         {% if productionCompanie.originCountry %}
                                             <p class="mb-0 small">
                                                 Pays : {{ productionCompanie.originCountry }}
