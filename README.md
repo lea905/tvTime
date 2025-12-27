@@ -36,10 +36,29 @@ Les utilisateurs peuvent créer leurs propres **listes personnalisées** (avec u
 - Sauvegarde des films, séries et listes créées par l’utilisateur.
 - Gestion des relations entre **utilisateur ↔ liste ↔ œuvre** avec Doctrine.
 
-
 ### 3. Interface utilisateur
 - Utilisation de **Bootstrap** pour le design et la responsivité.
 - Intégration via **Webpack Encore** pour la compilation des assets (CSS/JS).
+
+### 4. Validation HTML et sémantique
+- Utilisation des balises sémantiques : ```<main>, <section>, <article>, <header>```.
+- Code HTML conforme aux bonnes pratiques W3C.
+
+### 5. Micro-data (Schema.org)
+- Implémentation des micro-données pour les images, les dates et les titres.
+
+### 6. Esthétique et Bootstrap
+- Redéfinition des variables de couleurs.
+- Minification, réduction des imports inutiles.
+- Thème cohérent sur l’ensemble du site.
+- Harmonisation des couleurs et des espacements.
+- Utilisation de Flexbox et des utilitaires Bootstrap.
+- Scroll horizontal contrôlé pour l’affichage des listes sur mobile.
+
+### 7. Fonctionnement interne
+- Compilation et minification des assets via Webpack Encore.
+- Images fournies par l’API TMDb via un CDN externe.
+- Chargement optimisé sans stockage local inutile.
 
 ---
 
