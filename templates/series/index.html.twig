@@ -15,11 +15,12 @@
 
                 <div class="series-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
                     {% for serie in series %}
-                        <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
-                            <img
-                                src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
-                                alt="{{ serie.title }}"
-                                class="card-img-top"
+                        <article class="movie-card card bg-dark text-light" style="min-width: 180px;" itemscope
+                                 itemtype="https://schema.org/TVSeries">
+                            <img itemprop="image"
+                                 src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                                 alt="{{ serie.title }}"
+                                 class="card-img-top"
                             >
 
                             <div class="card-body p-2">
@@ -51,10 +52,10 @@
                     <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
                         {% for serie in popular %}
                             <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
-                                <img
-                                    src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
-                                    alt="{{ serie.title }}"
-                                    class="card-img-top"
+                                <img itemprop="image"
+                                     src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                                     alt="{{ serie.title }}"
+                                     class="card-img-top"
                                 >
 
                                 <div class="card-body p-2">
@@ -87,10 +88,10 @@
                     <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
                         {% for serie in year2025 %}
                             <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
-                                <img
-                                    src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
-                                    alt="{{ serie.title }}"
-                                    class="card-img-top"
+                                <img itemprop="image"
+                                     src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                                     alt="{{ serie.title }}"
+                                     class="card-img-top"
                                 >
 
                                 <div class="card-body p-2">
@@ -123,10 +124,10 @@
                     <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
                         {% for serie in upcoming %}
                             <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
-                                <img
-                                    src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
-                                    alt="{{ serie.title }}"
-                                    class="card-img-top"
+                                <img itemprop="image"
+                                     src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                                     alt="{{ serie.title }}"
+                                     class="card-img-top"
                                 >
 
                                 <div class="card-body p-2">
@@ -174,10 +175,10 @@
 
                         {% for serie in seriesGenre %}
                             <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
-                                <img
-                                    src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
-                                    alt="{{ serie.title }}"
-                                    class="card-img-top"
+                                <img itemprop="image"
+                                     src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                                     alt="{{ serie.title }}"
+                                     class="card-img-top"
                                 >
 
                                 <div class="card-body p-2">

@@ -3,119 +3,121 @@
 {% block title %}{{ watch_list.title }} - Liste{% endblock %}
 
 {% block body %}
-<div style="padding-top: 5%;">
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 mb-1 text-light">{{ watch_list.title }}</h1>
-                <p class="text-muted mb-0">
-                    Détail de ta liste personnalisée.
+    <div style="padding-top: 5%;">
+        <div class="container py-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-1 text-light">{{ watch_list.title }}</h1>
+                    <p class="text-muted mb-0">
+                        Détail de ta liste personnalisée.
+                    </p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ path('app_watch_list_index') }}" class="btn btn-outline-light btn-sm">
+                        ⟵ Retour à mes listes
+                    </a>
+                    <a href="{{ path('app_watch_list_edit', {id: watch_list.id}) }}" class="btn btn-secondary btn-sm">
+                        Modifier
+                    </a>
+                    {{ include('watch_list/_delete_form.html.twig', {watch_list: watch_list}) }}
+                </div>
+            </div>
+
+            <div class="card bg-dark text-light border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Informations</h2>
+
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3 text-white">Nom</dt>
+                        <dd class="col-sm-9">{{ watch_list.title }}</dd>
+
+                        <dt class="col-sm-3 text-white">Description</dt>
+                        <dd class="col-sm-9">
+                            {{ watch_list.description is empty ? 'Aucune description.' : watch_list.description }}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <h2 class="h5 text-light mb-3">Contenu de la liste</h2>
+
+            {% set has_content = watch_list.movies|length > 0 or watch_list.series|length > 0 %}
+
+            {% if not has_content %}
+                <p class="text-muted">
+                    Cette liste est encore vide.
                 </p>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="{{ path('app_watch_list_index') }}" class="btn btn-outline-light btn-sm">
-                    ⟵ Retour à mes listes
-                </a>
-                <a href="{{ path('app_watch_list_edit', {id: watch_list.id}) }}" class="btn btn-secondary btn-sm">
-                    Modifier
-                </a>
-                {{ include('watch_list/_delete_form.html.twig', {watch_list: watch_list}) }}
-            </div>
-        </div>
-
-        <div class="card bg-dark text-light border-0 shadow-sm mb-4">
-            <div class="card-body">
-                <h2 class="h5 mb-3">Informations</h2>
-
-                <dl class="row mb-0">
-                    <dt class="col-sm-3 text-white">Nom</dt>
-                    <dd class="col-sm-9">{{ watch_list.title }}</dd>
-
-                    <dt class="col-sm-3 text-white">Description</dt>
-                    <dd class="col-sm-9">
-                        {{ watch_list.description is empty ? 'Aucune description.' : watch_list.description }}
-                    </dd>
-                </dl>
-            </div>
-        </div>
-
-        <h2 class="h5 text-light mb-3">Contenu de la liste</h2>
-
-        {% set has_content = watch_list.movies|length > 0 or watch_list.series|length > 0 %}
-
-        {% if not has_content %}
-            <p class="text-muted">
-                Cette liste est encore vide.
-            </p>
-        {% else %}
-            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
-                {% for movie in watch_list.movies %}
-                    <div class="col">
-                        <div class="card bg-dark text-light h-100 border-0">
-                            <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}" class="text-decoration-none text-light">
-                                {% if movie.picture %}
-                                    <img
-                                        src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
-                                        alt="{{ movie.title }}"
-                                        class="card-img-top"
-                                    >
-                                {% endif %}
-                                <div class="card-body p-2">
-                                    <h3 class="h6 mb-0 text-truncate">{{ movie.title }}</h3>
-                                    {% if movie.releaseDate is defined and movie.releaseDate %}
-                                        <small class="text-white">
-                                            {{ movie.releaseDate|date('Y') }}
-                                        </small>
+            {% else %}
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+                    {% for movie in watch_list.movies %}
+                        <div class="col">
+                            <div class="card bg-dark text-light h-100 border-0">
+                                <a href="{{ path('app_movie_show', {id: movie.tmdbId}) }}"
+                                   class="text-decoration-none text-light">
+                                    {% if movie.picture %}
+                                        <img itemprop="image"
+                                             src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
+                                             alt="{{ movie.title }}"
+                                             class="card-img-top"
+                                        >
                                     {% endif %}
-                                </div>
-                            </a>
-                            <form method="post"
-                                  action="{{ path('watchlist_del_item', {id: watch_list.id}) }}"
-                                  onsubmit="return confirm('Retirer de la liste ?');">
-                                <input type="hidden" name="itemId" value="{{ movie.id }}">
-                                <input type="hidden" name="type" value="movie">
-                                <input type="hidden" name="token" value="{{ csrf_token('del-item-' ~ movie.id) }}">
-                                <button class="btn btn-danger w-100">Retirer</button>
-                            </form>
+                                    <div class="card-body p-2">
+                                        <h3 class="h6 mb-0 text-truncate">{{ movie.title }}</h3>
+                                        {% if movie.releaseDate is defined and movie.releaseDate %}
+                                            <small class="text-white">
+                                                {{ movie.releaseDate|date('Y') }}
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                                <form method="post"
+                                      action="{{ path('watchlist_del_item', {id: watch_list.id}) }}"
+                                      onsubmit="return confirm('Retirer de la liste ?');">
+                                    <input type="hidden" name="itemId" value="{{ movie.id }}">
+                                    <input type="hidden" name="type" value="movie">
+                                    <input type="hidden" name="token" value="{{ csrf_token('del-item-' ~ movie.id) }}">
+                                    <button class="btn btn-danger w-100">Retirer</button>
+                                </form>
 
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
 
 
-                {% for serie in watch_list.series %}
-                    <div class="col">
-                        <div class="card bg-dark text-light h-100 border-0">
-                            <a href="{{ path('app_series_show', {id: serie.id}) }}" class="text-decoration-none text-light">
-                                {% if serie.picture %}
-                                    <img
-                                        src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
-                                        alt="{{ serie.title }}"
-                                        class="card-img-top"
-                                    >
-                                {% endif %}
-                                <div class="card-body p-2">
-                                    <h3 class="h6 mb-0 text-truncate">{{ serie.title }}</h3>
-                                    {% if serie.releaseDate is defined and serie.releaseDate %}
-                                        <small class="text-muted">
-                                            {{ serie.releaseDate|date('Y') }}
-                                        </small>
+                    {% for serie in watch_list.series %}
+                        <div class="col">
+                            <div class="card bg-dark text-light h-100 border-0">
+                                <a href="{{ path('app_series_show', {id: serie.id}) }}"
+                                   class="text-decoration-none text-light">
+                                    {% if serie.picture %}
+                                        <img itemprop="image"
+                                             src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                                             alt="{{ serie.title }}"
+                                             class="card-img-top"
+                                        >
                                     {% endif %}
-                                </div>
-                            </a>
-                            <form method="post"
-                                  action="{{ path('watchlist_del_item', {id: watch_list.id}) }}"
-                                  onsubmit="return confirm('Retirer de la liste ?');">
-                                <input type="hidden" name="itemId" value="{{ serie.id }}">
-                                <input type="hidden" name="type" value="series">
-                                <input type="hidden" name="token" value="{{ csrf_token('del-item-' ~ serie.id) }}">
-                                <button class="btn btn-danger w-100">Retirer</button>
-                            </form>
+                                    <div class="card-body p-2">
+                                        <h3 class="h6 mb-0 text-truncate">{{ serie.title }}</h3>
+                                        {% if serie.releaseDate is defined and serie.releaseDate %}
+                                            <small class="text-muted">
+                                                {{ serie.releaseDate|date('Y') }}
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                                <form method="post"
+                                      action="{{ path('watchlist_del_item', {id: watch_list.id}) }}"
+                                      onsubmit="return confirm('Retirer de la liste ?');">
+                                    <input type="hidden" name="itemId" value="{{ serie.id }}">
+                                    <input type="hidden" name="type" value="series">
+                                    <input type="hidden" name="token" value="{{ csrf_token('del-item-' ~ serie.id) }}">
+                                    <button class="btn btn-danger w-100">Retirer</button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
     </div>
-</div>
 {% endblock %}

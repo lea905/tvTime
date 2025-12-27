@@ -46,24 +46,25 @@
 
             <ul class="navbar-nav mb-2 mb-lg-0">
 
-                    <li class="nav-item d-flex align-items-center gap-2">
+                <li class="nav-item d-flex align-items-center gap-2">
 
-                        {# Formulaire de recherche caché au départ #}
-                        <form class="d-flex align-items-center me-2" id="searchForm" style="display: none;" action="{{ path('app_search') }}" method="GET">
-                            <input class="form-control form-control-sm bg-dark text-light border-secondary"
-                                   type="search" 
-                                   name="q"
-                                   placeholder="Rechercher..."
-                                   aria-label="Rechercher"
-                                   value="{{ app.request.query.get('q') }}">
-                        </form>
+                    {# Formulaire de recherche caché au départ #}
+                    <form class="d-flex align-items-center me-2" id="searchForm" style="display: none;"
+                          action="{{ path('app_search') }}" method="GET">
+                        <input class="form-control form-control-sm bg-dark text-light border-secondary"
+                               type="search"
+                               name="q"
+                               placeholder="Rechercher..."
+                               aria-label="Rechercher"
+                               value="{{ app.request.query.get('q') }}">
+                    </form>
 
-                        {# Bouton qui toggle la recherche #}
-                        <button class="btn btn-outline-light btn-sm me-2" type="button" id="searchToggle">
-                            🔍
-                        </button>
+                    {# Bouton qui toggle la recherche #}
+                    <button class="btn btn-outline-light btn-sm me-2" type="button" id="searchToggle">
+                        🔍
+                    </button>
 
-                    </li>
+                </li>
 
                 <li class="nav-item dropdown">
                     {% set avatars = ['images/femme.png', 'images/homme.png'] %}
@@ -71,14 +72,15 @@
 
                     <a class="nav-link p-0" href="#" id="profileDropdown"
                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ asset(avatar) }}" alt="Profil"
+                        <img itemprop="image" src="{{ asset(avatar) }}" alt="Profil"
                              style="width:32px;height:32px;border-color:#3269A8;">
                     </a>
 
 
                     <ul class="dropdown-menu dropdown-menu-end profile-dropdown" aria-labelledby="profileDropdown">
                         <li class="px-3 pt-2 pb-1 text-muted small">
-                            Connecté en tant que <strong>{% if app.user.name is defined %}{{ app.user.name }}{% endif %}</strong>
+                            Connecté en tant que
+                            <strong>{% if app.user.name is defined %}{{ app.user.name }}{% endif %}</strong>
                         </li>
                         <li>
                             <hr class="dropdown-divider">

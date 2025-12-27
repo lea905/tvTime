@@ -11,11 +11,11 @@
             <div class="card bg-dark text-light border-0">
                 <div class="row g-0">
                     <div class="col-12 col-md-4 col-lg-3">
-                        <img
-                            src="https://image.tmdb.org/t/p/w500{{ serie.picture }}"
-                            alt="{{ serie.title }}"
-                            class="img-fluid h-100 w-100"
-                            style="object-fit: cover;"
+                        <img itemprop="image"
+                             src="https://image.tmdb.org/t/p/w500{{ serie.picture }}"
+                             alt="{{ serie.title }}"
+                             class="img-fluid h-100 w-100"
+                             style="object-fit: cover;"
                         >
                     </div>
                     <div class="col-12 col-md-8 col-lg-9">
@@ -87,125 +87,125 @@
 
                             {{ form_end(emotion_form) }}
 
-                                {# Modal #}
-                                <div class="modal fade" id="watchlistModal" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content bg-dark text-light">
-                                            <div class="modal-header border-0">
-                                                <h5 class="modal-title">Ajouter à une liste</h5>
-                                                <button type="button" class="btn-close btn-close-white"
-                                                        data-bs-dismiss="modal"></button>
+                            {# Modal #}
+                            <div class="modal fade" id="watchlistModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content bg-dark text-light">
+                                        <div class="modal-header border-0">
+                                            <h5 class="modal-title">Ajouter à une liste</h5>
+                                            <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Choisir une liste existante</label>
+                                                <select id="watchlist-select"
+                                                        class="form-select bg-dark text-light">
+                                                    <option value="">Aucune</option>
+                                                    {% for list in watch_lists %}
+                                                        <option value="{{ list.id }}">{{ list.title }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Choisir une liste existante</label>
-                                                    <select id="watchlist-select"
-                                                            class="form-select bg-dark text-light">
-                                                        <option value="">Aucune</option>
-                                                        {% for list in watch_lists %}
-                                                            <option value="{{ list.id }}">{{ list.title }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
 
-                                                <div class="text-center mb-2">ou</div>
+                                            <div class="text-center mb-2">ou</div>
 
-                                                <div class="mb-3">
-                                                    <label class="form-label">Créer une nouvelle liste</label>
-                                                    <input type="text"
-                                                           id="new-watchlist-name"
-                                                           class="form-control bg-dark text-light"
-                                                           placeholder="Nom de la nouvelle liste">
-                                                </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Créer une nouvelle liste</label>
+                                                <input type="text"
+                                                       id="new-watchlist-name"
+                                                       class="form-control bg-dark text-light"
+                                                       placeholder="Nom de la nouvelle liste">
                                             </div>
-                                            <div class="modal-footer border-0">
-                                                <button type="button" class="btn btn-outline-light"
-                                                        data-bs-dismiss="modal">Annuler
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-danger"
-                                                        id="btn-add-to-watchlist"
-                                                        data-base-url="{{ path('watchlist_add_item', { id: 0 })|replace({'0':'__ID__'}) }}"
-                                                        data-tmdb-id="{{ serie.tmdbId }}">
-                                                    Ajouter
-                                                </button>
-                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-outline-light"
+                                                    data-bs-dismiss="modal">Annuler
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-danger"
+                                                    id="btn-add-to-watchlist"
+                                                    data-base-url="{{ path('watchlist_add_item', { id: 0 })|replace({'0':'__ID__'}) }}"
+                                                    data-tmdb-id="{{ serie.tmdbId }}">
+                                                Ajouter
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div aria-live="polite" aria-atomic="true" class="position-relative">
-                                    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
-                                        <div id="watchlist-toast" class="toast text-bg-success border-0" role="alert"
-                                             aria-live="assertive" aria-atomic="true">
-                                            <div class="d-flex">
-                                                <div class="toast-body">
-                                                    Série ajouté à la liste !
-                                                </div>
-                                                <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                                                        data-bs-dismiss="toast" aria-label="Close"></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', () => {
-                                        const btn = document.getElementById('btn-add-to-watchlist');
-                                        const select = document.getElementById('watchlist-select');
-                                        const input = document.getElementById('new-watchlist-name');
-                                        const modalEl = document.getElementById('watchlistModal');
-                                        const toastEl = document.getElementById('watchlist-toast');
-
-                                        if (!btn) return;
-
-                                        btn.addEventListener('click', async (e) => {
-                                            e.preventDefault();
-
-                                            const tmdbId = btn.dataset.tmdbId;
-                                            const existingId = select.value;
-                                            const newName = input.value.trim();
-
-                                            if (!existingId && !newName) {
-                                                alert('Choisis une liste ou entre un nom.');
-                                                return;
-                                            }
-
-                                            let url = btn.dataset.baseUrl;
-                                            const listId = existingId || 0;
-                                            url = url.replace('__ID__', listId);
-
-                                            const response = await fetch(url, {
-                                                method: 'POST',
-                                                headers: {'Content-Type': 'application/json'},
-                                                body: JSON.stringify({
-                                                    tmdbId: tmdbId,
-                                                    type: 'series',
-                                                    newListName: existingId ? null : newName
-                                                }),
-                                            });
-
-                                            const data = await response.json();
-                                            if (response.ok) {
-                                                const modal = bootstrap.Modal.getInstance(document.getElementById('watchlistModal'));
-                                                modal.hide();
-
-                                                const toast = new bootstrap.Toast(toastEl, {delay: 3000});
-                                                toast.show();
-
-                                                if (data.createdListId) {
-                                                    // location.reload();
-                                                }
-                                            } else {
-                                                alert('Erreur : ' + (data.error ?? 'inconnue'));
-                                            }
-                                        });
-                                    });
-                                </script>
                             </div>
 
+                            <div aria-live="polite" aria-atomic="true" class="position-relative">
+                                <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+                                    <div id="watchlist-toast" class="toast text-bg-success border-0" role="alert"
+                                         aria-live="assertive" aria-atomic="true">
+                                        <div class="d-flex">
+                                            <div class="toast-body">
+                                                Série ajouté à la liste !
+                                            </div>
+                                            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                                                    data-bs-dismiss="toast" aria-label="Close"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', () => {
+                                    const btn = document.getElementById('btn-add-to-watchlist');
+                                    const select = document.getElementById('watchlist-select');
+                                    const input = document.getElementById('new-watchlist-name');
+                                    const modalEl = document.getElementById('watchlistModal');
+                                    const toastEl = document.getElementById('watchlist-toast');
+
+                                    if (!btn) return;
+
+                                    btn.addEventListener('click', async (e) => {
+                                        e.preventDefault();
+
+                                        const tmdbId = btn.dataset.tmdbId;
+                                        const existingId = select.value;
+                                        const newName = input.value.trim();
+
+                                        if (!existingId && !newName) {
+                                            alert('Choisis une liste ou entre un nom.');
+                                            return;
+                                        }
+
+                                        let url = btn.dataset.baseUrl;
+                                        const listId = existingId || 0;
+                                        url = url.replace('__ID__', listId);
+
+                                        const response = await fetch(url, {
+                                            method: 'POST',
+                                            headers: {'Content-Type': 'application/json'},
+                                            body: JSON.stringify({
+                                                tmdbId: tmdbId,
+                                                type: 'series',
+                                                newListName: existingId ? null : newName
+                                            }),
+                                        });
+
+                                        const data = await response.json();
+                                        if (response.ok) {
+                                            const modal = bootstrap.Modal.getInstance(document.getElementById('watchlistModal'));
+                                            modal.hide();
+
+                                            const toast = new bootstrap.Toast(toastEl, {delay: 3000});
+                                            toast.show();
+
+                                            if (data.createdListId) {
+                                                // location.reload();
+                                            }
+                                        } else {
+                                            alert('Erreur : ' + (data.error ?? 'inconnue'));
+                                        }
+                                    });
+                                });
+                            </script>
                         </div>
+
                     </div>
                 </div>
+            </div>
         </section>
 
         {% if serie.seasons is defined and serie.seasons|length > 0 %}
@@ -214,47 +214,47 @@
 
                 <div class="list-group">
                     {% for season in serie.seasons %}
-{#                        <a href="{{ path('app_season_show', {idSerie: serie.id, idSeason: season.number }) }}">#}
-                            <div class="list-group-item bg-dark text-light border-secondary mb-2">
-                                <div class="d-flex">
-                                    {% if season.picture %}
-                                        <div class="flex-shrink-0 me-3">
-                                            <img
-                                                src="https://image.tmdb.org/t/p/w200{{ season.picture }}"
-                                                alt="{{ season.title }}"
-                                                class="img-fluid"
-                                                style="width: 90px; height: 130px; object-fit: cover;"
-                                            >
-                                        </div>
-                                    {% endif %}
+                        <div class="list-group-item bg-dark text-light border-secondary mb-2">
+                            <div class="d-flex">
+                                {% if season.picture %}
+                                    <div class="flex-shrink-0 me-3">
+                                        <img itemprop="image"
+                                             src="https://image.tmdb.org/t/p/w200{{ season.picture }}"
+                                             alt="{{ season.title }}"
+                                             class="img-fluid"
+                                             style="width: 90px; height: 130px; object-fit: cover;"
+                                        >
+                                    </div>
+                                {% endif %}
 
-                                    <div class="flex-grow-1 d-flex flex-column">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <h3 class="h6 mb-0">{{ season.title }}</h3>
-                                            {% if season.episodeCount is defined %}
-                                                <span class="badge bg-secondary">
+                                <div class="flex-grow-1 d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <h3 class="h6 mb-0">{{ season.title }}</h3>
+                                        {% if season.episodeCount is defined %}
+                                            <span class="badge bg-secondary">
                                             {{ season.episodeCount }} épisode(s)
                                         </span>
-                                            {% endif %}
-                                        </div>
+                                        {% endif %}
+                                    </div>
 
-                                        <p class="mb-2 small">
-                                            {{ season.resume
-                                            ? (season.resume|length > 180
-                                            ? season.resume|slice(0, 180) ~ '...'
-                                            : season.resume)
-                                            : '' }}
-                                        </p>
+                                    <p class="mb-2 small">
+                                        {{ season.resume
+                                        ? (season.resume|length > 180
+                                        ? season.resume|slice(0, 180) ~ '...'
+                                        : season.resume)
+                                        : '' }}
+                                    </p>
 
-                                        <div class="mt-auto d-flex justify-content-end">
-                                            <a href="{{ path('app_season_show', {idSerie: serie.id, idSeason: season.number }) }}" class="btn btn-outline-light btn-sm">
-                                                Voir les épisodes
-                                            </a>
-                                        </div>
+                                    <div class="mt-auto d-flex justify-content-end">
+                                        <a href="{{ path('app_season_show', {idSerie: serie.id, idSeason: season.number }) }}"
+                                           class="btn btn-outline-light btn-sm">
+                                            Voir les épisodes
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-{#                        </a>#}
+                        </div>
+                        {#                        </a> #}
                     {% endfor %}
                 </div>
             </section>
@@ -269,11 +269,11 @@
                             <div class="card h-100 border-0 bg-light">
                                 <div class="card-body d-flex align-items-center">
                                     {% if productionCompanie.logo %}
-                                        <img
-                                            src="https://image.tmdb.org/t/p/w200{{ productionCompanie.logo }}"
-                                            alt="{{ productionCompanie.name }}"
-                                            class="me-3"
-                                            style="max-height: 60px; width: auto;"
+                                        <img itemprop="image"
+                                             src="https://image.tmdb.org/t/p/w200{{ productionCompanie.logo }}"
+                                             alt="{{ productionCompanie.name }}"
+                                             class="me-3"
+                                             style="max-height: 60px; width: auto;"
                                         >
                                     {% endif %}
                                     <div>

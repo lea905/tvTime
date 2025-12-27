@@ -60,10 +60,10 @@
                     <div class="movies-row d-flex flex-row flex-nowrap gap-3 pb-2" style="overflow-x:auto;">
                     {% for movie in view.movieId %}
                         <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
-                            <img
-                                src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
-                                alt="{{ movie.title }}"
-                                class="card-img-top"
+                            <img itemprop="image"
+                                 src="https://image.tmdb.org/t/p/w300{{ movie.picture }}"
+                                 alt="{{ movie.title }}"
+                                 class="card-img-top"
                             >
 
                             <div class="card-body p-2">
@@ -85,10 +85,10 @@
                     {% endfor %}
                     {% for serie in view.seriesId %}
                         <article class="movie-card card bg-dark text-light" style="min-width: 180px;">
-                            <img
-                                src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
-                                alt="{{ serie.title }}"
-                                class="card-img-top"
+                            <img itemprop="image"
+                                 src="https://image.tmdb.org/t/p/w300{{ serie.picture }}"
+                                 alt="{{ serie.title }}"
+                                 class="card-img-top"
                             >
 
                             <div class="card-body p-2">
