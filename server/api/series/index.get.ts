@@ -2,25 +2,31 @@ import { TMDB_GENRES } from '../../utils/tmdb';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
-  const selectedGenre = (query.genre as string) || Object.values(TMDB_GENRES)[0];
+  const selectedGenreQuery = query.genre as string;
+  const isTout = !selectedGenreQuery || selectedGenreQuery === 'Tout' || selectedGenreQuery === '';
+
+  const genres = ['Tout', ...Object.values(TMDB_GENRES)];
+  const selectedGenre = isTout ? 'Tout' : selectedGenreQuery;
   
   const [popular, byGenre] = await Promise.all([
     prisma.series.findMany({
       orderBy: { popularity: 'desc' },
-      take: 20
+      take: 50
     }),
-    prisma.series.findMany({
-      where: {
-        genres: {
-          array_contains: selectedGenre
-        }
-      },
-      orderBy: { popularity: 'desc' },
-      take: 20
-    })
+    isTout
+      ? prisma.series.findMany({
+          orderBy: { popularity: 'desc' }
+        })
+      : prisma.series.findMany({
+          where: {
+            genres: {
+              array_contains: selectedGenre
+            }
+          },
+          orderBy: { popularity: 'desc' },
+          take: 50
+        })
   ]);
-
-  const genres = Object.values(TMDB_GENRES);
 
   return {
     popular,

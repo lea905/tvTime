@@ -74,4 +74,4 @@ Prisma est l'**ORM** (Object-Relational Mapper) qui remplace Doctrine dans ce pr
 - **`npx prisma generate`** : Regénère le client TypeScript. À faire si vous constatez que l'autocomplétion ne reconnaît pas un nouveau champ.
 
 ---
-*Développé avec ❤️ pour les fans de cinéma et séries.*
+

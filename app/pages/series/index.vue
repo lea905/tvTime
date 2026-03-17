@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-const selectedGenre = ref('')
+const selectedGenre = ref('Tout')
 const config = useRuntimeConfig()
 
 const { data, pending } = await useFetch(() => `/api/series?genre=${selectedGenre.value}`, {

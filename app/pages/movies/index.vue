@@ -26,13 +26,13 @@
     </div>
 
     <div v-else class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
-      <MediaCard v-for="movie in sortedMovies" :key="movie.id" :item="movie" type="movie" />
+      <MediaCard v-for="movie in sortedMovies" :key="movie.id" :item="movie" type="movies" />
     </div>
   </div>
 </template>
 
 <script setup>
-const selectedGenre = ref('')
+const selectedGenre = ref('Tout')
 const config = useRuntimeConfig()
 
 const { data, pending } = await useFetch(() => `/api/movies?genre=${selectedGenre.value}`, {

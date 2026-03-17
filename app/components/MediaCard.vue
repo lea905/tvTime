@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="`/${type}s/${item.id}`" class="group block">
+  <NuxtLink :to="`/${type}/${item.id}`" class="group block">
     <div class="relative aspect-[2/3] rounded-2xl overflow-hidden mb-3 shadow-lg group-hover:shadow-blue-900/30 transition-all group-hover:-translate-y-2">
       <img 
         :src="'https://image.tmdb.org/t/p/w500' + item.picture" 
