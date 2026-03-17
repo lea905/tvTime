@@ -1,93 +1,77 @@
-# TvTime
+# TV-TIME 🎬
 
-**TvTime** est une application web qui permet de répertorier et d'explorer des **films** et **séries TV**.  
-Les utilisateurs peuvent créer leurs propres **listes personnalisées** (avec un nom et une description), marquer les œuvres qu’ils ont **visionnées**, et indiquer les **émotions** ressenties pendant le visionnage.
+TV-TIME est une application web moderne pour suivre vos films et séries préférés, créer des listes de visionnage et explorer les dernières sorties. Initialement conçu avec Symfony, le projet a été entièrement migré vers une architecture **Fullstack Nuxt 3/4**.
+
+## 🚀 Technologies
+
+- **Frontend & Backend** : [Nuxt 3/4](https://nuxt.com/) (Vue.js + Nitro)
+- **Base de Données** : MySQL
+- **ORM** : [Prisma](https://www.prisma.io/)
+- **Design** : Tailwind CSS + Lucide Icons
+- **API** : Integration complète avec [TMDB](https://www.themoviedb.org/)
+
+## 🛠️ Installation
+
+### 1. Prérequis
+- Node.js (v18+)
+- MySQL
+
+### 2. Cloner et installer
+```bash
+# Installer les dépendances
+npm install
+```
+
+### 3. Configuration
+Créez un fichier `.env` à la racine :
+
+```env
+DATABASE_URL="mysql://USER:PASSWORD@HOST:PORT/DATABASE"
+TMDB_TOKEN="VOTRE_TOKEN_API_TMDB"
+```
+
+### 4. Base de données
+Initialisez votre base de données avec Prisma :
+
+```bash
+npx prisma db push
+```
+
+## 💻 Utilisation
+
+Pour lancer le serveur de développement :
+
+```bash
+npm run dev
+```
+
+L'application sera accessible sur [http://localhost:3000](http://localhost:3000).
+
+## ✨ Fonctionnalités Clés
+
+- **Synchronisation TMDB** : Cliquez sur le bouton 🔄 dans la navigation pour importer les derniers films et séries.
+- **Authentification** : Créez un compte et connectez-vous pour accéder à vos listes.
+- **Détails & Recherche** : Explorez les fiches détaillées et recherchez du contenu en temps réel.
+- **Gestion de Liste** : Ajoutez du contenu à votre watchlist personnelle (nécessite connexion).
+
+## 📁 Structure du Projet
+
+- `app/` : Pages Vue, composants et layouts (Nuxt 4 structure).
+- `server/api/` : Endpoints API (Node.js/TypeScript).
+- `prisma/` : Schéma de la base de données.
+
+## 💎 Comprendre Prisma
+
+Prisma est l'**ORM** (Object-Relational Mapper) qui remplace Doctrine dans ce projet. Il permet de manipuler la base de données en utilisant du code TypeScript au lieu de SQL brut.
+
+### Concepts Clés :
+- **Le Schéma (`prisma/schema.prisma`)** : C'est le fichier central où sont définies vos tables (modèles). C'est l'équivalent des annotations/attributs dans vos anciennes entités Symfony.
+- **Prisma Client** : C'est l'outil qui génère automatiquement les méthodes pour intéragir avec vos données (ex: `prisma.movie.findMany()`).
+
+### Commandes Utiles :
+- **`npx prisma db push`** : Synchronise votre schéma (`.prisma`) avec votre base de données locale. Utile après avoir modifié une table.
+- **`npx prisma studio`** : Ouvre une interface web (généralement sur `http://localhost:5555`) qui vous permet de voir, modifier et supprimer vos données très facilement, comme dans un tableur.
+- **`npx prisma generate`** : Regénère le client TypeScript. À faire si vous constatez que l'autocomplétion ne reconnaît pas un nouveau champ.
 
 ---
-
-## Fonctionnalités principales
-
-- Affichage des films et séries issus de l’API TMDb.
-- Création de listes personnalisées par l’utilisateur.
-- Indication d’un visionnage avec les émotions associées.
-- Gestion des utilisateurs (connexion, enregistrement, etc.).
-- Persistance des données en **base de données MySQL** via **Doctrine ORM**.
-
----
-
-## Technologies et outils utilisés
-
-| Catégorie | Outils |
-|------------|--------|
-| **Backend** | Symfony (PHP) |
-| **Frontend** | Twig, Bootstrap, Webpack Encore |
-| **Base de données** | MySQL (avec Doctrine) |
-| **API externe** | The Movie Database (TMDb) |
-
----
-
-## Architecture et éléments mis en place
-
-### 1. Liaison API
-- Intégration avec l’API TMDb pour récupérer les films, séries et genres.
-- Utilisation d’un service dédié pour gérer les requêtes HTTP et le cache des résultats.
-
-### 2. Enregistrement en base de données
-- Sauvegarde des films, séries et listes créées par l’utilisateur.
-- Gestion des relations entre **utilisateur ↔ liste ↔ œuvre** avec Doctrine.
-
-### 3. Interface utilisateur
-- Utilisation de **Bootstrap** pour le design et la responsivité.
-- Intégration via **Webpack Encore** pour la compilation des assets (CSS/JS).
-
-### 4. Validation HTML et sémantique
-- Utilisation des balises sémantiques : ```<main>, <section>, <article>, <header>```.
-- Code HTML conforme aux bonnes pratiques W3C.
-
-### 5. Micro-data (Schema.org)
-- Implémentation des micro-données pour les images, les dates et les titres.
-
-### 6. Esthétique et Bootstrap
-- Redéfinition des variables de couleurs.
-- Minification, réduction des imports inutiles.
-- Thème cohérent sur l’ensemble du site.
-- Harmonisation des couleurs et des espacements.
-- Utilisation de Flexbox et des utilitaires Bootstrap.
-- Scroll horizontal contrôlé pour l’affichage des listes sur mobile.
-
-### 7. Fonctionnement interne
-- Compilation et minification des assets via Webpack Encore.
-- Images fournies par l’API TMDb via un CDN externe.
-- Chargement optimisé sans stockage local inutile.
-
----
-
-## Installation et configuration
-
-### 1. Vérifier les installations 
-```
-composer require symfony/http-client
-```
-```
-composer require --dev symfony/maker-bundle
-```
-
-### 2. Crée votre base de données
-Copier le .env en .env.local
-
-Modifier cette ligne en mettant vos informations
-```
-DATABASE_URL="mysql://p2303185:12303185@iutbg-lamp.univ-lyon1.fr:3306/p2303185?serverVersion=8.0.37"
-```
-Puis lancer cette commande
-```
- php bin/console d:s:u -f
-```
-
-### 3. Lancer le projet
-```
-symfony serve
-```
-
-## Dossier incluant les 3 fichiers pour la notation du html css
-Le dossier ```/HTML/*```.
+*Développé avec ❤️ pour les fans de cinéma et séries.*

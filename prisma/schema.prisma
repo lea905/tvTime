@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model creator {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique(map: "Creator_name_key")
+  series series[] @relation("creatortoseries")
+}
+
+model episode {
+  id          Int       @id @default(autoincrement())
+  tmdbId      Int       @unique(map: "Episode_tmdbId_key")
+  number      Int
+  title       String
+  resume      String?   @db.LongText
+  releaseDate DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+  seasonId    Int
+  season      season    @relation(fields: [seasonId], references: [id], onDelete: Cascade, map: "Episode_seasonId_fkey")
+
+  @@index([seasonId], map: "Episode_seasonId_fkey")
+}
+
+model movie {
+  id                Int                 @id @default(autoincrement())
+  tmdbId            Int                 @unique(map: "Movie_tmdbId_key")
+  title             String
+  picture           String?
+  resume            String?             @db.LongText
+  popularity        Float               @default(0)
+  releaseDate       DateTime?
+  genres            Json?
+  status            String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime
+  productioncompany productioncompany[] @relation("movietoproductioncompany")
+  view              view[]              @relation("movietoview")
+  watchlist         watchlist[]         @relation("movietowatchlist")
+}
+
+model productioncompany {
+  id            Int      @id @default(autoincrement())
+  name          String   @unique(map: "ProductionCompany_name_key")
+  logo          String?
+  originCountry String?
+  movie         movie[]  @relation("movietoproductioncompany")
+  series        series[] @relation("productioncompanytoseries")
+}
+
+model season {
+  id             Int       @id @default(autoincrement())
+  tmdbId         Int       @unique(map: "Season_tmdbId_key")
+  number         Int
+  title          String
+  picture        String?
+  numberEpisodes Int       @default(0)
+  resume         String?   @db.LongText
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime
+  seriesId       Int
+  episode        episode[]
+  series         series    @relation(fields: [seriesId], references: [id], onDelete: Cascade, map: "Season_seriesId_fkey")
+
+  @@index([seriesId], map: "Season_seriesId_fkey")
+}
+
+model series {
+  id                Int                 @id @default(autoincrement())
+  tmdbId            Int                 @unique(map: "Series_tmdbId_key")
+  title             String
+  picture           String?
+  resume            String?             @db.LongText
+  popularity        Float               @default(0)
+  releaseDate       DateTime?
+  status            String?
+  numberEpisodes    Int                 @default(0)
+  numberSeasons     Int                 @default(0)
+  genres            Json?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime
+  season            season[]
+  creator           creator[]           @relation("creatortoseries")
+  productioncompany productioncompany[] @relation("productioncompanytoseries")
+  view              view[]              @relation("seriestoview")
+  watchlist         watchlist[]         @relation("seriestowatchlist")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model user {
+  id        Int         @id @default(autoincrement())
+  email     String      @unique(map: "User_email_key")
+  name      String
+  password  String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime
+  view      view[]
+  watchlist watchlist[]
+}
+
+model view {
+  id       Int      @id @default(autoincrement())
+  isSeen   Boolean  @default(false)
+  rating   Float?
+  dateSeen DateTime @default(now())
+  emotions Json?
+  userId   Int
+  user     user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "View_userId_fkey")
+  movie    movie[]  @relation("movietoview")
+  series   series[] @relation("seriestoview")
+
+  @@index([userId], map: "View_userId_fkey")
+}
+
+model watchlist {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  userId      Int
+  user        user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "WatchList_userId_fkey")
+  movie       movie[]  @relation("movietowatchlist")
+  series      series[] @relation("seriestowatchlist")
+
+  @@index([userId], map: "WatchList_userId_fkey")
+}
