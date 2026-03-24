@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     // MODIFIER UNE LISTE
     if (method === 'PUT' || method === 'PATCH') {
         const body = await readBody(event)
-        return await prisma.watchList.update({
+        return await prisma.watchlist.update({
             where: { id: id, userId: user.id },
             data: {
                 title: body.title,
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
 
     // SUPPRIMER UNE LISTE
     if (method === 'DELETE') {
-        await prisma.watchList.delete({
+        await prisma.watchlist.delete({
             where: { id: id, userId: user.id }
         })
         return { message: 'Supprimé avec succès' }

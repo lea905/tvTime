@@ -14,9 +14,9 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'GET') {
     // Si on demande juste à voir les listes
-    return await prisma.watchList.findMany({
+    return await prisma.watchlist.findMany({
       where: { userId: user.id },
-      include: { movies: true, series: true }
+      include: { items: { include: { movie: true, series: true } } }
     });
   }
 
@@ -24,12 +24,12 @@ export default defineEventHandler(async (event) => {
     // Si on a cliqué sur le bouton "Nouvelle liste"
     const body = await readBody(event); // On récupère les données envoyées par le bouton
 
-    return await prisma.watchList.create({
+    return await prisma.watchlist.create({
       data: {
         title: body.title || 'Ma nouvelle liste',
         userId: user.id,
       },
-      include: {movies: true, series: true}
+      include: { items: { include: { movie: true, series: true } } }
     });
   }
 });

@@ -36,7 +36,7 @@
           </div>
           <div>
             <p class="text-white/40 text-xs uppercase tracking-widest mb-1">Nombre de saisons</p>
-            <p class="font-bold">{{ serie.seasons }}</p>
+            <p class="font-bold">{{ serie.numberSeasons || serie.seasons?.length || 0 }}</p>
           </div>
            <div>
             <p class="text-white/40 text-xs uppercase tracking-widest mb-1">Statut</p>
@@ -45,7 +45,44 @@
         </div>
       </div>
       
-      <aside class="space-y-6">
+      <div v-if="serie.seasons?.length" class="md:col-span-3 space-y-4 pt-8 border-t border-white/5">
+        <h2 class="text-2xl font-bold">Saisons</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div v-for="season in serie.seasons" :key="season.id" class="glass p-4 rounded-2xl flex flex-col gap-4">
+            <div class="flex gap-4">
+              <img v-if="season.picture" :src="'https://image.tmdb.org/t/p/w200' + season.picture" class="w-20 h-28 object-cover rounded-lg shadow-md shrink-0" />
+              <div v-else class="w-20 h-28 bg-white/5 rounded-lg flex items-center justify-center shrink-0">
+                 <span class="text-xs text-white/30">Pas d'image</span>
+              </div>
+              <div class="space-y-1 flex-1 min-w-0">
+                <h3 class="text-lg font-bold truncate">{{ season.title || `Saison ${season.number}` }}</h3>
+                <p class="text-xs text-white/50 text-blue-300">Saison {{ season.number }}</p>
+                <p class="text-xs text-white/60 line-clamp-3 mt-2">{{ season.resume || 'Aucun synopsis disponible.' }}</p>
+                <p class="text-xs text-white/40 mt-1 font-medium">{{ season.episodes?.length || 0 }} épisodes</p>
+              </div>
+            </div>
+            
+            <details class="w-full group">
+              <summary class="cursor-pointer text-sm font-semibold text-blue-400 py-3 mt-1 border-t border-white/5 list-none flex justify-between items-center outline-none select-none hover:text-blue-300 transition-colors">
+                Voir les épisodes
+                <span class="transition-transform group-open:rotate-180">▼</span>
+              </summary>
+              <div class="space-y-2 mt-2 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
+                <div v-for="episode in season.episodes" :key="episode.id" class="p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
+                  <div class="flex justify-between items-start mb-1">
+                    <span class="font-bold text-sm text-white/90 truncate mr-2">{{ episode.number }}. {{ episode.title }}</span>
+                    <span class="text-xs text-white/40 whitespace-nowrap">{{ formatDate(episode.releaseDate) }}</span>
+                  </div>
+                  <p v-if="episode.resume" class="text-xs text-white/50 line-clamp-2">{{ episode.resume }}</p>
+                </div>
+                <div v-if="!season.episodes?.length" class="text-xs text-white/40 py-2 italic text-center">Aucun épisode disponible.</div>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+      
+      <aside class="space-y-6 md:col-span-1">
         <div class="glass p-8 rounded-[2.5rem] space-y-6 shadow-xl">
           <h3 class="text-xl font-bold">Ma Bibliothèque</h3>
           <p class="text-white/60 text-sm">Organisez vos visionnages et notez vos émotions.</p>

@@ -19,6 +19,6 @@ export default defineEventHandler(async (event) => {
     ...series,
     description: series.resume,
     rating: series.popularity,
-    seasons: series.seasons.length
+    seasons: series.seasons
   };
 });

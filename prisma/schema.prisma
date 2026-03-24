@@ -7,30 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model creator {
+model Creator {
   id     Int      @id @default(autoincrement())
-  name   String   @unique(map: "Creator_name_key")
-  series series[] @relation("creatortoseries")
+  name   String   @unique
+  series Series[]
 }
 
-model episode {
+model Episode {
   id          Int       @id @default(autoincrement())
-  tmdbId      Int       @unique(map: "Episode_tmdbId_key")
+  tmdbId      Int       @unique
   number      Int
   title       String
   resume      String?   @db.LongText
   releaseDate DateTime?
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime  @updatedAt
+  
   seasonId    Int
-  season      season    @relation(fields: [seasonId], references: [id], onDelete: Cascade, map: "Episode_seasonId_fkey")
+  season      Season    @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  
+  views       View[]
 
-  @@index([seasonId], map: "Episode_seasonId_fkey")
+  @@index([seasonId])
 }
 
-model movie {
+model Movie {
   id                Int                 @id @default(autoincrement())
-  tmdbId            Int                 @unique(map: "Movie_tmdbId_key")
+  tmdbId            Int                 @unique
   title             String
   picture           String?
   resume            String?             @db.LongText
@@ -39,41 +42,43 @@ model movie {
   genres            Json?
   status            String?
   createdAt         DateTime            @default(now())
-  updatedAt         DateTime
-  productioncompany productioncompany[] @relation("movietoproductioncompany")
-  view              view[]              @relation("movietoview")
-  watchlist         watchlist[]         @relation("movietowatchlist")
+  updatedAt         DateTime            @updatedAt
+  
+  productioncompany ProductionCompany[]
+  views             View[]
+  watchlistItems    WatchlistItem[]
 }
 
-model productioncompany {
+model ProductionCompany {
   id            Int      @id @default(autoincrement())
-  name          String   @unique(map: "ProductionCompany_name_key")
+  name          String   @unique
   logo          String?
   originCountry String?
-  movie         movie[]  @relation("movietoproductioncompany")
-  series        series[] @relation("productioncompanytoseries")
+  movies        Movie[]
+  series        Series[]
 }
 
-model season {
+model Season {
   id             Int       @id @default(autoincrement())
-  tmdbId         Int       @unique(map: "Season_tmdbId_key")
+  tmdbId         Int       @unique
   number         Int
   title          String
   picture        String?
   numberEpisodes Int       @default(0)
   resume         String?   @db.LongText
   createdAt      DateTime  @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime  @updatedAt
+  
   seriesId       Int
-  episode        episode[]
-  series         series    @relation(fields: [seriesId], references: [id], onDelete: Cascade, map: "Season_seriesId_fkey")
+  series         Series    @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  episodes       Episode[]
 
-  @@index([seriesId], map: "Season_seriesId_fkey")
+  @@index([seriesId])
 }
 
-model series {
+model Series {
   id                Int                 @id @default(autoincrement())
-  tmdbId            Int                 @unique(map: "Series_tmdbId_key")
+  tmdbId            Int                 @unique
   title             String
   picture           String?
   resume            String?             @db.LongText
@@ -84,50 +89,82 @@ model series {
   numberSeasons     Int                 @default(0)
   genres            Json?
   createdAt         DateTime            @default(now())
-  updatedAt         DateTime
-  season            season[]
-  creator           creator[]           @relation("creatortoseries")
-  productioncompany productioncompany[] @relation("productioncompanytoseries")
-  view              view[]              @relation("seriestoview")
-  watchlist         watchlist[]         @relation("seriestowatchlist")
+  updatedAt         DateTime            @updatedAt
+  
+  seasons           Season[]
+  creators          Creator[]
+  productioncompany ProductionCompany[]
+  views             View[]
+  watchlistItems    WatchlistItem[]
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model user {
+model User {
   id        Int         @id @default(autoincrement())
-  email     String      @unique(map: "User_email_key")
+  email     String      @unique
   name      String
   password  String
   createdAt DateTime    @default(now())
-  updatedAt DateTime
-  view      view[]
-  watchlist watchlist[]
+  updatedAt DateTime    @updatedAt
+  
+  views      View[]
+  watchlists Watchlist[]
 }
 
-model view {
+model View {
   id       Int      @id @default(autoincrement())
   isSeen   Boolean  @default(false)
   rating   Float?
-  dateSeen DateTime @default(now())
   emotions Json?
+  dateSeen DateTime @default(now())
+  
   userId   Int
-  user     user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "View_userId_fkey")
-  movie    movie[]  @relation("movietoview")
-  series   series[] @relation("seriestoview")
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  movieId   Int?
+  movie     Movie?   @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  
+  seriesId  Int?
+  series    Series?  @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  
+  episodeId Int?
+  episode   Episode? @relation(fields: [episodeId], references: [id], onDelete: Cascade)
 
-  @@index([userId], map: "View_userId_fkey")
+  @@index([userId])
+  @@index([movieId])
+  @@index([seriesId])
+  @@index([episodeId])
 }
 
-model watchlist {
+model Watchlist {
   id          Int      @id @default(autoincrement())
   title       String
   description String?
   createdAt   DateTime @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
+  
   userId      Int
-  user        user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "WatchList_userId_fkey")
-  movie       movie[]  @relation("movietowatchlist")
-  series      series[] @relation("seriestowatchlist")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  items       WatchlistItem[]
 
-  @@index([userId], map: "WatchList_userId_fkey")
+  @@index([userId])
+}
+
+model WatchlistItem {
+  id          Int      @id @default(autoincrement())
+  addedAt     DateTime @default(now())
+  order       Int      @default(0)
+  
+  watchlistId Int
+  watchlist   Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  
+  movieId     Int?
+  movie       Movie?    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  
+  seriesId    Int?
+  series      Series?   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+
+  @@index([watchlistId])
+  @@index([movieId])
+  @@index([seriesId])
 }
